@@ -18,15 +18,28 @@
  * limitations under the License.
  */
 
-namespace DreamFactory\Rave\User\Resources\System;
+namespace DreamFactory\Rave\User\Database\Seeds;
 
-use DreamFactory\Rave\Resources\BaseRestSystemResource;
+use DreamFactory\Rave\Models\SystemResource;
+use Illuminate\Database\Seeder;
 
-class User extends BaseRestSystemResource
+class DatabaseSeeder extends Seeder
 {
-    public function __construct( $settings = array() )
+    public function run()
     {
-        parent::__construct( $settings );
-        $this->model = new \DreamFactory\Rave\Models\User();
+        if(!SystemResource::whereName('user')->exists())
+        {
+            SystemResource::create(
+                [
+                    'name' => 'user',
+                    'class_name' => "DreamFactory\\Rave\\User\\Resources\\System\\User",
+                    'label' => 'User Management',
+                    'description' => 'Allows user management capability.',
+                    'singleton' => 0,
+                    'read_only' => 0
+                ]
+            );
+            $this->command->info('User management resource successfully seeded!');
+        }
     }
 }
