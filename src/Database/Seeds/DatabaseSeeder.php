@@ -20,14 +20,63 @@
 
 namespace DreamFactory\Rave\User\Database\Seeds;
 
+use DreamFactory\Rave\Models\Service;
 use DreamFactory\Rave\Models\SystemResource;
 use Illuminate\Database\Seeder;
+use DreamFactory\Rave\Models\ServiceType;
 
 class DatabaseSeeder extends Seeder
 {
     public function run()
     {
+        if ( !ServiceType::whereName( 'user_mgmt' )->exists() )
+        {
+            // Add the service type
+            ServiceType::create(
+                [
+                    'name'           => 'user_mgmt',
+                    'class_name'     => "DreamFactory\\Rave\\User\\Services\\User",
+                    'label'          => 'User service',
+                    'description'    => 'User service to allow user management.',
+                    'group'          => 'users',
+                    'singleton'      => 1
+                ]
+            );
+            $this->command->info( 'User Management service type seeded!' );
+        }
+
+        if ( !Service::whereType( 'user_mgmt' )->exists() )
+        {
+            Service::create(
+                [
+                    'name'        => 'user',
+                    'label'       => 'User Management',
+                    'description' => 'Service for managing system users.',
+                    'is_active'   => 1,
+                    'type'        => 'user_mgmt',
+                    'mutable'     => 0,
+                    'deletable'   => 0
+                ]
+            );
+            $this->command->info( 'User Management service seeded!' );
+        }
+
         if(!SystemResource::whereName('user')->exists())
+        {
+            SystemResource::create(
+                [
+                    'name' => 'user',
+                    'class_name' => "DreamFactory\\Rave\\User\\Resources\\System\\User",
+                    'label' => 'User Management',
+                    'description' => 'Allows user management capability.',
+                    'singleton' => 0,
+                    'read_only' => 0
+                ]
+            );
+            $this->command->info('User management resource successfully seeded!');
+        }
+
+        if(!SystemResource::whereName('password')->exists())
         {
             SystemResource::create(
                 [
