@@ -20,10 +20,80 @@
 
 namespace DreamFactory\Rave\User\Resources;
 
-
+use DreamFactory\Rave\Enums\ContentTypes;
+use DreamFactory\Rave\Enums\HttpStatusCodes;
 use DreamFactory\Rave\Resources\BaseRestResource;
+use DreamFactory\Library\Utility\ArrayUtils;
+use DreamFactory\Library\Utility\Enums\Verbs;
+use DreamFactory\Rave\Utility\ResponseFactory;
+use DreamFactory\Rave\Components\Registrar;
 
 class Register extends BaseRestResource
 {
     const RESOURCE_NAME = 'register';
+
+    /**
+     * @param array $settings
+     */
+    public function __construct( $settings = [ ] )
+    {
+        $verbAliases = [
+            Verbs::PUT   => Verbs::POST,
+            Verbs::MERGE => Verbs::POST,
+            Verbs::PATCH => Verbs::POST
+        ];
+        ArrayUtils::set( $settings, "verbAliases", $verbAliases );
+
+        parent::__construct( $settings );
+    }
+
+    /**
+     * Creates new user.
+     *
+     * @return array|\DreamFactory\Rave\Utility\ServiceResponse
+     */
+    protected function handlePOST()
+    {
+        $payload = $this->getPayloadData();
+        $login = $this->getQueryBool( 'login' );
+        $registrar = new Registrar();
+
+        $password = ArrayUtils::get( $payload, 'new_password', ArrayUtils::get( $payload, 'password' ) );
+        $data = [
+            'first_name'            => ArrayUtils::get( $payload, 'first_name' ),
+            'last_name'             => ArrayUtils::get( $payload, 'last_name' ),
+            'name'                  => ArrayUtils::get( $payload, 'name' ),
+            'email'                 => ArrayUtils::get( $payload, 'email' ),
+            'phone'                 => ArrayUtils::get( $payload, 'phone' ),
+            'security_question'     => ArrayUtils::get( $payload, 'security_question' ),
+            'security_answer'       => ArrayUtils::get( $payload, 'security_answer' ),
+            'password'              => $password,
+            'password_confirmation' => ArrayUtils::get( $payload, 'password_confirmation', $password )
+        ];
+
+        ArrayUtils::removeNull( $data );
+
+        /** @var \Illuminate\Validation\Validator $validator */
+        $validator = $registrar->validator( $data );
+
+        if ( $validator->fails() )
+        {
+            $messages = $validator->errors()->getMessages();
+
+            $messages = [ 'error' => $messages ];
+
+            return ResponseFactory::create( $messages, ContentTypes::PHP_ARRAY, HttpStatusCodes::HTTP_BAD_REQUEST );
+        }
+        else
+        {
+            $user = $registrar->create( $data );
+
+            if ( $login )
+            {
+                \Auth::login( $user );
+            }
+
+            return [ "success" => "true" ];
+        }
+    }
 }

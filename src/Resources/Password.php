@@ -21,10 +21,69 @@
 namespace DreamFactory\Rave\User\Resources;
 
 
+use DreamFactory\Library\Utility\ArrayUtils;
+use DreamFactory\Rave\Exceptions\BadRequestException;
+use DreamFactory\Library\Utility\Enums\Verbs;
 use DreamFactory\Rave\Resources\BaseRestResource;
+use DreamFactory\Rave\Models\User;
 
 class Password extends BaseRestResource
 {
     const RESOURCE_NAME = 'password';
 
+    /**
+     * @param array $settings
+     */
+    public function __construct( $settings = [ ] )
+    {
+        $verbAliases = [
+            Verbs::PUT   => Verbs::POST,
+            Verbs::MERGE => Verbs::POST,
+            Verbs::PATCH => Verbs::POST
+        ];
+        ArrayUtils::set( $settings, "verbAliases", $verbAliases );
+
+        parent::__construct( $settings );
+    }
+
+    /**
+     * Resets user password.
+     *
+     * @return array|bool
+     * @throws BadRequestException
+     * @throws \Exception
+     */
+    protected function handlePOST()
+    {
+        $reset = $this->getQueryBool('reset');
+        $login = $this->getQueryBool('login');
+
+        $payload = $this->getPayloadData();
+
+        $oldPassword = ArrayUtils::get($payload, 'old_password');
+        $newPassword = ArrayUtils::get($payload, 'new_password');
+        $email = ArrayUtils::get($payload, 'email');
+        $code = ArrayUtils::get($payload, 'code');
+        $answer = ArrayUtils::get($payload, 'security_answer');
+
+        if($reset && $oldPassword && \Auth::check())
+        {
+            /** @var User $user */
+            $user = \Auth::getUser();
+            $userPassword = $user->getAuthPassword();
+
+            if(\Hash::check($oldPassword, $userPassword))
+            {
+                $user->update(['password' => bcrypt($newPassword)]);
+
+                return ['success' => true];
+            }
+            else
+            {
+                throw new BadRequestException('Error validating old password.');
+            }
+        }
+
+        return false;
+    }
 }

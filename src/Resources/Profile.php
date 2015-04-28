@@ -20,6 +20,7 @@
 
 namespace DreamFactory\Rave\User\Resources;
 
+use DreamFactory\Library\Utility\ArrayUtils;
 use DreamFactory\Library\Utility\Enums\Verbs;
 use DreamFactory\Rave\Resources\BaseRestResource;
 
@@ -32,15 +33,19 @@ class Profile extends BaseRestResource
      */
     public function __construct( $settings = [ ] )
     {
-        parent::__construct( $settings );
-        $this->verbAliases = [
+        $verbAliases = [
             Verbs::PUT   => Verbs::POST,
             Verbs::MERGE => Verbs::POST,
             Verbs::PATCH => Verbs::POST
         ];
+        ArrayUtils::set( $settings, "verbAliases", $verbAliases );
+
+        parent::__construct( $settings );
     }
 
     /**
+     * Fetches user profile.
+     *
      * @return array
      */
     protected function handleGET()
@@ -48,11 +53,11 @@ class Profile extends BaseRestResource
         $user = \Auth::getUser();
 
         $data = [
-            'first_name' => $user->first_name,
-            'last_name' => $user->last_name,
-            'name' => $user->name,
-            'email' => $user->email,
-            'phone' => $user->phone,
+            'first_name'        => $user->first_name,
+            'last_name'         => $user->last_name,
+            'name'              => $user->name,
+            'email'             => $user->email,
+            'phone'             => $user->phone,
             'security_question' => $user->security_question
         ];
 
@@ -60,17 +65,31 @@ class Profile extends BaseRestResource
     }
 
     /**
+     * Updates user profile.
+     *
      * @return array
      * @throws \Exception
      */
     protected function handlePOST()
     {
-        $data = $this->getPayloadData();
+        $payload = $this->getPayloadData();
+
+        $data = [
+            'first_name'        => ArrayUtils::get( $payload, 'first_name' ),
+            'last_name'         => ArrayUtils::get( $payload, 'last_name' ),
+            'name'              => ArrayUtils::get( $payload, 'name' ),
+            'email'             => ArrayUtils::get( $payload, 'email' ),
+            'phone'             => ArrayUtils::get( $payload, 'phone' ),
+            'security_question' => ArrayUtils::get( $payload, 'security_question' ),
+            'security_answer'   => ArrayUtils::get( $payload, 'security_answer' )
+        ];
+
+        ArrayUtils::removeNull( $data );
 
         $user = \Auth::getUser();
 
-        $user->update($data);
+        $user->update( $data );
 
-        return ['success' => true];
+        return [ 'success' => true ];
     }
 }
