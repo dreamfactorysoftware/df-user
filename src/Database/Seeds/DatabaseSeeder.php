@@ -75,20 +75,5 @@ class DatabaseSeeder extends Seeder
             );
             $this->command->info('User management resource successfully seeded!');
         }
-
-        if(!SystemResource::whereName('password')->exists())
-        {
-            SystemResource::create(
-                [
-                    'name' => 'user',
-                    'class_name' => "DreamFactory\\Rave\\User\\Resources\\System\\User",
-                    'label' => 'User Management',
-                    'description' => 'Allows user management capability.',
-                    'singleton' => 0,
-                    'read_only' => 0
-                ]
-            );
-            $this->command->info('User management resource successfully seeded!');
-        }
     }
 }
