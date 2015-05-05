@@ -45,7 +45,7 @@ class DatabaseSeeder extends Seeder
             $this->command->info( 'User Management service type seeded!' );
         }
 
-        if ( !Service::whereType( 'user_mgmt' )->exists() )
+        if ( !Service::whereType( 'user' )->exists() )
         {
             Service::create(
                 [
