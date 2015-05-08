@@ -29,12 +29,12 @@ class DatabaseSeeder extends Seeder
 {
     public function run()
     {
-        if ( !ServiceType::whereName( 'user_mgmt' )->exists() )
+        if ( !ServiceType::whereName( 'user' )->exists() )
         {
             // Add the service type
             ServiceType::create(
                 [
-                    'name'           => 'user_mgmt',
+                    'name'           => 'user',
                     'class_name'     => "DreamFactory\\Rave\\User\\Services\\User",
                     'label'          => 'User service',
                     'description'    => 'User service to allow user management.',
@@ -53,7 +53,7 @@ class DatabaseSeeder extends Seeder
                     'label'       => 'User Management',
                     'description' => 'Service for managing system users.',
                     'is_active'   => 1,
-                    'type'        => 'user_mgmt',
+                    'type'        => 'user',
                     'mutable'     => 0,
                     'deletable'   => 0
                 ]
@@ -66,7 +66,7 @@ class DatabaseSeeder extends Seeder
             SystemResource::create(
                 [
                     'name' => 'user',
-                    'label' => 'User Management',
+                    'label' => 'Users',
                     'description' => 'Allows user management capability.',
                     'class_name' => "DreamFactory\\Rave\\User\\Resources\\System\\User",
                     'model_name' => "DreamFactory\\Rave\\Models\\User",
@@ -74,7 +74,7 @@ class DatabaseSeeder extends Seeder
                     'read_only' => 0
                 ]
             );
-            $this->command->info('User management resource successfully seeded!');
+            $this->command->info('User system resource successfully seeded!');
         }
     }
 }
