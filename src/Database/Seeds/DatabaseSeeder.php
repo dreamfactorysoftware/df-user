@@ -66,9 +66,10 @@ class DatabaseSeeder extends Seeder
             SystemResource::create(
                 [
                     'name' => 'user',
-                    'class_name' => "DreamFactory\\Rave\\User\\Resources\\System\\User",
                     'label' => 'User Management',
                     'description' => 'Allows user management capability.',
+                    'class_name' => "DreamFactory\\Rave\\User\\Resources\\System\\User",
+                    'model_name' => "DreamFactory\\Rave\\Models\\User",
                     'singleton' => 0,
                     'read_only' => 0
                 ]

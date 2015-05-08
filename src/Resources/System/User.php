@@ -20,13 +20,8 @@
 
 namespace DreamFactory\Rave\User\Resources\System;
 
-use DreamFactory\Rave\Resources\BaseRestSystemResource;
+use DreamFactory\Rave\Resources\System\BaseSystemResource;
 
-class User extends BaseRestSystemResource
+class User extends BaseSystemResource
 {
-    public function __construct( $settings = array() )
-    {
-        parent::__construct( $settings );
-        $this->model = new \DreamFactory\Rave\Models\User();
-    }
 }
