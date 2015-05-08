@@ -95,7 +95,7 @@ class Session extends BaseRestResource
      * @return array
      * @throws NotFoundException
      */
-    protected static function getSessionData()
+    public static function getSessionData()
     {
         $user = \Auth::getUser();
 
