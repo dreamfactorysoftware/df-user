@@ -55,7 +55,7 @@ class Register extends BaseRestResource
     protected function handlePOST()
     {
         $payload = $this->getPayloadData();
-        $login = $this->getQueryBool( 'login' );
+        $login = $this->request->getParameterAsBool( 'login' );
         $registrar = new Registrar();
 
         $password = ArrayUtils::get( $payload, 'new_password', ArrayUtils::get( $payload, 'password' ) );
@@ -95,5 +95,93 @@ class Register extends BaseRestResource
 
             return [ "success" => "true" ];
         }
+    }
+
+    public function getApiDocInfo()
+    {
+        $path = '/' . $this->getServiceName() . '/' . $this->getFullPathName();
+        $eventPath = $this->getServiceName() . '.' . $this->getFullPathName( '.' );
+        $apis = [
+            [
+                'path'        => $path,
+                'operations'  => [
+                    [
+                        'method'           => 'POST',
+                        'summary'          => 'register() - Register a new user in the system.',
+                        'nickname'         => 'register',
+                        'type'             => 'Success',
+                        'event_name'       => [ $eventPath . '.create' ],
+                        'parameters'       => [
+                            [
+                                'name'          => 'login',
+                                'description'   => 'Login and create a session upon successful registration.',
+                                'allowMultiple' => false,
+                                'type'          => 'boolean',
+                                'paramType'     => 'query',
+                                'required'      => false,
+                            ],
+                            [
+                                'name'          => 'body',
+                                'description'   => 'Data containing name-value pairs for new user registration.',
+                                'allowMultiple' => false,
+                                'type'          => 'Register',
+                                'paramType'     => 'body',
+                                'required'      => true,
+                            ],
+                        ],
+                        'responseMessages' => [
+                            [
+                                'message' => 'Unauthorized Access - No currently valid session available.',
+                                'code'    => 401,
+                            ],
+                            [
+                                'message' => 'System Error - Specific reason is included in the error message.',
+                                'code'    => 500,
+                            ],
+                        ],
+                        'notes'            =>
+                            'The new user is created and, if required, sent an email for confirmation. ' .
+                            'This also handles the registration confirmation by posting email, ' .
+                            'confirmation code and new password.',
+                    ],
+                ],
+                'description' => 'Operations to register a new user.',
+            ],
+        ];
+
+        $models = [
+            'Register' => [
+                'id'         => 'Register',
+                'properties' => [
+                    'email'        => [
+                        'type'        => 'string',
+                        'description' => 'Email address of the new user.',
+                        'required'    => true,
+                    ],
+                    'first_name'   => [
+                        'type'        => 'string',
+                        'description' => 'First name of the new user.',
+                    ],
+                    'last_name'    => [
+                        'type'        => 'string',
+                        'description' => 'Last name of the new user.',
+                    ],
+                    'display_name' => [
+                        'type'        => 'string',
+                        'description' => 'Full display name of the new user.',
+                    ],
+                    'new_password' => [
+                        'type'        => 'string',
+                        'description' => 'Password for the new user.',
+                    ],
+                    'code'         => [
+                        'type'        => 'string',
+                        'description' => 'Code required with new_password when using email confirmation.',
+                    ],
+                ],
+            ],
+        ];
+
+        return [ 'apis' => $apis, 'models' => $models ];
     }
 }
