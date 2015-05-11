@@ -20,9 +20,10 @@
 
 namespace DreamFactory\Rave\User\Resources;
 
-use DreamFactory\Rave\Exceptions\NotFoundException;
 use DreamFactory\Rave\Exceptions\UnauthorizedException;
+use DreamFactory\Rave\Exceptions\NotFoundException;
 use DreamFactory\Rave\Resources\BaseRestResource;
+use DreamFactory\Library\Utility\ArrayUtils;
 
 class Session extends BaseRestResource
 {
@@ -54,23 +55,23 @@ class Session extends BaseRestResource
         $this->triggerActionEvent( $this->response );
 
         $credentials = [
-            'email' => $this->getPayloadData('email'),
-            'password' => $this->getPayloadData('password')
+            'email'    => $this->getPayloadData( 'email' ),
+            'password' => $this->getPayloadData( 'password' )
         ];
 
         //if user management not available then only system admins can login.
-        if(!class_exists('\DreamFactory\Rave\User\Resources\System\User'))
+        if ( !class_exists( '\DreamFactory\Rave\User\Resources\System\User' ) )
         {
             $credentials['is_sys_admin'] = 1;
         }
 
-        if(\Auth::attempt($credentials))
+        if ( \Auth::attempt( $credentials ) )
         {
             return static::getSessionData();
         }
         else
         {
-            throw new UnauthorizedException('Invalid user name and password combination.');
+            throw new UnauthorizedException( 'Invalid user name and password combination.' );
         }
 
     }
@@ -82,11 +83,9 @@ class Session extends BaseRestResource
      */
     protected function handleDELETE()
     {
-        $this->triggerActionEvent($this->response);
-
+        $this->triggerActionEvent( $this->response );
         \Auth::logout();
-
-        return ['success' => true];
+        return [ 'success' => true ];
     }
 
     /**
@@ -99,22 +98,31 @@ class Session extends BaseRestResource
     {
         $user = \Auth::getUser();
 
-        if(empty($user))
+        if ( empty( $user ) )
         {
-            throw new NotFoundException('No user session found.');
+            throw new NotFoundException( 'No user session found.' );
         }
 
         $sessionData = [
-            'user_id' => $user->id,
-            'session_id' => \Session::getId(),
-            'name' => $user->name,
-            'first_name' => $user->first_name,
-            'last_name' => $user->last_name,
-            'email' => $user->email,
-            'is_sys_admin' => $user->is_sys_admin,
+            'user_id'         => $user->id,
+            'session_id'      => \Session::getId(),
+            'name'            => $user->name,
+            'first_name'      => $user->first_name,
+            'last_name'       => $user->last_name,
+            'email'           => $user->email,
+            'is_sys_admin'    => $user->is_sys_admin,
             'last_login_date' => $user->last_login_date,
-            'rave_host' => gethostname()
+            'host'            => gethostname()
         ];
+
+        $s = \Session::all();
+
+        if ( !$user->is_sys_admin )
+        {
+            $role = session( 'rsa.role' );
+            ArrayUtils::set( $sessionData, 'role', ArrayUtils::get( $role, 'name' ) );
+            ArrayUtils::set( $sessionData, 'rold_id', ArrayUtils::get( $role, 'id' ) );
+        }
 
         return $sessionData;
     }

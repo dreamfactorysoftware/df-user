@@ -24,4 +24,5 @@ use DreamFactory\Rave\Resources\System\BaseSystemResource;
 
 class User extends BaseSystemResource
 {
+
 }
