@@ -52,12 +52,12 @@ class Session extends BaseRestResource
      */
     protected function handlePOST()
     {
-        $this->triggerActionEvent( $this->response );
-
         $credentials = [
             'email'    => $this->getPayloadData( 'email' ),
             'password' => $this->getPayloadData( 'password' )
         ];
+
+        $rememberMe = boolval($this->getPayloadData('remember_me'));
 
         //if user management not available then only system admins can login.
         if ( !class_exists( '\DreamFactory\Rave\User\Resources\System\User' ) )
@@ -65,7 +65,7 @@ class Session extends BaseRestResource
             $credentials['is_sys_admin'] = 1;
         }
 
-        if ( \Auth::attempt( $credentials ) )
+        if ( \Auth::attempt( $credentials, $rememberMe ) )
         {
             return static::getSessionData();
         }
@@ -83,7 +83,6 @@ class Session extends BaseRestResource
      */
     protected function handleDELETE()
     {
-        $this->triggerActionEvent( $this->response );
         \Auth::logout();
         return [ 'success' => true ];
     }
@@ -114,8 +113,6 @@ class Session extends BaseRestResource
             'last_login_date' => $user->last_login_date,
             'host'            => gethostname()
         ];
-
-        $s = \Session::all();
 
         if ( !$user->is_sys_admin )
         {
