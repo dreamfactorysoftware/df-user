@@ -24,6 +24,7 @@ use DreamFactory\Rave\Exceptions\UnauthorizedException;
 use DreamFactory\Rave\Exceptions\NotFoundException;
 use DreamFactory\Rave\Resources\BaseRestResource;
 use DreamFactory\Library\Utility\ArrayUtils;
+use DreamFactory\Rave\Resources\System\UserSessionTrait;
 
 class Session extends BaseRestResource
 {
@@ -32,98 +33,11 @@ class Session extends BaseRestResource
      */
     const RESOURCE_NAME = 'session';
 
-    /**
-     * Gets basic user session data.
-     *
-     * @return array
-     * @throws NotFoundException
-     */
-    protected function handleGET()
-    {
-        return static::getSessionData();
-    }
+    use UserSessionTrait;
 
     /**
-     * Authenticates valid user.
-     *
-     * @return array
-     * @throws NotFoundException
-     * @throws UnauthorizedException
+     * {@inheritdoc}
      */
-    protected function handlePOST()
-    {
-        $credentials = [
-            'email'    => $this->getPayloadData( 'email' ),
-            'password' => $this->getPayloadData( 'password' )
-        ];
-
-        $rememberMe = boolval($this->getPayloadData('remember_me'));
-
-        //if user management not available then only system admins can login.
-        if ( !class_exists( '\DreamFactory\Rave\User\Resources\System\User' ) )
-        {
-            $credentials['is_sys_admin'] = 1;
-        }
-
-        if ( \Auth::attempt( $credentials, $rememberMe ) )
-        {
-            return static::getSessionData();
-        }
-        else
-        {
-            throw new UnauthorizedException( 'Invalid user name and password combination.' );
-        }
-
-    }
-
-    /**
-     * Logs out user
-     *
-     * @return array
-     */
-    protected function handleDELETE()
-    {
-        \Auth::logout();
-        return [ 'success' => true ];
-    }
-
-    /**
-     * Fetches user session data based on the authenticated user.
-     *
-     * @return array
-     * @throws NotFoundException
-     */
-    public static function getSessionData()
-    {
-        $user = \Auth::getUser();
-
-        if ( empty( $user ) )
-        {
-            throw new NotFoundException( 'No user session found.' );
-        }
-
-        $sessionData = [
-            'user_id'         => $user->id,
-            'session_id'      => \Session::getId(),
-            'name'            => $user->name,
-            'first_name'      => $user->first_name,
-            'last_name'       => $user->last_name,
-            'email'           => $user->email,
-            'is_sys_admin'    => $user->is_sys_admin,
-            'last_login_date' => $user->last_login_date,
-            'host'            => gethostname()
-        ];
-
-        if ( !$user->is_sys_admin )
-        {
-            $role = session( 'rsa.role' );
-            ArrayUtils::set( $sessionData, 'role', ArrayUtils::get( $role, 'name' ) );
-            ArrayUtils::set( $sessionData, 'rold_id', ArrayUtils::get( $role, 'id' ) );
-        }
-
-        return $sessionData;
-    }
-
     public function getApiDocInfo()
     {
         $path = '/' . $this->getServiceName() . '/' . $this->getFullPathName();
