@@ -20,21 +20,10 @@
 
 namespace DreamFactory\Rave\User\Resources;
 
-use DreamFactory\Rave\Exceptions\UnauthorizedException;
-use DreamFactory\Rave\Exceptions\NotFoundException;
-use DreamFactory\Rave\Resources\BaseRestResource;
-use DreamFactory\Library\Utility\ArrayUtils;
-use DreamFactory\Rave\Resources\System\UserSessionTrait;
+use DreamFactory\Rave\Resources\UserSessionResource;
 
-class Session extends BaseRestResource
+class Session extends UserSessionResource
 {
-    /**
-     * Resource name
-     */
-    const RESOURCE_NAME = 'session';
-
-    use UserSessionTrait;
-
     /**
      * {@inheritdoc}
      */
