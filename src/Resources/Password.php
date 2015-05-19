@@ -20,7 +20,6 @@
 
 namespace DreamFactory\Rave\User\Resources;
 
-use DreamFactory\Rave\Resources\System\UserPasswordTrait;
 use DreamFactory\Rave\Resources\UserPasswordResource;
 
 class Password extends UserPasswordResource

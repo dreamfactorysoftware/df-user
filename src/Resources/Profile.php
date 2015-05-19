@@ -50,7 +50,7 @@ class Profile extends BaseRestResource
      */
     protected function handleGET()
     {
-        $user = \Auth::getUser();
+        $user = \Auth::user();
 
         $data = [
             'first_name'        => $user->first_name,
@@ -86,7 +86,7 @@ class Profile extends BaseRestResource
 
         ArrayUtils::removeNull( $data );
 
-        $user = \Auth::getUser();
+        $user = \Auth::user();
 
         $user->update( $data );
 
