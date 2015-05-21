@@ -25,9 +25,78 @@ use DreamFactory\Rave\Models\User;
 use DreamFactory\Rave\Exceptions\NotFoundException;
 use DreamFactory\Library\Utility\Scalar;
 use DreamFactory\Rave\Exceptions\UnauthorizedException;
+use DreamFactory\Rave\User\Models\UserConfig;
+use DreamFactory\Rave\Exceptions\InternalServerErrorException;
+use DreamFactory\Rave\Utility\ServiceHandler;
+use DreamFactory\Rave\Services\Email\BaseService as EmailService;
+use DreamFactory\Rave\Exceptions\ServiceUnavailableException;
+use DreamFactory\Library\Utility\ArrayUtils;
 
 class Password extends UserPasswordResource
 {
+    /**
+     * {@inheritdoc}
+     */
+    protected static function sendPasswordResetEmail( User $user )
+    {
+        $email = $user->email;
+
+        /** @var $config UserConfig */
+        $config = UserConfig::instance();
+
+        if ( empty( $config ) )
+        {
+            throw new InternalServerErrorException( 'Unable to load system configuration.' );
+        }
+
+        $emailServiceId = $config->password_email_service_id;
+
+        if ( !empty( $emailServiceId ) )
+        {
+
+            try
+            {
+                /** @var EmailService $emailService */
+                $emailService = ServiceHandler::getServiceById( $emailServiceId );
+
+                if ( empty( $emailService ) )
+                {
+                    throw new ServiceUnavailableException( "Bad service identifier '$emailServiceId'." );
+                }
+
+                $data = array();
+                $templateId = $config->password_email_template_id;
+
+                if ( !empty( $templateId ) )
+                {
+                    $data = $emailService::getTemplateDataById( $templateId );
+                }
+
+                if ( empty( $data ) || !is_array( $data ) )
+                {
+                    throw new ServiceUnavailableException( "No data found in default email template for password reset." );
+                }
+
+                ArrayUtils::set( $data, 'to', $email );
+                ArrayUtils::set( $data, 'first_name', $user->first_name );
+                ArrayUtils::set( $data, 'last_name', $user->last_name );
+                ArrayUtils::set( $data, 'name', $user->name );
+                ArrayUtils::set( $data, 'confirm_code', $user->confirm_code );
+                ArrayUtils::set( $data, 'link', url( 'password/reset/' . urlencode( $user->confirm_code ) ) );
+
+                $emailService->sendEmail( $data, ArrayUtils::get( $data, 'body_text' ), ArrayUtils::get( $data, 'body_html' ) );
+
+                return true;
+            }
+            catch ( \Exception $ex )
+            {
+                throw new InternalServerErrorException( "Error processing password reset.\n{$ex->getMessage()}" );
+            }
+        }
+
+        return false;
+    }
+
     /**
      * {@inheritdoc}
      */

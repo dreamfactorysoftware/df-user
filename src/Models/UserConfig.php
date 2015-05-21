@@ -20,12 +20,13 @@
 
 namespace DreamFactory\Rave\User\Models;
 
+use DreamFactory\Rave\Contracts\ServiceConfigHandlerInterface;
 use DreamFactory\Rave\Models\BaseServiceConfigModel;
 use DreamFactory\Rave\Models\SingleRecordModel;
 
-class UserConfig extends BaseServiceConfigModel
+class UserConfig extends BaseServiceConfigModel implements ServiceConfigHandlerInterface
 {
-    use SingleRecordModel
+    use SingleRecordModel;
 
     protected $table = 'user_config';
 
