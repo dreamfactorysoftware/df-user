@@ -36,6 +36,7 @@ class DatabaseSeeder extends Seeder
                 [
                     'name'           => 'user',
                     'class_name'     => "DreamFactory\\Rave\\User\\Services\\User",
+                    'config_handler' => "DreamFactory\\Rave\\User\\Models\\UserConfig",
                     'label'          => 'User service',
                     'description'    => 'User service to allow user management.',
                     'group'          => 'users',
@@ -54,27 +55,30 @@ class DatabaseSeeder extends Seeder
                     'description' => 'Service for managing system users.',
                     'is_active'   => 1,
                     'type'        => 'user',
-                    'mutable'     => 0,
-                    'deletable'   => 0
+                    'mutable'     => 1,
+                    'deletable'   => 0,
+                    'config'      => [
+                        'allow_open_registration' => 0
+                    ]
                 ]
             );
             $this->command->info( 'User Management service seeded!' );
         }
 
-        if(!SystemResource::whereName('user')->exists())
+        if ( !SystemResource::whereName( 'user' )->exists() )
         {
             SystemResource::create(
                 [
-                    'name' => 'user',
-                    'label' => 'User Management',
+                    'name'        => 'user',
+                    'label'       => 'User Management',
                     'description' => 'Allows user management capability.',
-                    'class_name' => "DreamFactory\\Rave\\User\\Resources\\System\\User",
-                    'model_name' => "DreamFactory\\Rave\\Models\\User",
-                    'singleton' => 0,
-                    'read_only' => 0
+                    'class_name'  => "DreamFactory\\Rave\\User\\Resources\\System\\User",
+                    'model_name'  => "DreamFactory\\Rave\\Models\\User",
+                    'singleton'   => 0,
+                    'read_only'   => 0
                 ]
             );
-            $this->command->info('User system resource successfully seeded!');
+            $this->command->info( 'User system resource successfully seeded!' );
         }
     }
 }

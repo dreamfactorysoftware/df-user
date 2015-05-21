@@ -21,9 +21,34 @@
 namespace DreamFactory\Rave\User\Resources;
 
 use DreamFactory\Rave\Resources\UserPasswordResource;
+use DreamFactory\Rave\Models\User;
+use DreamFactory\Rave\Exceptions\NotFoundException;
+use DreamFactory\Library\Utility\Scalar;
+use DreamFactory\Rave\Exceptions\UnauthorizedException;
 
 class Password extends UserPasswordResource
 {
+    /**
+     * {@inheritdoc}
+     */
+    protected static function isAllowed(User $user)
+    {
+        if ( null === $user )
+        {
+            throw new NotFoundException( "User not found in the system." );
+        }
+
+        if ( true === Scalar::boolval( $user->is_sys_admin ) )
+        {
+            throw new UnauthorizedException( 'You are not authorized to reset/change password for the account ' . $user->email );
+        }
+
+        return true;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getApiDocInfo()
     {
         $path = '/' . $this->getServiceName() . '/' . $this->getFullPathName();
