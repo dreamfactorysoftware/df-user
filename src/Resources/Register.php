@@ -20,7 +20,7 @@
 
 namespace DreamFactory\Rave\User\Resources;
 
-use DreamFactory\Rave\Enums\ContentTypes;
+use DreamFactory\Rave\Enums\DataFormats;
 use DreamFactory\Rave\Enums\HttpStatusCodes;
 use DreamFactory\Rave\Resources\BaseRestResource;
 use DreamFactory\Library\Utility\ArrayUtils;
@@ -82,7 +82,7 @@ class Register extends BaseRestResource
 
             $messages = [ 'error' => $messages ];
 
-            return ResponseFactory::create( $messages, ContentTypes::PHP_ARRAY, HttpStatusCodes::HTTP_BAD_REQUEST );
+            return ResponseFactory::create( $messages, DataFormats::PHP_ARRAY, HttpStatusCodes::HTTP_BAD_REQUEST );
         }
         else
         {
