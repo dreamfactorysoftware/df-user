@@ -20,6 +20,7 @@
 
 use DreamFactory\Library\Utility\Scalar;
 use DreamFactory\Library\Utility\Enums\Verbs;
+use Illuminate\Support\Arr;
 
 class UserResourceTest extends \DreamFactory\Rave\Testing\UserResourceTestCase
 {
@@ -78,6 +79,19 @@ class UserResourceTest extends \DreamFactory\Rave\Testing\UserResourceTestCase
         $this->assertTrue( $this->adminCheck( $content['record'] ) );
     }
 
+    public function testPATCHPassword()
+    {
+        $user = $this->createUser( 1 );
+
+        Arr::set( $user, 'password', '1234' );
+
+        $payload = json_encode( $user, JSON_UNESCAPED_SLASHES );
+        $rs = $this->makeRequest( Verbs::PATCH, static::RESOURCE . '/' . $user['id'], [ ], $payload );
+        $content = $rs->getContent();
+
+        $this->assertFalse( Auth::attempt( [ 'email' => $user['email'], 'password' => '1234' ] ) );
+        $this->assertTrue( $this->adminCheck( [ $content ] ) );
+    }
 
     protected function adminCheck( $records )
     {

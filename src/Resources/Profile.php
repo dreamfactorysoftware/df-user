@@ -23,6 +23,7 @@ namespace DreamFactory\Rave\User\Resources;
 use DreamFactory\Library\Utility\ArrayUtils;
 use DreamFactory\Library\Utility\Enums\Verbs;
 use DreamFactory\Rave\Resources\BaseRestResource;
+use DreamFactory\Rave\Exceptions\NotFoundException;
 
 class Profile extends BaseRestResource
 {
@@ -47,10 +48,16 @@ class Profile extends BaseRestResource
      * Fetches user profile.
      *
      * @return array
+     * @throws NotFoundException
      */
     protected function handleGET()
     {
         $user = \Auth::user();
+
+        if ( empty( $user ) )
+        {
+            throw new NotFoundException( 'No user session found.' );
+        }
 
         $data = [
             'first_name'        => $user->first_name,
@@ -87,6 +94,11 @@ class Profile extends BaseRestResource
         ArrayUtils::removeNull( $data );
 
         $user = \Auth::user();
+
+        if ( empty( $user ) )
+        {
+            throw new NotFoundException( 'No user session found.' );
+        }
 
         $user->update( $data );
 

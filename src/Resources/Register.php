@@ -93,7 +93,7 @@ class Register extends BaseRestResource
                 \Auth::login( $user );
             }
 
-            return [ "success" => "true" ];
+            return [ 'success' => true ];
         }
     }
 
