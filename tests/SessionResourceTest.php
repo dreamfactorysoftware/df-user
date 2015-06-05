@@ -20,6 +20,7 @@
 
 use DreamFactory\Library\Utility\Enums\Verbs;
 use DreamFactory\Rave\Utility\ServiceHandler;
+use DreamFactory\Rave\Utility\Session;
 use Illuminate\Support\Arr;
 
 class SessionResourceTest extends \DreamFactory\Rave\Testing\TestCase

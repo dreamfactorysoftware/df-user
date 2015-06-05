@@ -20,6 +20,7 @@
 
 use DreamFactory\Rave\Utility\ServiceHandler;
 use DreamFactory\Library\Utility\Enums\Verbs;
+use DreamFactory\Rave\Utility\Session;
 use DreamFactory\Rave\Models\User;
 use Illuminate\Support\Arr;
 
