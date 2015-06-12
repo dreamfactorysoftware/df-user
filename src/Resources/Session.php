@@ -18,9 +18,9 @@
  * limitations under the License.
  */
 
-namespace DreamFactory\Rave\User\Resources;
+namespace DreamFactory\Core\User\Resources;
 
-use DreamFactory\Rave\Resources\UserSessionResource;
+use DreamFactory\Core\Resources\UserSessionResource;
 
 class Session extends UserSessionResource
 {

@@ -18,39 +18,39 @@
  * limitations under the License.
  */
 
-namespace DreamFactory\Rave\User\Services;
+namespace DreamFactory\Core\User\Services;
 
 use DreamFactory\Library\Utility\ArrayUtils;
-use DreamFactory\Rave\Exceptions\InternalServerErrorException;
-use DreamFactory\Rave\Services\BaseRestService;
-use DreamFactory\Rave\Resources\BaseRestResource;
-use DreamFactory\Rave\User\Resources\Password;
-use DreamFactory\Rave\User\Resources\Profile;
-use DreamFactory\Rave\User\Resources\Register;
-use DreamFactory\Rave\User\Resources\Session;
-use DreamFactory\Rave\Utility\ApiDocUtilities;
+use DreamFactory\Core\Exceptions\InternalServerErrorException;
+use DreamFactory\Core\Services\BaseRestService;
+use DreamFactory\Core\Resources\BaseRestResource;
+use DreamFactory\Core\User\Resources\Password;
+use DreamFactory\Core\User\Resources\Profile;
+use DreamFactory\Core\User\Resources\Register;
+use DreamFactory\Core\User\Resources\Session;
+use DreamFactory\Core\Utility\ApiDocUtilities;
 
 class User extends BaseRestService
 {
     protected $resources = [
         Password::RESOURCE_NAME => [
             'name'       => Password::RESOURCE_NAME,
-            'class_name' => 'DreamFactory\\Rave\\User\\Resources\\Password',
+            'class_name' => 'DreamFactory\\Core\\User\\Resources\\Password',
             'label'      => 'Password'
         ],
         Profile::RESOURCE_NAME  => [
             'name'       => Profile::RESOURCE_NAME,
-            'class_name' => 'DreamFactory\\Rave\\User\\Resources\\Profile',
+            'class_name' => 'DreamFactory\\Core\\User\\Resources\\Profile',
             'label'      => 'Profile'
         ],
         Register::RESOURCE_NAME => [
             'name'       => Register::RESOURCE_NAME,
-            'class_name' => 'DreamFactory\\Rave\\User\\Resources\\Register',
+            'class_name' => 'DreamFactory\\Core\\User\\Resources\\Register',
             'label'      => 'Register'
         ],
         Session::RESOURCE_NAME  => [
             'name'       => Session::RESOURCE_NAME,
-            'class_name' => 'DreamFactory\\Rave\\User\\Resources\\Session',
+            'class_name' => 'DreamFactory\\Core\\User\\Resources\\Session',
             'label'      => 'Session'
         ]
     ];

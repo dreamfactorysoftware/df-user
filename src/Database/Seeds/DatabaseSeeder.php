@@ -1,8 +1,8 @@
 <?php
 /**
- * This file is part of the DreamFactory Rave(tm)
+ * This file is part of the DreamFactory(tm) platform.
  *
- * DreamFactory Rave(tm) <http://github.com/dreamfactorysoftware/rave>
+ * DreamFactory(tm) <http://www.dreamfactory.com>
  * Copyright 2012-2014 DreamFactory Software, Inc. <support@dreamfactory.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -18,12 +18,12 @@
  * limitations under the License.
  */
 
-namespace DreamFactory\Rave\User\Database\Seeds;
+namespace DreamFactory\Core\User\Database\Seeds;
 
-use DreamFactory\Rave\Models\Service;
-use DreamFactory\Rave\Models\SystemResource;
+use DreamFactory\Core\Models\Service;
+use DreamFactory\Core\Models\SystemResource;
 use Illuminate\Database\Seeder;
-use DreamFactory\Rave\Models\ServiceType;
+use DreamFactory\Core\Models\ServiceType;
 
 class DatabaseSeeder extends Seeder
 {
@@ -35,8 +35,8 @@ class DatabaseSeeder extends Seeder
             ServiceType::create(
                 [
                     'name'           => 'user',
-                    'class_name'     => "DreamFactory\\Rave\\User\\Services\\User",
-                    'config_handler' => "DreamFactory\\Rave\\User\\Models\\UserConfig",
+                    'class_name'     => "DreamFactory\\Core\\User\\Services\\User",
+                    'config_handler' => "DreamFactory\\Core\\User\\Models\\UserConfig",
                     'label'          => 'User service',
                     'description'    => 'User service to allow user management.',
                     'group'          => 'users',
@@ -72,8 +72,8 @@ class DatabaseSeeder extends Seeder
                     'name'        => 'user',
                     'label'       => 'User Management',
                     'description' => 'Allows user management capability.',
-                    'class_name'  => "DreamFactory\\Rave\\User\\Resources\\System\\User",
-                    'model_name'  => "DreamFactory\\Rave\\Models\\User",
+                    'class_name'  => "DreamFactory\\Core\\User\\Resources\\System\\User",
+                    'model_name'  => "DreamFactory\\Core\\Models\\User",
                     'singleton'   => 0,
                     'read_only'   => 0
                 ]

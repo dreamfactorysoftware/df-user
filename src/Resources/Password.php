@@ -18,18 +18,18 @@
  * limitations under the License.
  */
 
-namespace DreamFactory\Rave\User\Resources;
+namespace DreamFactory\Core\User\Resources;
 
-use DreamFactory\Rave\Resources\UserPasswordResource;
-use DreamFactory\Rave\Models\User;
-use DreamFactory\Rave\Exceptions\NotFoundException;
+use DreamFactory\Core\Resources\UserPasswordResource;
+use DreamFactory\Core\Models\User;
+use DreamFactory\Core\Exceptions\NotFoundException;
 use DreamFactory\Library\Utility\Scalar;
-use DreamFactory\Rave\Exceptions\UnauthorizedException;
-use DreamFactory\Rave\User\Models\UserConfig;
-use DreamFactory\Rave\Exceptions\InternalServerErrorException;
-use DreamFactory\Rave\Utility\ServiceHandler;
-use DreamFactory\Rave\Services\Email\BaseService as EmailService;
-use DreamFactory\Rave\Exceptions\ServiceUnavailableException;
+use DreamFactory\Core\Exceptions\UnauthorizedException;
+use DreamFactory\Core\User\Models\UserConfig;
+use DreamFactory\Core\Exceptions\InternalServerErrorException;
+use DreamFactory\Core\Utility\ServiceHandler;
+use DreamFactory\Core\Services\Email\BaseService as EmailService;
+use DreamFactory\Core\Exceptions\ServiceUnavailableException;
 use DreamFactory\Library\Utility\ArrayUtils;
 
 class Password extends UserPasswordResource

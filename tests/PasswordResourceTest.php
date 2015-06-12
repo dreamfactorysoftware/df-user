@@ -19,12 +19,12 @@
  */
 
 use DreamFactory\Library\Utility\Enums\Verbs;
-use DreamFactory\Rave\Utility\ServiceHandler;
-use DreamFactory\Rave\Utility\Session;
-use DreamFactory\Rave\Models\User;
+use DreamFactory\Core\Utility\ServiceHandler;
+use DreamFactory\Core\Utility\Session;
+use DreamFactory\Core\Models\User;
 use Illuminate\Support\Arr;
 
-class PasswordResourceTest extends \DreamFactory\Rave\Testing\TestCase
+class PasswordResourceTest extends \DreamFactory\Core\Testing\TestCase
 {
     const RESOURCE = 'password';
 
@@ -112,13 +112,13 @@ class PasswordResourceTest extends \DreamFactory\Rave\Testing\TestCase
 
     public function testGET()
     {
-        $this->setExpectedException( '\DreamFactory\Rave\Exceptions\BadRequestException' );
+        $this->setExpectedException( '\DreamFactory\Core\Exceptions\BadRequestException' );
         $this->makeRequest( Verbs::GET, static::RESOURCE );
     }
 
     public function testDELETE()
     {
-        $this->setExpectedException( '\DreamFactory\Rave\Exceptions\BadRequestException' );
+        $this->setExpectedException( '\DreamFactory\Core\Exceptions\BadRequestException' );
         $this->makeRequest( Verbs::DELETE, static::RESOURCE );
     }
 
@@ -169,7 +169,7 @@ class PasswordResourceTest extends \DreamFactory\Rave\Testing\TestCase
     {
         if ( !$this->serviceExists( 'mymail' ) )
         {
-            $emailService = \DreamFactory\Rave\Models\Service::create(
+            $emailService = \DreamFactory\Core\Models\Service::create(
                 [
                     "name"        => "mymail",
                     "label"       => "Test mail service",
@@ -185,14 +185,14 @@ class PasswordResourceTest extends \DreamFactory\Rave\Testing\TestCase
                 ]
             );
 
-            $userConfig = \DreamFactory\Rave\User\Models\UserConfig::find(4);
+            $userConfig = \DreamFactory\Core\User\Models\UserConfig::find(4);
             $userConfig->password_email_service_id = $emailService->id;
             $userConfig->save();
         }
 
-        if(!\DreamFactory\Rave\Models\EmailTemplate::whereName('mytemplate')->exists())
+        if(!\DreamFactory\Core\Models\EmailTemplate::whereName('mytemplate')->exists())
         {
-            $template = \DreamFactory\Rave\Models\EmailTemplate::create(
+            $template = \DreamFactory\Core\Models\EmailTemplate::create(
                 [
                     'name'=>'mytemplate',
                     'description'=>'test',
@@ -202,7 +202,7 @@ class PasswordResourceTest extends \DreamFactory\Rave\Testing\TestCase
                 ]
             );
 
-            $userConfig = \DreamFactory\Rave\User\Models\UserConfig::find(4);
+            $userConfig = \DreamFactory\Core\User\Models\UserConfig::find(4);
             $userConfig->password_email_template_id = $template->id;
             $userConfig->save();
         }
@@ -259,6 +259,6 @@ class PasswordResourceTest extends \DreamFactory\Rave\Testing\TestCase
     {
         $user = $this->{'user' . $num};
         $email = Arr::get( $user, 'email' );
-        \DreamFactory\Rave\Models\User::whereEmail( $email )->delete();
+        \DreamFactory\Core\Models\User::whereEmail( $email )->delete();
     }
 }

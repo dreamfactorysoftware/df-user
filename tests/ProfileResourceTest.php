@@ -18,12 +18,12 @@
  * limitations under the License.
  */
 
-use DreamFactory\Rave\Utility\ServiceHandler;
+use DreamFactory\Core\Utility\ServiceHandler;
 use DreamFactory\Library\Utility\Enums\Verbs;
-use DreamFactory\Rave\Models\User;
+use DreamFactory\Core\Models\User;
 use Illuminate\Support\Arr;
 
-class ProfileResourceTest extends \DreamFactory\Rave\Testing\TestCase
+class ProfileResourceTest extends \DreamFactory\Core\Testing\TestCase
 {
     const RESOURCE = 'profile';
 
@@ -49,7 +49,7 @@ class ProfileResourceTest extends \DreamFactory\Rave\Testing\TestCase
 
     public function testNoProfileFound()
     {
-        $this->setExpectedException('\DreamFactory\Rave\Exceptions\NotFoundException');
+        $this->setExpectedException('\DreamFactory\Core\Exceptions\NotFoundException');
         $this->makeRequest( Verbs::GET, static::RESOURCE );
     }
 
@@ -133,6 +133,6 @@ class ProfileResourceTest extends \DreamFactory\Rave\Testing\TestCase
     {
         $user = $this->{'user' . $num};
         $email = Arr::get( $user, 'email' );
-        \DreamFactory\Rave\Models\User::whereEmail( $email )->delete();
+        \DreamFactory\Core\Models\User::whereEmail( $email )->delete();
     }
 }

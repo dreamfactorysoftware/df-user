@@ -1,11 +1,11 @@
 {
-  "name": "dreamfactory/rave-user-mgmt",
-  "description": "User Management package for DreamFactory Rave.",
+  "name": "dreamfactory/df-user",
+  "description": "User Management package for DreamFactory.",
   "minimum-stability": "dev",
   "keywords": [
     "dreamfactory",
     "dsp",
-    "rave",
+    "auth",
     "user"
   ],
   "homepage": "https://www.dreamfactory.com/",
@@ -26,16 +26,16 @@
   ],
   "support": {
     "email": "support@dreamfactory.com",
-    "issues": "https://github.com/dreamfactorysoftware/rave/issues",
-    "wiki": "https://github.com/dreamfactorysoftware/rave/wiki",
-    "source": "https://github.com/dreamfactorysoftware/rave"
+    "source": "https://github.com/dreamfactorysoftware/df-user",
+    "issues": "https://github.com/dreamfactorysoftware/df-user/issues",
+    "wiki": "https://wiki.dreamfactory.com"
   },
   "require": {
-    "dreamfactory/rave": "dev-develop as dev-master"
+    "dreamfactory/df-core": "dev-develop as dev-master"
   },
   "autoload":{
     "psr-4": {
-      "DreamFactory\\Rave\\User\\":"src/"
+      "DreamFactory\\Core\\User\\":"src/"
     }
   }
 }

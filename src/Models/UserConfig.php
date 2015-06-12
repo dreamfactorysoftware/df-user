@@ -18,11 +18,11 @@
  * limitations under the License.
  */
 
-namespace DreamFactory\Rave\User\Models;
+namespace DreamFactory\Core\User\Models;
 
-use DreamFactory\Rave\Contracts\ServiceConfigHandlerInterface;
-use DreamFactory\Rave\Models\BaseServiceConfigModel;
-use DreamFactory\Rave\Models\SingleRecordModel;
+use DreamFactory\Core\Contracts\ServiceConfigHandlerInterface;
+use DreamFactory\Core\Models\BaseServiceConfigModel;
+use DreamFactory\Core\Models\SingleRecordModel;
 
 class UserConfig extends BaseServiceConfigModel implements ServiceConfigHandlerInterface
 {

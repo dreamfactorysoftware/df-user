@@ -18,12 +18,12 @@
  * limitations under the License.
  */
 
-namespace DreamFactory\Rave\User\Resources;
+namespace DreamFactory\Core\User\Resources;
 
 use DreamFactory\Library\Utility\ArrayUtils;
 use DreamFactory\Library\Utility\Enums\Verbs;
-use DreamFactory\Rave\Resources\BaseRestResource;
-use DreamFactory\Rave\Exceptions\NotFoundException;
+use DreamFactory\Core\Resources\BaseRestResource;
+use DreamFactory\Core\Exceptions\NotFoundException;
 
 class Profile extends BaseRestResource
 {

@@ -22,7 +22,7 @@ use DreamFactory\Library\Utility\Scalar;
 use DreamFactory\Library\Utility\Enums\Verbs;
 use Illuminate\Support\Arr;
 
-class UserResourceTest extends \DreamFactory\Rave\Testing\UserResourceTestCase
+class UserResourceTest extends \DreamFactory\Core\Testing\UserResourceTestCase
 {
     const RESOURCE = 'user';
 
@@ -97,7 +97,7 @@ class UserResourceTest extends \DreamFactory\Rave\Testing\UserResourceTestCase
     {
         foreach ( $records as $user )
         {
-            $userModel = \DreamFactory\Rave\Models\User::find( $user['id'] );
+            $userModel = \DreamFactory\Core\Models\User::find( $user['id'] );
 
             if ( Scalar::boolval( $userModel->is_sys_admin ) )
             {

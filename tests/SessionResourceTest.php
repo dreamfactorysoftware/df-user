@@ -19,11 +19,11 @@
  */
 
 use DreamFactory\Library\Utility\Enums\Verbs;
-use DreamFactory\Rave\Utility\ServiceHandler;
-use DreamFactory\Rave\Utility\Session;
+use DreamFactory\Core\Utility\ServiceHandler;
+use DreamFactory\Core\Utility\Session;
 use Illuminate\Support\Arr;
 
-class SessionResourceTest extends \DreamFactory\Rave\Testing\TestCase
+class SessionResourceTest extends \DreamFactory\Core\Testing\TestCase
 {
     const RESOURCE = 'session';
 
@@ -119,7 +119,7 @@ class SessionResourceTest extends \DreamFactory\Rave\Testing\TestCase
 
     public function testSessionNotFound()
     {
-        $this->setExpectedException( '\DreamFactory\Rave\Exceptions\NotFoundException' );
+        $this->setExpectedException( '\DreamFactory\Core\Exceptions\NotFoundException' );
         $this->makeRequest( Verbs::GET, static::RESOURCE );
     }
 
@@ -132,7 +132,7 @@ class SessionResourceTest extends \DreamFactory\Rave\Testing\TestCase
         //Using a new instance here. Prev instance is set for user resource.
         $this->service = ServiceHandler::getService( 'system' );
 
-        $this->setExpectedException( '\DreamFactory\Rave\Exceptions\UnauthorizedException' );
+        $this->setExpectedException( '\DreamFactory\Core\Exceptions\UnauthorizedException' );
         $this->makeRequest( Verbs::GET, 'admin/session' );
     }
 
@@ -157,7 +157,7 @@ class SessionResourceTest extends \DreamFactory\Rave\Testing\TestCase
         $user = $this->createUser( 1 );
         $payload = [ 'name' => 'foo' ];
 
-        $this->setExpectedException( '\DreamFactory\Rave\Exceptions\BadRequestException' );
+        $this->setExpectedException( '\DreamFactory\Core\Exceptions\BadRequestException' );
         $this->makeRequest( Verbs::PATCH, static::RESOURCE . '/' . $user['id'], [ ], $payload );
     }
 
@@ -178,7 +178,7 @@ class SessionResourceTest extends \DreamFactory\Rave\Testing\TestCase
 
         $this->assertTrue( $content['success'] );
 
-        $this->setExpectedException( '\DreamFactory\Rave\Exceptions\NotFoundException' );
+        $this->setExpectedException( '\DreamFactory\Core\Exceptions\NotFoundException' );
         $this->makeRequest( Verbs::GET, static::RESOURCE );
     }
 
@@ -202,6 +202,6 @@ class SessionResourceTest extends \DreamFactory\Rave\Testing\TestCase
     {
         $user = $this->{'user' . $num};
         $email = Arr::get( $user, 'email' );
-        \DreamFactory\Rave\Models\User::whereEmail( $email )->delete();
+        \DreamFactory\Core\Models\User::whereEmail( $email )->delete();
     }
 }

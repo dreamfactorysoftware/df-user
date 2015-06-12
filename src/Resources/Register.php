@@ -18,15 +18,15 @@
  * limitations under the License.
  */
 
-namespace DreamFactory\Rave\User\Resources;
+namespace DreamFactory\Core\User\Resources;
 
-use DreamFactory\Rave\Enums\DataFormats;
-use DreamFactory\Rave\Enums\HttpStatusCodes;
-use DreamFactory\Rave\Resources\BaseRestResource;
+use DreamFactory\Core\Enums\DataFormats;
+use DreamFactory\Core\Enums\HttpStatusCodes;
+use DreamFactory\Core\Resources\BaseRestResource;
 use DreamFactory\Library\Utility\ArrayUtils;
 use DreamFactory\Library\Utility\Enums\Verbs;
-use DreamFactory\Rave\Utility\ResponseFactory;
-use DreamFactory\Rave\Components\Registrar;
+use DreamFactory\Core\Utility\ResponseFactory;
+use DreamFactory\Core\Components\Registrar;
 
 class Register extends BaseRestResource
 {
@@ -50,7 +50,7 @@ class Register extends BaseRestResource
     /**
      * Creates new user.
      *
-     * @return array|\DreamFactory\Rave\Utility\ServiceResponse
+     * @return array|\DreamFactory\Core\Utility\ServiceResponse
      */
     protected function handlePOST()
     {

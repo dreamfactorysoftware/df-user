@@ -18,13 +18,13 @@
  * limitations under the License.
  */
 
-use DreamFactory\Rave\Utility\ServiceHandler;
+use DreamFactory\Core\Utility\ServiceHandler;
 use DreamFactory\Library\Utility\Enums\Verbs;
-use DreamFactory\Rave\Utility\Session;
-use DreamFactory\Rave\Models\User;
+use DreamFactory\Core\Utility\Session;
+use DreamFactory\Core\Models\User;
 use Illuminate\Support\Arr;
 
-class RegisterResourceTest extends \DreamFactory\Rave\Testing\TestCase
+class RegisterResourceTest extends \DreamFactory\Core\Testing\TestCase
 {
     const RESOURCE = 'register';
 

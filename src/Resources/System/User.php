@@ -18,11 +18,11 @@
  * limitations under the License.
  */
 
-namespace DreamFactory\Rave\User\Resources\System;
+namespace DreamFactory\Core\User\Resources\System;
 
 use DreamFactory\Library\Utility\ArrayUtils;
-use DreamFactory\Rave\Models\BaseSystemModel;
-use DreamFactory\Rave\Resources\System\BaseSystemResource;
+use DreamFactory\Core\Models\BaseSystemModel;
+use DreamFactory\Core\Resources\System\BaseSystemResource;
 
 class User extends BaseSystemResource
 {
