@@ -1,41 +1,41 @@
 {
-  "name": "dreamfactory/df-user",
-  "description": "User Management package for DreamFactory.",
+  "name":              "dreamfactory/df-user",
+  "description":       "User Management package for DreamFactory.",
   "minimum-stability": "dev",
-  "keywords": [
+  "keywords":          [
     "dreamfactory",
     "dsp",
     "auth",
     "user"
   ],
-  "homepage": "https://www.dreamfactory.com/",
-  "license": "Apache-2.0",
-  "authors": [
+  "homepage":          "https://www.dreamfactory.com/",
+  "license":           "Apache-2.0",
+  "authors":           [
     {
-      "name": "Arif Islam",
+      "name":  "Arif Islam",
       "email": "arifislam@dreamfactory.com"
     },
     {
-      "name": "Jerry Ablan",
+      "name":  "Jerry Ablan",
       "email": "jerryablan@dreamfactory.com"
     },
     {
-      "name": "Lee Hicks",
+      "name":  "Lee Hicks",
       "email": "leehicks@dreamfactory.com"
     }
   ],
-  "support": {
-    "email": "support@dreamfactory.com",
+  "support":           {
+    "email":  "support@dreamfactory.com",
     "source": "https://github.com/dreamfactorysoftware/df-user",
     "issues": "https://github.com/dreamfactorysoftware/df-user/issues",
-    "wiki": "https://wiki.dreamfactory.com"
+    "wiki":   "https://wiki.dreamfactory.com"
   },
-  "require": {
+  "require":           {
     "dreamfactory/df-core": "dev-develop as dev-master"
   },
-  "autoload":{
+  "autoload":          {
     "psr-4": {
-      "DreamFactory\\Core\\User\\":"src/"
+      "DreamFactory\\Core\\User\\": "src/"
     }
   }
 }

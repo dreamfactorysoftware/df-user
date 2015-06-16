@@ -1,23 +1,4 @@
 <?php
-/**
- * This file is part of the DreamFactory(tm)
- *
- * DreamFactory(tm) <http://github.com/dreamfactorysoftware/rave>
- * Copyright 2012-2014 DreamFactory Software, Inc. <support@dreamfactory.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 use DreamFactory\Library\Utility\Enums\Verbs;
 use DreamFactory\Core\Utility\ServiceHandler;
 use DreamFactory\Core\Utility\Session;
@@ -90,9 +71,9 @@ class PasswordResourceTest extends \DreamFactory\Core\Testing\TestCase
 
     public function tearDown()
     {
-        $this->deleteUser( 1 );
-        $this->deleteUser( 2 );
-        $this->deleteUser( 3 );
+        $this->deleteUser(1);
+        $this->deleteUser(2);
+        $this->deleteUser(3);
 
         parent::tearDown();
     }
@@ -101,9 +82,8 @@ class PasswordResourceTest extends \DreamFactory\Core\Testing\TestCase
     {
         parent::setUp();
 
-        Session::set( 'rsa.role.name', 'test' );
-        Session::set( 'rsa.role.id', 1 );
-
+        Session::set('rsa.role.name', 'test');
+        Session::set('rsa.role.id', 1);
     }
 
     /************************************************
@@ -112,63 +92,68 @@ class PasswordResourceTest extends \DreamFactory\Core\Testing\TestCase
 
     public function testGET()
     {
-        $this->setExpectedException( '\DreamFactory\Core\Exceptions\BadRequestException' );
-        $this->makeRequest( Verbs::GET, static::RESOURCE );
+        $this->setExpectedException('\DreamFactory\Core\Exceptions\BadRequestException');
+        $this->makeRequest(Verbs::GET, static::RESOURCE);
     }
 
     public function testDELETE()
     {
-        $this->setExpectedException( '\DreamFactory\Core\Exceptions\BadRequestException' );
-        $this->makeRequest( Verbs::DELETE, static::RESOURCE );
+        $this->setExpectedException('\DreamFactory\Core\Exceptions\BadRequestException');
+        $this->makeRequest(Verbs::DELETE, static::RESOURCE);
     }
 
     public function testPasswordChange()
     {
-        $user = $this->createUser( 1 );
+        $user = $this->createUser(1);
 
-        $this->makeRequest( Verbs::POST, 'session', [ ], [ 'email' => $user['email'], 'password' => $this->user1['password'] ] );
+        $this->makeRequest(Verbs::POST, 'session', [],
+            ['email' => $user['email'], 'password' => $this->user1['password']]);
 
-        $this->service = ServiceHandler::getService( $this->serviceId );
-        $rs = $this->makeRequest( Verbs::POST, static::RESOURCE, [ ], [ 'old_password' => $this->user1['password'], 'new_password' => '123456' ] );
+        $this->service = ServiceHandler::getService($this->serviceId);
+        $rs =
+            $this->makeRequest(Verbs::POST, static::RESOURCE, [],
+                ['old_password' => $this->user1['password'], 'new_password' => '123456']);
         $content = $rs->getContent();
-        $this->assertTrue( $content['success'] );
+        $this->assertTrue($content['success']);
 
-        $this->service = ServiceHandler::getService( $this->serviceId );
-        $this->makeRequest( Verbs::DELETE, 'session' );
+        $this->service = ServiceHandler::getService($this->serviceId);
+        $this->makeRequest(Verbs::DELETE, 'session');
 
-        $rs = $this->makeRequest( Verbs::POST, 'session', [ ], [ 'email' => $user['email'], 'password' => '123456' ] );
+        $rs = $this->makeRequest(Verbs::POST, 'session', [], ['email' => $user['email'], 'password' => '123456']);
         $content = $rs->getContent();
-        $this->assertTrue( !empty( $content['session_id'] ) );
+        $this->assertTrue(!empty($content['session_id']));
     }
 
     public function testPasswordResetUsingSecurityQuestion()
     {
-        $user = $this->createUser( 1 );
+        $user = $this->createUser(1);
 
-        $rs = $this->makeRequest( Verbs::POST, static::RESOURCE, [ 'reset' => 'true' ], [ 'email' => $user['email'] ] );
+        $rs = $this->makeRequest(Verbs::POST, static::RESOURCE, ['reset' => 'true'], ['email' => $user['email']]);
         $content = $rs->getContent();
 
-        $this->assertEquals( $this->user1['security_question'], $content['security_question'] );
+        $this->assertEquals($this->user1['security_question'], $content['security_question']);
 
         $rs = $this->makeRequest(
             Verbs::POST,
             static::RESOURCE,
-            [ ],
-            [ 'email' => $user['email'], 'security_answer' => $this->user1['security_answer'], 'new_password' => '778877' ]
+            [],
+            ['email'           => $user['email'],
+             'security_answer' => $this->user1['security_answer'],
+             'new_password'    => '778877'
+            ]
         );
         $content = $rs->getContent();
-        $this->assertTrue( $content['success'] );
+        $this->assertTrue($content['success']);
 
-        $this->service = ServiceHandler::getService( $this->serviceId );
-        $rs = $this->makeRequest( Verbs::POST, 'session', [ ], [ 'email' => $user['email'], 'password' => '778877' ] );
+        $this->service = ServiceHandler::getService($this->serviceId);
+        $rs = $this->makeRequest(Verbs::POST, 'session', [], ['email' => $user['email'], 'password' => '778877']);
         $content = $rs->getContent();
-        $this->assertTrue( !empty( $content['session_id'] ) );
+        $this->assertTrue(!empty($content['session_id']));
     }
 
     public function testPasswordResetUsingConfirmationCode()
     {
-        if ( !$this->serviceExists( 'mymail' ) )
-        {
+        if (!$this->serviceExists('mymail')) {
             $emailService = \DreamFactory\Core\Models\Service::create(
                 [
                     "name"        => "mymail",
@@ -190,15 +175,14 @@ class PasswordResourceTest extends \DreamFactory\Core\Testing\TestCase
             $userConfig->save();
         }
 
-        if(!\DreamFactory\Core\Models\EmailTemplate::whereName('mytemplate')->exists())
-        {
+        if (!\DreamFactory\Core\Models\EmailTemplate::whereName('mytemplate')->exists()) {
             $template = \DreamFactory\Core\Models\EmailTemplate::create(
                 [
-                    'name'=>'mytemplate',
-                    'description'=>'test',
-                    'to'=>$this->user2['email'],
-                    'subject'=>'rest password test',
-                    'body_text'=>'link {link}'
+                    'name'        => 'mytemplate',
+                    'description' => 'test',
+                    'to'          => $this->user2['email'],
+                    'subject'     => 'rest password test',
+                    'body_text'   => 'link {link}'
                 ]
             );
 
@@ -207,58 +191,59 @@ class PasswordResourceTest extends \DreamFactory\Core\Testing\TestCase
             $userConfig->save();
         }
 
-        Arr::set( $this->user2, 'email', 'arif@dreamfactory.com' );
-        $user = $this->createUser( 2 );
+        Arr::set($this->user2, 'email', 'arif@dreamfactory.com');
+        $user = $this->createUser(2);
 
-        Config::set( 'mail.pretend', true );
+        Config::set('mail.pretend', true);
 
-        $rs = $this->makeRequest( Verbs::POST, static::RESOURCE, [ 'reset' => 'true' ], [ 'email' => $user['email'] ] );
+        $rs = $this->makeRequest(Verbs::POST, static::RESOURCE, ['reset' => 'true'], ['email' => $user['email']]);
         $content = $rs->getContent();
-        $this->assertTrue( $content['success'] );
+        $this->assertTrue($content['success']);
 
         /** @var User $userModel */
-        $userModel = User::find( $user['id'] );
+        $userModel = User::find($user['id']);
         $code = $userModel->confirm_code;
 
         $rs = $this->makeRequest(
             Verbs::POST,
             static::RESOURCE,
-            [ 'login' => 'true' ],
-            [ 'email' => $user['email'], 'code' => $code, 'new_password' => '778877' ]
+            ['login' => 'true'],
+            ['email' => $user['email'], 'code' => $code, 'new_password' => '778877']
         );
         $content = $rs->getContent();
-        $this->assertTrue( $content['success'] );
-        $this->assertTrue( Auth::check() );
+        $this->assertTrue($content['success']);
+        $this->assertTrue(Auth::check());
 
-        $userModel = User::find( $user['id'] );
-        $this->assertEquals( 'y', $userModel->confirm_code );
+        $userModel = User::find($user['id']);
+        $this->assertEquals('y', $userModel->confirm_code);
 
         $this->service = ServiceHandler::getService($this->serviceId);
-        $rs = $this->makeRequest( Verbs::POST, 'session', [ ], [ 'email' => $user['email'], 'password' => '778877' ] );
+        $rs = $this->makeRequest(Verbs::POST, 'session', [], ['email' => $user['email'], 'password' => '778877']);
         $content = $rs->getContent();
-        $this->assertTrue( !empty( $content['session_id'] ) );
+        $this->assertTrue(!empty($content['session_id']));
     }
 
     /************************************************
      * Helper methods
      ************************************************/
 
-    protected function createUser( $num )
+    protected function createUser($num)
     {
         $user = $this->{'user' . $num};
-        $payload = json_encode( [ $user ], JSON_UNESCAPED_SLASHES );
+        $payload = json_encode([$user], JSON_UNESCAPED_SLASHES);
 
-        $this->service = ServiceHandler::getService( 'system' );
-        $rs = $this->makeRequest( Verbs::POST, 'user', [ 'fields' => '*', 'related' => 'user_lookup_by_user_id' ], $payload );
-        $this->service = ServiceHandler::getService( $this->serviceId );
+        $this->service = ServiceHandler::getService('system');
+        $rs =
+            $this->makeRequest(Verbs::POST, 'user', ['fields' => '*', 'related' => 'user_lookup_by_user_id'], $payload);
+        $this->service = ServiceHandler::getService($this->serviceId);
 
         return $rs->getContent();
     }
 
-    protected function deleteUser( $num )
+    protected function deleteUser($num)
     {
         $user = $this->{'user' . $num};
-        $email = Arr::get( $user, 'email' );
-        \DreamFactory\Core\Models\User::whereEmail( $email )->delete();
+        $email = Arr::get($user, 'email');
+        \DreamFactory\Core\Models\User::whereEmail($email)->delete();
     }
 }

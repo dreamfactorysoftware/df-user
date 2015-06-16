@@ -1,23 +1,4 @@
 <?php
-/**
- * This file is part of the DreamFactory(tm)
- *
- * DreamFactory(tm) <http://github.com/dreamfactorysoftware/rave>
- * Copyright 2012-2014 DreamFactory Software, Inc. <support@dreamfactory.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 namespace DreamFactory\Core\User\Resources;
 
 use DreamFactory\Core\Resources\UserSessionResource;
@@ -30,7 +11,7 @@ class Session extends UserSessionResource
     public function getApiDocInfo()
     {
         $path = '/' . $this->getServiceName() . '/' . $this->getFullPathName();
-        $eventPath = $this->getServiceName() . '.' . $this->getFullPathName( '.' );
+        $eventPath = $this->getServiceName() . '.' . $this->getFullPathName('.');
         $apis = [
             [
                 'path'        => $path,
@@ -39,7 +20,7 @@ class Session extends UserSessionResource
                         'method'           => 'GET',
                         'summary'          => 'getSession() - Retrieve the current user session information.',
                         'nickname'         => 'getSession',
-                        'event_name'       => [ $eventPath . '.read' ],
+                        'event_name'       => [$eventPath . '.read'],
                         'type'             => 'Session',
                         'responseMessages' => [
                             [
@@ -58,7 +39,7 @@ class Session extends UserSessionResource
                         'summary'          => 'login() - Login and create a new user session.',
                         'nickname'         => 'login',
                         'type'             => 'Session',
-                        'event_name'       => [ $eventPath . '.create', 'user.login' ],
+                        'event_name'       => [$eventPath . '.create', 'user.login'],
                         'parameters'       => [
                             [
                                 'name'          => 'body',
@@ -86,7 +67,7 @@ class Session extends UserSessionResource
                         'summary'          => 'logout() - Logout and destroy the current user session.',
                         'nickname'         => 'logout',
                         'type'             => 'Success',
-                        'event_name'       => [ $eventPath . '.delete', 'user.logout' ],
+                        'event_name'       => [$eventPath . '.delete', 'user.logout'],
                         'responseMessages' => [
                             [
                                 'message' => 'System Error - Specific reason is included in the error message.',
@@ -226,6 +207,6 @@ class Session extends UserSessionResource
             ],
         ];
 
-        return [ 'apis' => $apis, 'models' => $models ];
+        return ['apis' => $apis, 'models' => $models];
     }
 }

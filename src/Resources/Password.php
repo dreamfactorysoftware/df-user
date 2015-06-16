@@ -1,23 +1,4 @@
 <?php
-/**
- * This file is part of the DreamFactory(tm)
- *
- * DreamFactory(tm) <http://github.com/dreamfactorysoftware/rave>
- * Copyright 2012-2014 DreamFactory Software, Inc. <support@dreamfactory.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 namespace DreamFactory\Core\User\Resources;
 
 use DreamFactory\Core\Resources\UserPasswordResource;
@@ -37,60 +18,53 @@ class Password extends UserPasswordResource
     /**
      * {@inheritdoc}
      */
-    protected static function sendPasswordResetEmail( User $user )
+    protected static function sendPasswordResetEmail(User $user)
     {
         $email = $user->email;
 
         /** @var $config UserConfig */
         $config = UserConfig::instance();
 
-        if ( empty( $config ) )
-        {
-            throw new InternalServerErrorException( 'Unable to load system configuration.' );
+        if (empty($config)) {
+            throw new InternalServerErrorException('Unable to load system configuration.');
         }
 
         $emailServiceId = $config->password_email_service_id;
 
-        if ( !empty( $emailServiceId ) )
-        {
+        if (!empty($emailServiceId)) {
 
-            try
-            {
+            try {
                 /** @var EmailService $emailService */
-                $emailService = ServiceHandler::getServiceById( $emailServiceId );
+                $emailService = ServiceHandler::getServiceById($emailServiceId);
 
-                if ( empty( $emailService ) )
-                {
-                    throw new ServiceUnavailableException( "Bad service identifier '$emailServiceId'." );
+                if (empty($emailService)) {
+                    throw new ServiceUnavailableException("Bad service identifier '$emailServiceId'.");
                 }
 
                 $data = array();
                 $templateId = $config->password_email_template_id;
 
-                if ( !empty( $templateId ) )
-                {
-                    $data = $emailService::getTemplateDataById( $templateId );
+                if (!empty($templateId)) {
+                    $data = $emailService::getTemplateDataById($templateId);
                 }
 
-                if ( empty( $data ) || !is_array( $data ) )
-                {
-                    throw new ServiceUnavailableException( "No data found in default email template for password reset." );
+                if (empty($data) || !is_array($data)) {
+                    throw new ServiceUnavailableException("No data found in default email template for password reset.");
                 }
 
-                ArrayUtils::set( $data, 'to', $email );
-                ArrayUtils::set( $data, 'first_name', $user->first_name );
-                ArrayUtils::set( $data, 'last_name', $user->last_name );
-                ArrayUtils::set( $data, 'name', $user->name );
-                ArrayUtils::set( $data, 'confirm_code', $user->confirm_code );
-                ArrayUtils::set( $data, 'link', url( 'password/reset/' . urlencode( $user->confirm_code ) ) );
+                ArrayUtils::set($data, 'to', $email);
+                ArrayUtils::set($data, 'first_name', $user->first_name);
+                ArrayUtils::set($data, 'last_name', $user->last_name);
+                ArrayUtils::set($data, 'name', $user->name);
+                ArrayUtils::set($data, 'confirm_code', $user->confirm_code);
+                ArrayUtils::set($data, 'link', url('password/reset/' . urlencode($user->confirm_code)));
 
-                $emailService->sendEmail( $data, ArrayUtils::get( $data, 'body_text' ), ArrayUtils::get( $data, 'body_html' ) );
+                $emailService->sendEmail($data, ArrayUtils::get($data, 'body_text'),
+                    ArrayUtils::get($data, 'body_html'));
 
                 return true;
-            }
-            catch ( \Exception $ex )
-            {
-                throw new InternalServerErrorException( "Error processing password reset.\n{$ex->getMessage()}" );
+            } catch (\Exception $ex) {
+                throw new InternalServerErrorException("Error processing password reset.\n{$ex->getMessage()}");
             }
         }
 
@@ -102,14 +76,13 @@ class Password extends UserPasswordResource
      */
     protected static function isAllowed(User $user)
     {
-        if ( null === $user )
-        {
-            throw new NotFoundException( "User not found in the system." );
+        if (null === $user) {
+            throw new NotFoundException("User not found in the system.");
         }
 
-        if ( true === Scalar::boolval( $user->is_sys_admin ) )
-        {
-            throw new UnauthorizedException( 'You are not authorized to reset/change password for the account ' . $user->email );
+        if (true === Scalar::boolval($user->is_sys_admin)) {
+            throw new UnauthorizedException('You are not authorized to reset/change password for the account ' .
+                $user->email);
         }
 
         return true;
@@ -121,7 +94,7 @@ class Password extends UserPasswordResource
     public function getApiDocInfo()
     {
         $path = '/' . $this->getServiceName() . '/' . $this->getFullPathName();
-        $eventPath = $this->getServiceName() . '.' . $this->getFullPathName( '.' );
+        $eventPath = $this->getServiceName() . '.' . $this->getFullPathName('.');
         $apis = [
             [
                 'path'        => $path,
@@ -221,6 +194,6 @@ class Password extends UserPasswordResource
             ],
         ];
 
-        return [ 'apis' => $apis, 'models' => $models ];
+        return ['apis' => $apis, 'models' => $models];
     }
 }

@@ -1,23 +1,4 @@
 <?php
-/**
- * This file is part of the DreamFactory(tm)
- *
- * DreamFactory(tm) <http://github.com/dreamfactorysoftware/rave>
- * Copyright 2012-2014 DreamFactory Software, Inc. <support@dreamfactory.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 use DreamFactory\Library\Utility\Enums\Verbs;
 use DreamFactory\Core\Utility\ServiceHandler;
 use DreamFactory\Core\Utility\Session;
@@ -89,9 +70,9 @@ class SessionResourceTest extends \DreamFactory\Core\Testing\TestCase
 
     public function tearDown()
     {
-        $this->deleteUser( 1 );
-        $this->deleteUser( 2 );
-        $this->deleteUser( 3 );
+        $this->deleteUser(1);
+        $this->deleteUser(2);
+        $this->deleteUser(3);
 
         parent::tearDown();
     }
@@ -102,7 +83,7 @@ class SessionResourceTest extends \DreamFactory\Core\Testing\TestCase
 
     public function testGET()
     {
-        $rs = $this->makeRequest( Verbs::GET );
+        $rs = $this->makeRequest(Verbs::GET);
         $content = $rs->getContent();
 
         $expected = [
@@ -114,94 +95,95 @@ class SessionResourceTest extends \DreamFactory\Core\Testing\TestCase
             ]
         ];
 
-        $this->assertEquals( $expected, $content );
+        $this->assertEquals($expected, $content);
     }
 
     public function testSessionNotFound()
     {
-        $this->setExpectedException( '\DreamFactory\Core\Exceptions\NotFoundException' );
-        $this->makeRequest( Verbs::GET, static::RESOURCE );
+        $this->setExpectedException('\DreamFactory\Core\Exceptions\NotFoundException');
+        $this->makeRequest(Verbs::GET, static::RESOURCE);
     }
 
     public function testUnauthorizedSessionRequest()
     {
-        $user = $this->createUser( 1 );
+        $user = $this->createUser(1);
 
-        Auth::attempt( [ 'email' => $user['email'], 'password' => $this->user1['password'] ] );
+        Auth::attempt(['email' => $user['email'], 'password' => $this->user1['password']]);
 
         //Using a new instance here. Prev instance is set for user resource.
-        $this->service = ServiceHandler::getService( 'system' );
+        $this->service = ServiceHandler::getService('system');
 
-        $this->setExpectedException( '\DreamFactory\Core\Exceptions\UnauthorizedException' );
-        $this->makeRequest( Verbs::GET, 'admin/session' );
+        $this->setExpectedException('\DreamFactory\Core\Exceptions\UnauthorizedException');
+        $this->makeRequest(Verbs::GET, 'admin/session');
     }
 
     public function testLogin()
     {
-        Session::set( 'rsa.role.name', 'test' );
-        Session::set( 'rsa.role.id', 1 );
+        Session::set('rsa.role.name', 'test');
+        Session::set('rsa.role.id', 1);
 
-        $user = $this->createUser( 1 );
+        $user = $this->createUser(1);
 
-        $payload = [ 'email' => $user['email'], 'password' => $this->user1['password'] ];
+        $payload = ['email' => $user['email'], 'password' => $this->user1['password']];
 
-        $rs = $this->makeRequest( Verbs::POST, static::RESOURCE, [ ], $payload );
+        $rs = $this->makeRequest(Verbs::POST, static::RESOURCE, [], $payload);
         $content = $rs->getContent();
 
-        $this->assertEquals( $user['first_name'], $content['first_name'] );
-        $this->assertTrue( !empty( $content['session_id'] ) );
+        $this->assertEquals($user['first_name'], $content['first_name']);
+        $this->assertTrue(!empty($content['session_id']));
     }
 
     public function testSessionBadPatchRequest()
     {
-        $user = $this->createUser( 1 );
-        $payload = [ 'name' => 'foo' ];
+        $user = $this->createUser(1);
+        $payload = ['name' => 'foo'];
 
-        $this->setExpectedException( '\DreamFactory\Core\Exceptions\BadRequestException' );
-        $this->makeRequest( Verbs::PATCH, static::RESOURCE . '/' . $user['id'], [ ], $payload );
+        $this->setExpectedException('\DreamFactory\Core\Exceptions\BadRequestException');
+        $this->makeRequest(Verbs::PATCH, static::RESOURCE . '/' . $user['id'], [], $payload);
     }
 
     public function testLogout()
     {
-        Session::set( 'rsa.role.name', 'test' );
-        Session::set( 'rsa.role.id', 1 );
+        Session::set('rsa.role.name', 'test');
+        Session::set('rsa.role.id', 1);
 
-        $user = $this->createUser( 1 );
-        $payload = [ 'email' => $user['email'], 'password' => $this->user1['password'] ];
-        $rs = $this->makeRequest( Verbs::POST, static::RESOURCE, [ ], $payload );
+        $user = $this->createUser(1);
+        $payload = ['email' => $user['email'], 'password' => $this->user1['password']];
+        $rs = $this->makeRequest(Verbs::POST, static::RESOURCE, [], $payload);
         $content = $rs->getContent();
 
-        $this->assertTrue( !empty( $content['session_id'] ) );
+        $this->assertTrue(!empty($content['session_id']));
 
-        $rs = $this->makeRequest( Verbs::DELETE, static::RESOURCE );
+        $rs = $this->makeRequest(Verbs::DELETE, static::RESOURCE);
         $content = $rs->getContent();
 
-        $this->assertTrue( $content['success'] );
+        $this->assertTrue($content['success']);
 
-        $this->setExpectedException( '\DreamFactory\Core\Exceptions\NotFoundException' );
-        $this->makeRequest( Verbs::GET, static::RESOURCE );
+        $this->setExpectedException('\DreamFactory\Core\Exceptions\NotFoundException');
+        $this->makeRequest(Verbs::GET, static::RESOURCE);
     }
 
     /************************************************
      * Helper methods
      ************************************************/
 
-    protected function createUser( $num )
+    protected function createUser($num)
     {
         $user = $this->{'user' . $num};
-        $payload = json_encode( [ $user ], JSON_UNESCAPED_SLASHES );
+        $payload = json_encode([$user], JSON_UNESCAPED_SLASHES);
 
-        $this->service = ServiceHandler::getService( 'system' );
-        $rs = $this->makeRequest( Verbs::POST, 'user', [ 'fields' => '*', 'related' => 'user_lookup_by_user_id' ], $payload );
-        $this->service = ServiceHandler::getService( $this->serviceId );
+        $this->service = ServiceHandler::getService('system');
+        $rs =
+            $this->makeRequest(Verbs::POST, 'user', ['fields' => '*', 'related' => 'user_lookup_by_user_id'], $payload);
+        $this->service = ServiceHandler::getService($this->serviceId);
 
         return $rs->getContent();
     }
 
-    protected function deleteUser( $num )
+    protected function deleteUser($num)
     {
         $user = $this->{'user' . $num};
-        $email = Arr::get( $user, 'email' );
-        \DreamFactory\Core\Models\User::whereEmail( $email )->delete();
+        $email = Arr::get($user, 'email');
+        \DreamFactory\Core\Models\User::whereEmail($email)->delete();
     }
 }

@@ -1,23 +1,4 @@
 <?php
-/**
- * This file is part of the DreamFactory(tm)
- *
- * DreamFactory(tm) <http://github.com/dreamfactorysoftware/rave>
- * Copyright 2012-2014 DreamFactory Software, Inc. <support@dreamfactory.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 namespace DreamFactory\Core\User\Resources;
 
 use DreamFactory\Core\Enums\DataFormats;
@@ -35,16 +16,16 @@ class Register extends BaseRestResource
     /**
      * @param array $settings
      */
-    public function __construct( $settings = [ ] )
+    public function __construct($settings = [])
     {
         $verbAliases = [
             Verbs::PUT   => Verbs::POST,
             Verbs::MERGE => Verbs::POST,
             Verbs::PATCH => Verbs::POST
         ];
-        ArrayUtils::set( $settings, "verbAliases", $verbAliases );
+        ArrayUtils::set($settings, "verbAliases", $verbAliases);
 
-        parent::__construct( $settings );
+        parent::__construct($settings);
     }
 
     /**
@@ -55,52 +36,48 @@ class Register extends BaseRestResource
     protected function handlePOST()
     {
         $payload = $this->getPayloadData();
-        $login = $this->request->getParameterAsBool( 'login' );
+        $login = $this->request->getParameterAsBool('login');
         $registrar = new Registrar();
 
-        $password = ArrayUtils::get( $payload, 'new_password', ArrayUtils::get( $payload, 'password' ) );
+        $password = ArrayUtils::get($payload, 'new_password', ArrayUtils::get($payload, 'password'));
         $data = [
-            'first_name'            => ArrayUtils::get( $payload, 'first_name' ),
-            'last_name'             => ArrayUtils::get( $payload, 'last_name' ),
-            'name'                  => ArrayUtils::get( $payload, 'name' ),
-            'email'                 => ArrayUtils::get( $payload, 'email' ),
-            'phone'                 => ArrayUtils::get( $payload, 'phone' ),
-            'security_question'     => ArrayUtils::get( $payload, 'security_question' ),
-            'security_answer'       => ArrayUtils::get( $payload, 'security_answer' ),
+            'first_name'            => ArrayUtils::get($payload, 'first_name'),
+            'last_name'             => ArrayUtils::get($payload, 'last_name'),
+            'name'                  => ArrayUtils::get($payload, 'name'),
+            'email'                 => ArrayUtils::get($payload, 'email'),
+            'phone'                 => ArrayUtils::get($payload, 'phone'),
+            'security_question'     => ArrayUtils::get($payload, 'security_question'),
+            'security_answer'       => ArrayUtils::get($payload, 'security_answer'),
             'password'              => $password,
-            'password_confirmation' => ArrayUtils::get( $payload, 'password_confirmation', $password )
+            'password_confirmation' => ArrayUtils::get($payload, 'password_confirmation', $password)
         ];
 
-        ArrayUtils::removeNull( $data );
+        ArrayUtils::removeNull($data);
 
         /** @var \Illuminate\Validation\Validator $validator */
-        $validator = $registrar->validator( $data );
+        $validator = $registrar->validator($data);
 
-        if ( $validator->fails() )
-        {
+        if ($validator->fails()) {
             $messages = $validator->errors()->getMessages();
 
-            $messages = [ 'error' => $messages ];
+            $messages = ['error' => $messages];
 
-            return ResponseFactory::create( $messages, DataFormats::PHP_ARRAY, HttpStatusCodes::HTTP_BAD_REQUEST );
-        }
-        else
-        {
-            $user = $registrar->create( $data );
+            return ResponseFactory::create($messages, DataFormats::PHP_ARRAY, HttpStatusCodes::HTTP_BAD_REQUEST);
+        } else {
+            $user = $registrar->create($data);
 
-            if ( $login )
-            {
-                \Auth::login( $user );
+            if ($login) {
+                \Auth::login($user);
             }
 
-            return [ 'success' => true ];
+            return ['success' => true];
         }
     }
 
     public function getApiDocInfo()
     {
         $path = '/' . $this->getServiceName() . '/' . $this->getFullPathName();
-        $eventPath = $this->getServiceName() . '.' . $this->getFullPathName( '.' );
+        $eventPath = $this->getServiceName() . '.' . $this->getFullPathName('.');
         $apis = [
             [
                 'path'        => $path,
@@ -110,7 +87,7 @@ class Register extends BaseRestResource
                         'summary'          => 'register() - Register a new user in the system.',
                         'nickname'         => 'register',
                         'type'             => 'Success',
-                        'event_name'       => [ $eventPath . '.create' ],
+                        'event_name'       => [$eventPath . '.create'],
                         'parameters'       => [
                             [
                                 'name'          => 'login',
@@ -182,6 +159,6 @@ class Register extends BaseRestResource
             ],
         ];
 
-        return [ 'apis' => $apis, 'models' => $models ];
+        return ['apis' => $apis, 'models' => $models];
     }
 }

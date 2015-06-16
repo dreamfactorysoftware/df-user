@@ -1,23 +1,4 @@
 <?php
-/**
- * This file is part of the DreamFactory(tm)
- *
- * DreamFactory(tm) <http://github.com/dreamfactorysoftware/rave>
- * Copyright 2012-2014 DreamFactory Software, Inc. <support@dreamfactory.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 namespace DreamFactory\Core\User\Services;
 
 use DreamFactory\Library\Utility\ArrayUtils;
@@ -78,7 +59,7 @@ class User extends BaseRestService
                         'nickname'         => 'getResourceList',
                         'notes'            => 'List the resource names available in this service.',
                         'type'             => 'ComponentList',
-                        'event_name'       => [ $this->name . '.list' ],
+                        'event_name'       => [$this->name . '.list'],
                         'parameters'       => [
                             [
                                 'name'          => 'refresh',
@@ -89,7 +70,7 @@ class User extends BaseRestService
                                 'required'      => false,
                             ],
                         ],
-                        'responseMessages' => ApiDocUtilities::getCommonResponses( [ 400, 401, 500 ] ),
+                        'responseMessages' => ApiDocUtilities::getCommonResponses([400, 401, 500]),
                     ],
                     [
                         'method'           => 'GET',
@@ -97,7 +78,7 @@ class User extends BaseRestService
                         'nickname'         => 'getResources',
                         'notes'            => 'List the resources available on this service. ',
                         'type'             => 'Resources',
-                        'event_name'       => [ $this->name . '.list' ],
+                        'event_name'       => [$this->name . '.list'],
                         'parameters'       => [
                             [
                                 'name'          => 'include_properties',
@@ -117,7 +98,7 @@ class User extends BaseRestService
                                 'required'      => false,
                             ],
                         ],
-                        'responseMessages' => ApiDocUtilities::getCommonResponses( [ 400, 401, 500 ] ),
+                        'responseMessages' => ApiDocUtilities::getCommonResponses([400, 401, 500]),
                     ],
                     [
                         'method'           => 'GET',
@@ -125,7 +106,7 @@ class User extends BaseRestService
                         'nickname'         => 'getAccessComponents',
                         'notes'            => 'List the names of all the role accessible components.',
                         'type'             => 'ComponentList',
-                        'event_name'       => [ $this->name . '.list' ],
+                        'event_name'       => [$this->name . '.list'],
                         'parameters'       => [
                             [
                                 'name'          => 'as_access_components',
@@ -145,44 +126,40 @@ class User extends BaseRestService
                                 'required'      => false,
                             ],
                         ],
-                        'responseMessages' => ApiDocUtilities::getCommonResponses( [ 400, 401, 500 ] ),
+                        'responseMessages' => ApiDocUtilities::getCommonResponses([400, 401, 500]),
                     ],
                 ],
             ],
         ];
 
-        $models = [ ];
+        $models = [];
 
-        foreach ( $this->getResources() as $resourceInfo )
-        {
-            $className = ArrayUtils::get( $resourceInfo, 'class_name' );
+        foreach ($this->getResources() as $resourceInfo) {
+            $className = ArrayUtils::get($resourceInfo, 'class_name');
 
-            if ( !class_exists( $className ) )
-            {
-                throw new InternalServerErrorException( 'Service configuration class name lookup failed for resource ' . $this->resourcePath );
+            if (!class_exists($className)) {
+                throw new InternalServerErrorException('Service configuration class name lookup failed for resource ' .
+                    $this->resourcePath);
             }
 
             /** @var BaseRestResource $resource */
-            $resource = $this->instantiateResource( $className, $resourceInfo );
+            $resource = $this->instantiateResource($className, $resourceInfo);
 
-            $name = ArrayUtils::get( $resourceInfo, 'name', '' ) . '/';
-            $_access = $this->getPermissions( $name );
-            if ( !empty( $_access ) )
-            {
+            $name = ArrayUtils::get($resourceInfo, 'name', '') . '/';
+            $_access = $this->getPermissions($name);
+            if (!empty($_access)) {
                 $results = $resource->getApiDocInfo();
-                if ( isset( $results, $results['apis'] ) )
-                {
-                    $apis = array_merge( $apis, $results['apis'] );
+                if (isset($results, $results['apis'])) {
+                    $apis = array_merge($apis, $results['apis']);
                 }
-                if ( isset( $results, $results['models'] ) )
-                {
-                    $models = array_merge( $models, $results['models'] );
+                if (isset($results, $results['models'])) {
+                    $models = array_merge($models, $results['models']);
                 }
             }
         }
 
-        $base['apis'] = array_merge( $base['apis'], $apis );
-        $base['models'] = array_merge( $base['models'], $models );
+        $base['apis'] = array_merge($base['apis'], $apis);
+        $base['models'] = array_merge($base['models'], $models);
 
         return $base;
     }

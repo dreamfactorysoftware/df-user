@@ -1,23 +1,4 @@
 <?php
-/**
- * This file is part of the DreamFactory(tm)
- *
- * DreamFactory(tm) <http://github.com/dreamfactorysoftware/rave>
- * Copyright 2012-2014 DreamFactory Software, Inc. <support@dreamfactory.com>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 use DreamFactory\Core\Utility\ServiceHandler;
 use DreamFactory\Library\Utility\Enums\Verbs;
 use DreamFactory\Core\Models\User;
@@ -42,7 +23,7 @@ class ProfileResourceTest extends \DreamFactory\Core\Testing\TestCase
 
     public function tearDown()
     {
-        $this->deleteUser( 1 );
+        $this->deleteUser(1);
 
         parent::tearDown();
     }
@@ -50,35 +31,35 @@ class ProfileResourceTest extends \DreamFactory\Core\Testing\TestCase
     public function testNoProfileFound()
     {
         $this->setExpectedException('\DreamFactory\Core\Exceptions\NotFoundException');
-        $this->makeRequest( Verbs::GET, static::RESOURCE );
+        $this->makeRequest(Verbs::GET, static::RESOURCE);
     }
 
     public function testGETProfile()
     {
-        $user = $this->createUser( 1 );
-        $userModel = User::find( $user['id'] );
-        $this->be( $userModel );
+        $user = $this->createUser(1);
+        $userModel = User::find($user['id']);
+        $this->be($userModel);
 
-        $rs = $this->makeRequest( Verbs::GET, static::RESOURCE );
+        $rs = $this->makeRequest(Verbs::GET, static::RESOURCE);
         $c = $rs->getContent();
 
         $e = [
-            'first_name'        => Arr::get( $user, 'first_name' ),
-            'last_name'         => Arr::get( $user, 'last_name' ),
-            'name'              => Arr::get( $user, 'name' ),
-            'email'             => Arr::get( $user, 'email' ),
-            'phone'             => Arr::get( $user, 'phone' ),
-            'security_question' => Arr::get( $user, 'security_question' )
+            'first_name'        => Arr::get($user, 'first_name'),
+            'last_name'         => Arr::get($user, 'last_name'),
+            'name'              => Arr::get($user, 'name'),
+            'email'             => Arr::get($user, 'email'),
+            'phone'             => Arr::get($user, 'phone'),
+            'security_question' => Arr::get($user, 'security_question')
         ];
 
-        $this->assertEquals( $e, $c );
+        $this->assertEquals($e, $c);
     }
 
     public function testPOSTProfile()
     {
-        $user = $this->createUser( 1 );
-        $userModel = User::find( $user['id'] );
-        $this->be( $userModel );
+        $user = $this->createUser(1);
+        $userModel = User::find($user['id']);
+        $this->be($userModel);
 
         $fName = 'Jack';
         $lName = 'Smith';
@@ -117,22 +98,23 @@ class ProfileResourceTest extends \DreamFactory\Core\Testing\TestCase
      * Helper methods
      ************************************************/
 
-    protected function createUser( $num )
+    protected function createUser($num)
     {
         $user = $this->{'user' . $num};
-        $payload = json_encode( [ $user ], JSON_UNESCAPED_SLASHES );
+        $payload = json_encode([$user], JSON_UNESCAPED_SLASHES);
 
-        $this->service = ServiceHandler::getService( 'system' );
-        $rs = $this->makeRequest( Verbs::POST, 'user', [ 'fields' => '*', 'related' => 'user_lookup_by_user_id' ], $payload );
-        $this->service = ServiceHandler::getService( $this->serviceId );
+        $this->service = ServiceHandler::getService('system');
+        $rs =
+            $this->makeRequest(Verbs::POST, 'user', ['fields' => '*', 'related' => 'user_lookup_by_user_id'], $payload);
+        $this->service = ServiceHandler::getService($this->serviceId);
 
         return $rs->getContent();
     }
 
-    protected function deleteUser( $num )
+    protected function deleteUser($num)
     {
         $user = $this->{'user' . $num};
-        $email = Arr::get( $user, 'email' );
-        \DreamFactory\Core\Models\User::whereEmail( $email )->delete();
+        $email = Arr::get($user, 'email');
+        \DreamFactory\Core\Models\User::whereEmail($email)->delete();
     }
 }
