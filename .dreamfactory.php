@@ -1,6 +1,6 @@
 <?php
 /**
- * DreamFactory(tm) User Management <http://github.com/dreamfactorysoftware/dsp-user>
+ * DreamFactory(tm) User Management <http://github.com/dreamfactorysoftware/df-user>
  * Copyright 2012-2015 DreamFactory Software, Inc. <support@dreamfactory.com>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
