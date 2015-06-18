@@ -1,5 +1,5 @@
 <?php
-use DreamFactory\Library\Utility\Scalar;
+
 use DreamFactory\Library\Utility\Enums\Verbs;
 use Illuminate\Support\Arr;
 
@@ -79,7 +79,7 @@ class UserResourceTest extends \DreamFactory\Core\Testing\UserResourceTestCase
         foreach ($records as $user) {
             $userModel = \DreamFactory\Core\Models\User::find($user['id']);
 
-            if (Scalar::boolval($userModel->is_sys_admin)) {
+            if ($userModel->is_sys_admin) {
                 return false;
             }
         }
