@@ -1,5 +1,5 @@
 <?php
-use DreamFactory\Library\Utility\Scalar;
+
 use DreamFactory\Library\Utility\Enums\Verbs;
 use Illuminate\Support\Arr;
 
