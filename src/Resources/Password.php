@@ -4,7 +4,6 @@ namespace DreamFactory\Core\User\Resources;
 use DreamFactory\Core\Resources\UserPasswordResource;
 use DreamFactory\Core\Models\User;
 use DreamFactory\Core\Exceptions\NotFoundException;
-use DreamFactory\Library\Utility\Scalar;
 use DreamFactory\Core\Exceptions\UnauthorizedException;
 use DreamFactory\Core\User\Models\UserConfig;
 use DreamFactory\Core\Exceptions\InternalServerErrorException;
@@ -41,7 +40,7 @@ class Password extends UserPasswordResource
                     throw new ServiceUnavailableException("Bad service identifier '$emailServiceId'.");
                 }
 
-                $data = array();
+                $data = [];
                 $templateId = $config->password_email_template_id;
 
                 if (!empty($templateId)) {
@@ -52,12 +51,12 @@ class Password extends UserPasswordResource
                     throw new ServiceUnavailableException("No data found in default email template for password reset.");
                 }
 
-                ArrayUtils::set($data, 'to', $email);
-                ArrayUtils::set($data, 'first_name', $user->first_name);
-                ArrayUtils::set($data, 'last_name', $user->last_name);
-                ArrayUtils::set($data, 'name', $user->name);
-                ArrayUtils::set($data, 'confirm_code', $user->confirm_code);
-                ArrayUtils::set($data, 'link', url('password/reset/' . urlencode($user->confirm_code)));
+                $data['to'] = $email;
+                $data['first_name'] = $user->first_name;
+                $data['last_name'] = $user->last_name;
+                $data['name'] = $user->name;
+                $data['confirm_code'] = $user->confirm_code;
+                $data['link'] = url('password/reset/' . urlencode($user->confirm_code));
 
                 $emailService->sendEmail($data, ArrayUtils::get($data, 'body_text'),
                     ArrayUtils::get($data, 'body_html'));
@@ -80,7 +79,7 @@ class Password extends UserPasswordResource
             throw new NotFoundException("User not found in the system.");
         }
 
-        if (true === Scalar::boolval($user->is_sys_admin)) {
+        if ($user->is_sys_admin) {
             throw new UnauthorizedException('You are not authorized to reset/change password for the account ' .
                 $user->email);
         }
