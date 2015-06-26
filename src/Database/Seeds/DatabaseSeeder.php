@@ -3,6 +3,8 @@ namespace DreamFactory\Core\User\Database\Seeds;
 
 use DreamFactory\Core\Models\Service;
 use DreamFactory\Core\Models\SystemResource;
+use DreamFactory\Core\User\Models\UserConfig;
+use DreamFactory\Core\User\Services\User;
 use Illuminate\Database\Seeder;
 use DreamFactory\Core\Models\ServiceType;
 
@@ -15,8 +17,8 @@ class DatabaseSeeder extends Seeder
             ServiceType::create(
                 [
                     'name'           => 'user',
-                    'class_name'     => "DreamFactory\\Core\\User\\Services\\User",
-                    'config_handler' => "DreamFactory\\Core\\User\\Models\\UserConfig",
+                    'class_name'     => User::class,
+                    'config_handler' => UserConfig::class,
                     'label'          => 'User service',
                     'description'    => 'User service to allow user management.',
                     'group'          => 'users',
@@ -50,8 +52,8 @@ class DatabaseSeeder extends Seeder
                     'name'        => 'user',
                     'label'       => 'User Management',
                     'description' => 'Allows user management capability.',
-                    'class_name'  => "DreamFactory\\Core\\User\\Resources\\System\\User",
-                    'model_name'  => "DreamFactory\\Core\\Models\\User",
+                    'class_name'  => \DreamFactory\Core\User\Resources\System\User::class,
+                    'model_name'  => \DreamFactory\Core\Models\User::class,
                     'singleton'   => 0,
                     'read_only'   => 0
                 ]

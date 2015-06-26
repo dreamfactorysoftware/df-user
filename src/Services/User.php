@@ -16,22 +16,22 @@ class User extends BaseRestService
     protected $resources = [
         Password::RESOURCE_NAME => [
             'name'       => Password::RESOURCE_NAME,
-            'class_name' => 'DreamFactory\\Core\\User\\Resources\\Password',
+            'class_name' => Password::class,
             'label'      => 'Password'
         ],
         Profile::RESOURCE_NAME  => [
             'name'       => Profile::RESOURCE_NAME,
-            'class_name' => 'DreamFactory\\Core\\User\\Resources\\Profile',
+            'class_name' => Profile::class,
             'label'      => 'Profile'
         ],
         Register::RESOURCE_NAME => [
             'name'       => Register::RESOURCE_NAME,
-            'class_name' => 'DreamFactory\\Core\\User\\Resources\\Register',
+            'class_name' => Register::class,
             'label'      => 'Register'
         ],
         Session::RESOURCE_NAME  => [
             'name'       => Session::RESOURCE_NAME,
-            'class_name' => 'DreamFactory\\Core\\User\\Resources\\Session',
+            'class_name' => Session::class,
             'label'      => 'Session'
         ]
     ];
