@@ -4,6 +4,7 @@ namespace DreamFactory\Core\User\Resources;
 use DreamFactory\Core\Enums\DataFormats;
 use DreamFactory\Core\Enums\HttpStatusCodes;
 use DreamFactory\Core\Resources\BaseRestResource;
+use DreamFactory\Core\Utility\Session;
 use DreamFactory\Library\Utility\ArrayUtils;
 use DreamFactory\Library\Utility\Enums\Verbs;
 use DreamFactory\Core\Utility\ResponseFactory;
@@ -65,12 +66,10 @@ class Register extends BaseRestResource
             return ResponseFactory::create($messages, DataFormats::PHP_ARRAY, HttpStatusCodes::HTTP_BAD_REQUEST);
         } else {
             $user = $registrar->create($data);
-
-            if ($login) {
-                \Auth::login($user);
+            if($login) {
+                Session::setUserInfoWithJWT($user);
             }
-
-            return ['success' => true];
+            return ['success' => true, 'session_token' => Session::getSessionToken()];
         }
     }
 

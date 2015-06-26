@@ -46,18 +46,22 @@ class RegisterResourceTest extends \DreamFactory\Core\Testing\TestCase
             'password_confirmation' => Arr::get($u, 'password_confirmation', $password)
         ];
 
+        Session::setUserInfoWithJWT(User::find(1));
         $r = $this->makeRequest(Verbs::POST, static::RESOURCE, [], $payload);
         $c = $r->getContent();
 
         $this->assertTrue(Arr::get($c, 'success'));
 
-        Session::set('rsa.role.name', 'test');
-        Session::set('rsa.role.id', 1);
+        Session::set('role.name', 'test');
+        Session::set('role.id', 1);
 
         $this->service = ServiceHandler::getService('user');
-        $r =
-            $this->makeRequest(Verbs::POST, 'session', [],
-                ['email' => Arr::get($u, 'email'), 'password' => Arr::get($u, 'password')]);
+        $r = $this->makeRequest(
+            Verbs::POST,
+            'session',
+            [],
+            ['email' => Arr::get($u, 'email'), 'password' => Arr::get($u, 'password')]
+        );
         $c = $r->getContent();
 
         $this->assertTrue(!empty(Arr::get($c, 'session_id')));

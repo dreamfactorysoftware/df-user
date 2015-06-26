@@ -1,6 +1,7 @@
 <?php
 use DreamFactory\Core\Utility\ServiceHandler;
 use DreamFactory\Library\Utility\Enums\Verbs;
+use DreamFactory\Core\Utility\Session;
 use DreamFactory\Core\Models\User;
 use Illuminate\Support\Arr;
 
@@ -38,7 +39,7 @@ class ProfileResourceTest extends \DreamFactory\Core\Testing\TestCase
     {
         $user = $this->createUser(1);
         $userModel = User::find($user['id']);
-        $this->be($userModel);
+        Session::setUserInfoWithJWT($userModel);
 
         $rs = $this->makeRequest(Verbs::GET, static::RESOURCE);
         $c = $rs->getContent();
@@ -59,7 +60,7 @@ class ProfileResourceTest extends \DreamFactory\Core\Testing\TestCase
     {
         $user = $this->createUser(1);
         $userModel = User::find($user['id']);
-        $this->be($userModel);
+        Session::setUserInfoWithJWT($userModel);
 
         $fName = 'Jack';
         $lName = 'Smith';
@@ -82,13 +83,13 @@ class ProfileResourceTest extends \DreamFactory\Core\Testing\TestCase
 
         $r = $this->makeRequest(Verbs::POST, static::RESOURCE, [], $payload);
         $c = $r->getContent();
-
         $this->assertTrue(Arr::get($c, 'success'));
 
+        $userModel = User::find($user['id']);
         $r = $this->makeRequest(Verbs::GET, static::RESOURCE);
         $c = $r->getContent();
 
-        $this->assertTrue(Hash::check(Arr::get($payload, 'security_answer'), $userModel->security_answer));
+        $this->assertTrue(Hash::check($sAnswer, $userModel->security_answer));
 
         unset($payload['security_answer']);
         $this->assertEquals($payload, $c);
@@ -104,8 +105,12 @@ class ProfileResourceTest extends \DreamFactory\Core\Testing\TestCase
         $payload = json_encode([$user], JSON_UNESCAPED_SLASHES);
 
         $this->service = ServiceHandler::getService('system');
-        $rs =
-            $this->makeRequest(Verbs::POST, 'user', ['fields' => '*', 'related' => 'user_lookup_by_user_id'], $payload);
+        $rs = $this->makeRequest(
+            Verbs::POST,
+            'user',
+            ['fields' => '*', 'related' => 'user_lookup_by_user_id'],
+            $payload
+        );
         $this->service = ServiceHandler::getService($this->serviceId);
 
         return $rs->getContent();

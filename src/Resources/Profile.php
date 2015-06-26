@@ -1,6 +1,7 @@
 <?php
 namespace DreamFactory\Core\User\Resources;
 
+use DreamFactory\Core\Utility\Session;
 use DreamFactory\Library\Utility\ArrayUtils;
 use DreamFactory\Library\Utility\Enums\Verbs;
 use DreamFactory\Core\Resources\BaseRestResource;
@@ -33,7 +34,7 @@ class Profile extends BaseRestResource
      */
     protected function handleGET()
     {
-        $user = \Auth::user();
+        $user = Session::user();
 
         if (empty($user)) {
             throw new NotFoundException('No user session found.');
@@ -73,7 +74,7 @@ class Profile extends BaseRestResource
 
         ArrayUtils::removeNull($data);
 
-        $user = \Auth::user();
+        $user = Session::user();
 
         if (empty($user)) {
             throw new NotFoundException('No user session found.');

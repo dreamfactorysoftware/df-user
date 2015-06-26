@@ -82,8 +82,8 @@ class PasswordResourceTest extends \DreamFactory\Core\Testing\TestCase
     {
         parent::setUp();
 
-        Session::set('rsa.role.name', 'test');
-        Session::set('rsa.role.id', 1);
+        Session::set('role.name', 'test');
+        Session::set('role.id', 1);
     }
 
     /************************************************
@@ -106,13 +106,19 @@ class PasswordResourceTest extends \DreamFactory\Core\Testing\TestCase
     {
         $user = $this->createUser(1);
 
-        $this->makeRequest(Verbs::POST, 'session', [],
+        $this->makeRequest(
+            Verbs::POST,
+            'session',
+            [],
             ['email' => $user['email'], 'password' => $this->user1['password']]);
 
         $this->service = ServiceHandler::getService($this->serviceId);
-        $rs =
-            $this->makeRequest(Verbs::POST, static::RESOURCE, [],
-                ['old_password' => $this->user1['password'], 'new_password' => '123456']);
+        $rs = $this->makeRequest(
+            Verbs::POST,
+            static::RESOURCE,
+            [],
+            ['old_password' => $this->user1['password'], 'new_password' => '123456']
+        );
         $content = $rs->getContent();
         $this->assertTrue($content['success']);
 
@@ -212,7 +218,7 @@ class PasswordResourceTest extends \DreamFactory\Core\Testing\TestCase
         );
         $content = $rs->getContent();
         $this->assertTrue($content['success']);
-        $this->assertTrue(Auth::check());
+        $this->assertTrue(Session::isAuthenticated());
 
         $userModel = User::find($user['id']);
         $this->assertEquals('y', $userModel->confirm_code);

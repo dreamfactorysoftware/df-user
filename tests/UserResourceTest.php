@@ -1,6 +1,7 @@
 <?php
 
 use DreamFactory\Library\Utility\Enums\Verbs;
+use DreamFactory\Core\Utility\Session;
 use Illuminate\Support\Arr;
 
 class UserResourceTest extends \DreamFactory\Core\Testing\UserResourceTestCase
@@ -70,7 +71,7 @@ class UserResourceTest extends \DreamFactory\Core\Testing\UserResourceTestCase
         $rs = $this->makeRequest(Verbs::PATCH, static::RESOURCE . '/' . $user['id'], [], $payload);
         $content = $rs->getContent();
 
-        $this->assertFalse(Auth::attempt(['email' => $user['email'], 'password' => '1234']));
+        $this->assertFalse(Session::authenticate(['email' => $user['email'], 'password' => '1234']));
         $this->assertTrue($this->adminCheck([$content]));
     }
 

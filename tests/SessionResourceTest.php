@@ -100,7 +100,7 @@ class SessionResourceTest extends \DreamFactory\Core\Testing\TestCase
 
     public function testSessionNotFound()
     {
-        $this->setExpectedException('\DreamFactory\Core\Exceptions\NotFoundException');
+        $this->setExpectedException('\DreamFactory\Core\Exceptions\UnauthorizedException');
         $this->makeRequest(Verbs::GET, static::RESOURCE);
     }
 
@@ -108,7 +108,7 @@ class SessionResourceTest extends \DreamFactory\Core\Testing\TestCase
     {
         $user = $this->createUser(1);
 
-        Auth::attempt(['email' => $user['email'], 'password' => $this->user1['password']]);
+        Session::authenticate(['email' => $user['email'], 'password' => $this->user1['password']]);
 
         //Using a new instance here. Prev instance is set for user resource.
         $this->service = ServiceHandler::getService('system');
@@ -119,8 +119,8 @@ class SessionResourceTest extends \DreamFactory\Core\Testing\TestCase
 
     public function testLogin()
     {
-        Session::set('rsa.role.name', 'test');
-        Session::set('rsa.role.id', 1);
+        Session::set('role.name', 'test');
+        Session::set('role.id', 1);
 
         $user = $this->createUser(1);
 
@@ -144,8 +144,8 @@ class SessionResourceTest extends \DreamFactory\Core\Testing\TestCase
 
     public function testLogout()
     {
-        Session::set('rsa.role.name', 'test');
-        Session::set('rsa.role.id', 1);
+        Session::set('role.name', 'test');
+        Session::set('role.id', 1);
 
         $user = $this->createUser(1);
         $payload = ['email' => $user['email'], 'password' => $this->user1['password']];
@@ -159,7 +159,7 @@ class SessionResourceTest extends \DreamFactory\Core\Testing\TestCase
 
         $this->assertTrue($content['success']);
 
-        $this->setExpectedException('\DreamFactory\Core\Exceptions\NotFoundException');
+        $this->setExpectedException('\DreamFactory\Core\Exceptions\UnauthorizedException');
         $this->makeRequest(Verbs::GET, static::RESOURCE);
     }
 
