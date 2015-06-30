@@ -177,7 +177,8 @@ class SessionResourceTest extends \DreamFactory\Core\Testing\TestCase
             $this->makeRequest(Verbs::POST, 'user', ['fields' => '*', 'related' => 'user_lookup_by_user_id'], $payload);
         $this->service = ServiceHandler::getService($this->serviceId);
 
-        return $rs->getContent();
+        $data = $rs->getContent();
+        return Arr::get($data, 'record.0');
     }
 
     protected function deleteUser($num)
