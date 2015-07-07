@@ -77,6 +77,9 @@ class UserResourceTest extends \DreamFactory\Core\Testing\UserResourceTestCase
 
     protected function adminCheck($records)
     {
+        if(isset($records['record'])){
+            $records = $records['record'];
+        }
         foreach ($records as $user) {
             $userModel = \DreamFactory\Core\Models\User::find($user['id']);
 
