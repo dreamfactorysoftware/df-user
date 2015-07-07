@@ -22,7 +22,7 @@ class DatabaseSeeder extends Seeder
                     'label'          => 'User service',
                     'description'    => 'User service to allow user management.',
                     'group'          => 'users',
-                    'singleton'      => 1
+                    'singleton'      => true
                 ]
             );
             $this->command->info('User Management service type seeded!');
@@ -34,12 +34,12 @@ class DatabaseSeeder extends Seeder
                     'name'        => 'user',
                     'label'       => 'User Management',
                     'description' => 'Service for managing system users.',
-                    'is_active'   => 1,
+                    'is_active'   => true,
                     'type'        => 'user',
-                    'mutable'     => 1,
-                    'deletable'   => 0,
+                    'mutable'     => true,
+                    'deletable'   => false,
                     'config'      => [
-                        'allow_open_registration' => 0
+                        'allow_open_registration' => false
                     ]
                 ]
             );
@@ -54,8 +54,8 @@ class DatabaseSeeder extends Seeder
                     'description' => 'Allows user management capability.',
                     'class_name'  => \DreamFactory\Core\User\Resources\System\User::class,
                     'model_name'  => \DreamFactory\Core\Models\User::class,
-                    'singleton'   => 0,
-                    'read_only'   => 0
+                    'singleton'   => false,
+                    'read_only'   => false
                 ]
             );
             $this->command->info('User system resource successfully seeded!');

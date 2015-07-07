@@ -18,7 +18,7 @@ class SessionResourceTest extends \DreamFactory\Core\Testing\TestCase
         'password'          => 'test1234',
         'security_question' => 'Make of your first car?',
         'security_answer'   => 'mazda',
-        'is_active'         => 1
+        'is_active'         => true
     ];
 
     protected $user2 = [
@@ -27,17 +27,17 @@ class SessionResourceTest extends \DreamFactory\Core\Testing\TestCase
         'last_name'              => 'Doe',
         'email'                  => 'jadoe@dreamfactory.com',
         'password'               => 'test1234',
-        'is_active'              => 1,
+        'is_active'              => true,
         'user_lookup_by_user_id' => [
             [
                 'name'    => 'test',
                 'value'   => '1234',
-                'private' => 0
+                'private' => false
             ],
             [
                 'name'    => 'test2',
                 'value'   => '5678',
-                'private' => 1
+                'private' => true
             ]
         ]
     ];
@@ -48,22 +48,22 @@ class SessionResourceTest extends \DreamFactory\Core\Testing\TestCase
         'last_name'              => 'Doe',
         'email'                  => 'ddoe@dreamfactory.com',
         'password'               => 'test1234',
-        'is_active'              => 1,
+        'is_active'              => true,
         'user_lookup_by_user_id' => [
             [
                 'name'    => 'test',
                 'value'   => '1234',
-                'private' => 0
+                'private' => false
             ],
             [
                 'name'    => 'test2',
                 'value'   => '5678',
-                'private' => 1
+                'private' => true
             ],
             [
                 'name'    => 'test3',
                 'value'   => '56789',
-                'private' => 1
+                'private' => true
             ]
         ]
     ];

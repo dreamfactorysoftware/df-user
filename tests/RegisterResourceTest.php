@@ -19,7 +19,7 @@ class RegisterResourceTest extends \DreamFactory\Core\Testing\TestCase
         'password'          => 'test12345678',
         'security_question' => 'Make of your first car?',
         'security_answer'   => 'mazda',
-        'is_active'         => 1
+        'is_active'         => true
     ];
 
     public function tearDown()
