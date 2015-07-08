@@ -46,7 +46,8 @@ class Profile extends BaseRestResource
             'name'              => $user->name,
             'email'             => $user->email,
             'phone'             => $user->phone,
-            'security_question' => $user->security_question
+            'security_question' => $user->security_question,
+            'default_app_id'    => $user->default_app_id
         ];
 
         return $data;
@@ -69,7 +70,8 @@ class Profile extends BaseRestResource
             'email'             => ArrayUtils::get($payload, 'email'),
             'phone'             => ArrayUtils::get($payload, 'phone'),
             'security_question' => ArrayUtils::get($payload, 'security_question'),
-            'security_answer'   => ArrayUtils::get($payload, 'security_answer')
+            'security_answer'   => ArrayUtils::get($payload, 'security_answer'),
+            'default_app_id'    => ArrayUtils::get($payload, 'default_app_id')
         ];
 
         ArrayUtils::removeNull($data);
