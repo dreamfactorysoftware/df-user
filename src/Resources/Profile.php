@@ -6,6 +6,7 @@ use DreamFactory\Library\Utility\ArrayUtils;
 use DreamFactory\Library\Utility\Enums\Verbs;
 use DreamFactory\Core\Resources\BaseRestResource;
 use DreamFactory\Core\Exceptions\NotFoundException;
+use DreamFactory\Core\Exceptions\UnauthorizedException;
 
 class Profile extends BaseRestResource
 {
@@ -30,14 +31,14 @@ class Profile extends BaseRestResource
      * Fetches user profile.
      *
      * @return array
-     * @throws NotFoundException
+     * @throws UnauthorizedException
      */
     protected function handleGET()
     {
         $user = Session::user();
 
         if (empty($user)) {
-            throw new NotFoundException('No user session found.');
+            throw new UnauthorizedException('There is no valid session for the current request.');
         }
 
         $data = [

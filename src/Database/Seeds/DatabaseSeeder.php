@@ -1,6 +1,7 @@
 <?php
 namespace DreamFactory\Core\User\Database\Seeds;
 
+use DreamFactory\Core\Enums\ServiceTypeGroups;
 use DreamFactory\Core\Models\Service;
 use DreamFactory\Core\Models\SystemResource;
 use DreamFactory\Core\User\Models\UserConfig;
@@ -21,7 +22,7 @@ class DatabaseSeeder extends Seeder
                     'config_handler' => UserConfig::class,
                     'label'          => 'User service',
                     'description'    => 'User service to allow user management.',
-                    'group'          => 'User',
+                    'group'          => ServiceTypeGroups::USER,
                     'singleton'      => true
                 ]
             );
