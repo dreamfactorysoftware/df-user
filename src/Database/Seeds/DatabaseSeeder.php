@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
                     'config_handler' => UserConfig::class,
                     'label'          => 'User service',
                     'description'    => 'User service to allow user management.',
-                    'group'          => 'users',
+                    'group'          => 'User',
                     'singleton'      => true
                 ]
             );
