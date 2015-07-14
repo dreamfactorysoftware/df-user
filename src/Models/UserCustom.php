@@ -25,7 +25,13 @@ class UserCustom extends BaseCustomModel
     {
         $userId = SessionUtility::getCurrentUserId();
         $fields = static::cleanFields($fields);
-        $response = static::whereUserId($userId)->whereName($id)->get($fields)->toArray();
+        $response = static::whereUserId($userId)->whereName($id)->first();
+
+        if (!empty($response)) {
+            $response = $response->toArray();
+        } else {
+            $response = [];
+        }
 
         return static::cleanResult($response, $fields);
     }
