@@ -1,6 +1,8 @@
 <?php
 namespace DreamFactory\Core\User\Services;
 
+use DreamFactory\Core\User\Models\UserCustom;
+use DreamFactory\Core\User\Resources\Custom;
 use DreamFactory\Library\Utility\ArrayUtils;
 use DreamFactory\Core\Exceptions\InternalServerErrorException;
 use DreamFactory\Core\Services\BaseRestService;
@@ -33,6 +35,12 @@ class User extends BaseRestService
             'name'       => Session::RESOURCE_NAME,
             'class_name' => Session::class,
             'label'      => 'Session'
+        ],
+        Custom::RESOURCE_NAME   => [
+            'name'       => Custom::RESOURCE_NAME,
+            'class_name' => Custom::class,
+            'model_name' => UserCustom::class,
+            'label'      => 'Custom'
         ]
     ];
 
