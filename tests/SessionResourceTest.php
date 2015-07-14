@@ -87,7 +87,7 @@ class SessionResourceTest extends \DreamFactory\Core\Testing\TestCase
         $content = $rs->getContent();
 
         $expected = [
-            'resource' => [
+            static::$wrapper => [
                 'password',
                 'profile',
                 'register',
@@ -178,7 +178,7 @@ class SessionResourceTest extends \DreamFactory\Core\Testing\TestCase
         $this->service = ServiceHandler::getService($this->serviceId);
 
         $data = $rs->getContent();
-        return Arr::get($data, 'record.0');
+        return Arr::get($data, static::$wrapper . '.0');
     }
 
     protected function deleteUser($num)

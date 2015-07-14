@@ -245,7 +245,7 @@ class PasswordResourceTest extends \DreamFactory\Core\Testing\TestCase
 
         $data = $rs->getContent();
 
-        return Arr::get($data, 'record.0');
+        return Arr::get($data, static::$wrapper . '.0');
     }
 
     protected function deleteUser($num)

@@ -22,10 +22,10 @@ class UserResourceTest extends \DreamFactory\Core\Testing\UserResourceTestCase
         $content = $rs->getContent();
 
         //Total 4 users including the default admin user but admin users shouldn't come up here.
-        $this->assertEquals(3, count($content['record']));
-        $this->assertTrue($this->adminCheck($content['record']));
+        $this->assertEquals(3, count($content[static::$wrapper]));
+        $this->assertTrue($this->adminCheck($content[static::$wrapper]));
 
-        $ids = implode(',', array_column($content['record'], 'id'));
+        $ids = implode(',', array_column($content[static::$wrapper], 'id'));
         $this->assertEquals(implode(',', array_column([$user1, $user2, $user3], 'id')), $ids);
     }
 
@@ -38,27 +38,27 @@ class UserResourceTest extends \DreamFactory\Core\Testing\UserResourceTestCase
         $rs = $this->makeRequest(Verbs::GET, static::RESOURCE, ['limit' => 3]);
         $content = $rs->getContent();
 
-        $this->assertEquals(3, count($content['record']));
+        $this->assertEquals(3, count($content[static::$wrapper]));
 
-        $idsOut = implode(',', array_column($content['record'], 'id'));
+        $idsOut = implode(',', array_column($content[static::$wrapper], 'id'));
         $this->assertEquals(implode(',', array_column([$user1, $user2, $user3], 'id')), $idsOut);
 
         $rs = $this->makeRequest(Verbs::GET, static::RESOURCE, ['limit' => 3, 'offset' => 1]);
         $content = $rs->getContent();
 
-        $this->assertEquals(2, count($content['record']));
+        $this->assertEquals(2, count($content[static::$wrapper]));
 
-        $idsOut = implode(',', array_column($content['record'], 'id'));
+        $idsOut = implode(',', array_column($content[static::$wrapper], 'id'));
         $this->assertEquals(implode(',', array_column([$user2, $user3], 'id')), $idsOut);
 
         $rs = $this->makeRequest(Verbs::GET, static::RESOURCE, ['limit' => 2, 'offset' => 2]);
         $content = $rs->getContent();
 
-        $this->assertEquals(1, count($content['record']));
+        $this->assertEquals(1, count($content[static::$wrapper]));
 
-        $idsOut = implode(',', array_column($content['record'], 'id'));
+        $idsOut = implode(',', array_column($content[static::$wrapper], 'id'));
         $this->assertEquals(implode(',', array_column([$user3], 'id')), $idsOut);
-        $this->assertTrue($this->adminCheck($content['record']));
+        $this->assertTrue($this->adminCheck($content[static::$wrapper]));
     }
 
     public function testPATCHPassword()
@@ -77,8 +77,8 @@ class UserResourceTest extends \DreamFactory\Core\Testing\UserResourceTestCase
 
     protected function adminCheck($records)
     {
-        if(isset($records['record'])){
-            $records = $records['record'];
+        if(isset($records[static::$wrapper])){
+            $records = $records[static::$wrapper];
         }
         foreach ($records as $user) {
             $userModel = \DreamFactory\Core\Models\User::find($user['id']);
