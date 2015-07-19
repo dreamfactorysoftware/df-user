@@ -1,6 +1,7 @@
 <?php
 namespace DreamFactory\Core\User\Resources;
 
+use DreamFactory\Core\Utility\ApiDocUtilities;
 use DreamFactory\Core\Utility\Session;
 use DreamFactory\Library\Utility\ArrayUtils;
 use DreamFactory\Library\Utility\Enums\Verbs;
@@ -102,16 +103,7 @@ class Profile extends BaseRestResource
                         'nickname'         => 'getProfile',
                         'type'             => 'ProfileResponse',
                         'event_name'       => $eventPath . '.read',
-                        'responseMessages' => [
-                            [
-                                'message' => 'Unauthorized Access - No currently valid session available.',
-                                'code'    => 401,
-                            ],
-                            [
-                                'message' => 'System Error - Specific reason is included in the error message.',
-                                'code'    => 500,
-                            ],
-                        ],
+                        'responseMessages' => ApiDocUtilities::getCommonResponses([401, 500]),
                         'notes'            =>
                             'A valid current session is required to use this API. ' .
                             'This profile, along with password, is the only things that the user can directly change.',
@@ -132,16 +124,7 @@ class Profile extends BaseRestResource
                                 'required'      => true,
                             ],
                         ],
-                        'responseMessages' => [
-                            [
-                                'message' => 'Unauthorized Access - No currently valid session available.',
-                                'code'    => 401,
-                            ],
-                            [
-                                'message' => 'System Error - Specific reason is included in the error message.',
-                                'code'    => 500,
-                            ],
-                        ],
+                        'responseMessages' => ApiDocUtilities::getCommonResponses([400, 401, 500]),
                         'notes'            => 'Update the display name, phone, etc., as well as, security question and answer.',
                     ],
                 ],

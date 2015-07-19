@@ -2,6 +2,7 @@
 namespace DreamFactory\Core\User\Resources;
 
 use DreamFactory\Core\Resources\UserSessionResource;
+use DreamFactory\Core\Utility\ApiDocUtilities;
 
 class Session extends UserSessionResource
 {
@@ -22,16 +23,7 @@ class Session extends UserSessionResource
                         'nickname'         => 'getSession',
                         'event_name'       => [$eventPath . '.read'],
                         'type'             => 'Session',
-                        'responseMessages' => [
-                            [
-                                'message' => 'Unauthorized Access - No currently valid session available.',
-                                'code'    => 401,
-                            ],
-                            [
-                                'message' => 'System Error - Specific reason is included in the error message.',
-                                'code'    => 500,
-                            ],
-                        ],
+                        'responseMessages' => ApiDocUtilities::getCommonResponses([401, 500]),
                         'notes'            => 'Calling this refreshes the current session, or returns an error for timed-out or invalid sessions.',
                     ],
                     [
@@ -50,16 +42,7 @@ class Session extends UserSessionResource
                                 'required'      => true,
                             ],
                         ],
-                        'responseMessages' => [
-                            [
-                                'message' => 'Bad Request - Request does not have a valid format, all required parameters, etc.',
-                                'code'    => 400,
-                            ],
-                            [
-                                'message' => 'System Error - Specific reason is included in the error message.',
-                                'code'    => 500,
-                            ],
-                        ],
+                        'responseMessages' => ApiDocUtilities::getCommonResponses([400, 500]),
                         'notes'            => 'Calling this creates a new session and logs in the user.',
                     ],
                     [
@@ -68,12 +51,7 @@ class Session extends UserSessionResource
                         'nickname'         => 'logout',
                         'type'             => 'Success',
                         'event_name'       => [$eventPath . '.delete', 'user.logout'],
-                        'responseMessages' => [
-                            [
-                                'message' => 'System Error - Specific reason is included in the error message.',
-                                'code'    => 500,
-                            ],
-                        ],
+                        'responseMessages' => ApiDocUtilities::getCommonResponses([500]),
                         'notes'            => 'Calling this deletes the current session and logs out the user.',
                     ],
                 ],

@@ -4,6 +4,7 @@ namespace DreamFactory\Core\User\Resources;
 use DreamFactory\Core\Enums\DataFormats;
 use DreamFactory\Core\Enums\HttpStatusCodes;
 use DreamFactory\Core\Resources\BaseRestResource;
+use DreamFactory\Core\Utility\ApiDocUtilities;
 use DreamFactory\Core\Utility\Session;
 use DreamFactory\Library\Utility\ArrayUtils;
 use DreamFactory\Library\Utility\Enums\Verbs;
@@ -105,16 +106,7 @@ class Register extends BaseRestResource
                                 'required'      => true,
                             ],
                         ],
-                        'responseMessages' => [
-                            [
-                                'message' => 'Unauthorized Access - No currently valid session available.',
-                                'code'    => 401,
-                            ],
-                            [
-                                'message' => 'System Error - Specific reason is included in the error message.',
-                                'code'    => 500,
-                            ],
-                        ],
+                        'responseMessages' => ApiDocUtilities::getCommonResponses([400, 500]),
                         'notes'            =>
                             'The new user is created and, if required, sent an email for confirmation. ' .
                             'This also handles the registration confirmation by posting email, ' .

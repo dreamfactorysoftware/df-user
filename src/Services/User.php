@@ -44,8 +44,12 @@ class User extends BaseRestService
         ]
     ];
 
-    public function getResources()
+    public function getResources($only_handlers = false)
     {
+        if (!$only_handlers) {
+            return array_values($this->resources);
+        }
+
         return $this->resources;
     }
 
@@ -56,93 +60,10 @@ class User extends BaseRestService
     {
         $base = parent::getApiDocInfo();
 
-        $apis = [
-            [
-                'path'        => '/' . $this->name,
-                'description' => 'Operations available for the user management service.',
-                'operations'  => [
-                    [
-                        'method'           => 'GET',
-                        'summary'          => 'getResourceList() - List all resource names.',
-                        'nickname'         => 'getResourceList',
-                        'notes'            => 'List the resource names available in this service.',
-                        'type'             => 'ComponentList',
-                        'event_name'       => [$this->name . '.list'],
-                        'parameters'       => [
-                            [
-                                'name'          => 'refresh',
-                                'description'   => 'Refresh any cached copy of the resource list.',
-                                'allowMultiple' => false,
-                                'type'          => 'boolean',
-                                'paramType'     => 'query',
-                                'required'      => false,
-                            ],
-                        ],
-                        'responseMessages' => ApiDocUtilities::getCommonResponses([400, 401, 500]),
-                    ],
-                    [
-                        'method'           => 'GET',
-                        'summary'          => 'getResources() - List all resources.',
-                        'nickname'         => 'getResources',
-                        'notes'            => 'List the resources available on this service. ',
-                        'type'             => 'Resources',
-                        'event_name'       => [$this->name . '.list'],
-                        'parameters'       => [
-                            [
-                                'name'          => 'include_properties',
-                                'description'   => 'Return other properties available for each resource.',
-                                'allowMultiple' => false,
-                                'type'          => 'boolean',
-                                'paramType'     => 'query',
-                                'required'      => true,
-                                'default'       => true,
-                            ],
-                            [
-                                'name'          => 'refresh',
-                                'description'   => 'Refresh any cached copy of the resource list.',
-                                'allowMultiple' => false,
-                                'type'          => 'boolean',
-                                'paramType'     => 'query',
-                                'required'      => false,
-                            ],
-                        ],
-                        'responseMessages' => ApiDocUtilities::getCommonResponses([400, 401, 500]),
-                    ],
-                    [
-                        'method'           => 'GET',
-                        'summary'          => 'getAccessComponents() - List all role accessible components.',
-                        'nickname'         => 'getAccessComponents',
-                        'notes'            => 'List the names of all the role accessible components.',
-                        'type'             => 'ComponentList',
-                        'event_name'       => [$this->name . '.list'],
-                        'parameters'       => [
-                            [
-                                'name'          => 'as_access_components',
-                                'description'   => 'Return the names of all the accessible components.',
-                                'allowMultiple' => false,
-                                'type'          => 'boolean',
-                                'paramType'     => 'query',
-                                'required'      => true,
-                                'default'       => true,
-                            ],
-                            [
-                                'name'          => 'refresh',
-                                'description'   => 'Refresh any cached copy of the resource list.',
-                                'allowMultiple' => false,
-                                'type'          => 'boolean',
-                                'paramType'     => 'query',
-                                'required'      => false,
-                            ],
-                        ],
-                        'responseMessages' => ApiDocUtilities::getCommonResponses([400, 401, 500]),
-                    ],
-                ],
-            ],
-        ];
-
+        $apis = [];
         $models = [];
 
-        foreach ($this->getResources() as $resourceInfo) {
+        foreach ($this->getResources(true) as $resourceInfo) {
             $className = ArrayUtils::get($resourceInfo, 'class_name');
 
             if (!class_exists($className)) {

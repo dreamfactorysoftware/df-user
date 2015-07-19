@@ -7,6 +7,7 @@ use DreamFactory\Core\Exceptions\NotFoundException;
 use DreamFactory\Core\Exceptions\UnauthorizedException;
 use DreamFactory\Core\User\Models\UserConfig;
 use DreamFactory\Core\Exceptions\InternalServerErrorException;
+use DreamFactory\Core\Utility\ApiDocUtilities;
 use DreamFactory\Core\Utility\ServiceHandler;
 use DreamFactory\Core\Services\Email\BaseService as EmailService;
 use DreamFactory\Core\Exceptions\ServiceUnavailableException;
@@ -130,20 +131,7 @@ class Password extends UserPasswordResource
                                 'required'      => true,
                             ],
                         ],
-                        'responseMessages' => [
-                            [
-                                'message' => 'Bad Request - Request does not have a valid format, all required parameters, etc.',
-                                'code'    => 400,
-                            ],
-                            [
-                                'message' => 'Unauthorized Access - No currently valid session available.',
-                                'code'    => 401,
-                            ],
-                            [
-                                'message' => 'System Error - Specific reason is included in the error message.',
-                                'code'    => 500,
-                            ],
-                        ],
+                        'responseMessages' => ApiDocUtilities::getCommonResponses([400, 401, 500]),
                         'notes'            =>
                             'A valid current session along with old and new password are required to change ' .
                             'the password directly posting \'old_password\' and \'new_password\'. <br/>' .
