@@ -11,7 +11,6 @@ use DreamFactory\Core\User\Resources\Password;
 use DreamFactory\Core\User\Resources\Profile;
 use DreamFactory\Core\User\Resources\Register;
 use DreamFactory\Core\User\Resources\Session;
-use DreamFactory\Core\Utility\ApiDocUtilities;
 
 class User extends BaseRestService
 {
@@ -46,11 +45,7 @@ class User extends BaseRestService
 
     public function getResources($only_handlers = false)
     {
-        if (!$only_handlers) {
-            return array_values($this->resources);
-        }
-
-        return $this->resources;
+        return ($only_handlers) ? $this->resources : array_values($this->resources);
     }
 
     /**
