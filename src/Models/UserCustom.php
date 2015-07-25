@@ -10,6 +10,21 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use DreamFactory\Core\Exceptions\InternalServerErrorException;
 
+/**
+ * UserCustom
+ *
+ * @property integer $id
+ * @property integer $user_id
+ * @property string  $name
+ * @property string  $value
+ * @property string  $created_date
+ * @property string  $last_modified_date
+ * @method static \Illuminate\Database\Query\Builder|UserCustom whereId($value)
+ * @method static \Illuminate\Database\Query\Builder|UserCustom whereUserId($value)
+ * @method static \Illuminate\Database\Query\Builder|UserCustom whereName($value)
+ * @method static \Illuminate\Database\Query\Builder|UserCustom whereCreatedDate($value)
+ * @method static \Illuminate\Database\Query\Builder|UserCustom whereLastModifiedDate($value)
+ */
 class UserCustom extends BaseCustomModel
 {
     protected $table = 'user_custom';
@@ -17,6 +32,8 @@ class UserCustom extends BaseCustomModel
     protected $fillable = ['user_id', 'name', 'value'];
 
     protected $hidden = ['id', 'user_id'];
+
+    protected $casts = ['id' => 'integer', 'user_id' => 'integer'];
 
     /**
      * {@inheritdoc}

@@ -132,7 +132,7 @@ class Profile extends BaseRestResource
             ],
         ];
 
-        $_commonProfile = [
+        $commonProfile = [
             'email'             => [
                 'type'        => 'string',
                 'description' => 'Email address of the current user.',
@@ -168,7 +168,7 @@ class Profile extends BaseRestResource
             'ProfileRequest'  => [
                 'id'         => 'ProfileRequest',
                 'properties' => array_merge(
-                    $_commonProfile,
+                    $commonProfile,
                     [
                         'security_answer' => [
                             'type'        => 'string',
@@ -179,7 +179,7 @@ class Profile extends BaseRestResource
             ],
             'ProfileResponse' => [
                 'id'         => 'ProfileResponse',
-                'properties' => $_commonProfile,
+                'properties' => $commonProfile,
             ],
         ];
 

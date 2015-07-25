@@ -22,4 +22,16 @@ class UserConfig extends BaseServiceConfigModel implements ServiceConfigHandlerI
         'password_email_service_id',
         'password_email_template_id'
     ];
+
+    protected $casts = [
+        'allow_open_registration'    => 'boolean',
+        'service_id'                 => 'integer',
+        'open_reg_role_id'           => 'integer',
+        'open_reg_email_service_id'  => 'integer',
+        'open_reg_email_template_id' => 'integer',
+        'invite_email_service_id'    => 'integer',
+        'invite_email_template_id'   => 'integer',
+        'password_email_service_id'  => 'integer',
+        'password_email_template_id' => 'integer',
+    ];
 }

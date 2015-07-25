@@ -70,8 +70,8 @@ class User extends BaseRestService
             $resource = $this->instantiateResource($className, $resourceInfo);
 
             $name = ArrayUtils::get($resourceInfo, 'name', '') . '/';
-            $_access = $this->getPermissions($name);
-            if (!empty($_access)) {
+            $access = $this->getPermissions($name);
+            if (!empty($access)) {
                 $results = $resource->getApiDocInfo();
                 if (isset($results, $results['apis'])) {
                     $apis = array_merge($apis, $results['apis']);
