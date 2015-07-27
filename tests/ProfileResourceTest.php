@@ -1,8 +1,9 @@
 <?php
+use DreamFactory\Core\Enums\ApiOptions;
 use DreamFactory\Core\Utility\ServiceHandler;
-use DreamFactory\Library\Utility\Enums\Verbs;
 use DreamFactory\Core\Utility\Session;
 use DreamFactory\Core\Models\User;
+use DreamFactory\Library\Utility\Enums\Verbs;
 use Illuminate\Support\Arr;
 
 class ProfileResourceTest extends \DreamFactory\Core\Testing\TestCase
@@ -108,7 +109,7 @@ class ProfileResourceTest extends \DreamFactory\Core\Testing\TestCase
         $rs = $this->makeRequest(
             Verbs::POST,
             'user',
-            ['fields' => '*', 'related' => 'user_lookup_by_user_id'],
+            [ApiOptions::FIELDS => '*', ApiOptions::RELATED => 'user_lookup_by_user_id'],
             $payload
         );
         $this->service = ServiceHandler::getService($this->serviceId);

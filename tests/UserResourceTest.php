@@ -1,6 +1,7 @@
 <?php
 
 use DreamFactory\Library\Utility\Enums\Verbs;
+use DreamFactory\Core\Enums\ApiOptions;
 use DreamFactory\Core\Utility\Session;
 use Illuminate\Support\Arr;
 
@@ -35,7 +36,7 @@ class UserResourceTest extends \DreamFactory\Core\Testing\UserResourceTestCase
         $user2 = $this->createUser(2);
         $user3 = $this->createUser(3);
 
-        $rs = $this->makeRequest(Verbs::GET, static::RESOURCE, ['limit' => 3]);
+        $rs = $this->makeRequest(Verbs::GET, static::RESOURCE, [ApiOptions::LIMIT => 3]);
         $content = $rs->getContent();
 
         $this->assertEquals(3, count($content[static::$wrapper]));
@@ -43,7 +44,7 @@ class UserResourceTest extends \DreamFactory\Core\Testing\UserResourceTestCase
         $idsOut = implode(',', array_column($content[static::$wrapper], 'id'));
         $this->assertEquals(implode(',', array_column([$user1, $user2, $user3], 'id')), $idsOut);
 
-        $rs = $this->makeRequest(Verbs::GET, static::RESOURCE, ['limit' => 3, 'offset' => 1]);
+        $rs = $this->makeRequest(Verbs::GET, static::RESOURCE, [ApiOptions::LIMIT => 3, ApiOptions::OFFSET => 1]);
         $content = $rs->getContent();
 
         $this->assertEquals(2, count($content[static::$wrapper]));
@@ -51,7 +52,7 @@ class UserResourceTest extends \DreamFactory\Core\Testing\UserResourceTestCase
         $idsOut = implode(',', array_column($content[static::$wrapper], 'id'));
         $this->assertEquals(implode(',', array_column([$user2, $user3], 'id')), $idsOut);
 
-        $rs = $this->makeRequest(Verbs::GET, static::RESOURCE, ['limit' => 2, 'offset' => 2]);
+        $rs = $this->makeRequest(Verbs::GET, static::RESOURCE, [ApiOptions::LIMIT => 2, ApiOptions::OFFSET => 2]);
         $content = $rs->getContent();
 
         $this->assertEquals(1, count($content[static::$wrapper]));
@@ -81,6 +82,7 @@ class UserResourceTest extends \DreamFactory\Core\Testing\UserResourceTestCase
             $records = $records[static::$wrapper];
         }
         foreach ($records as $user) {
+            /** @type \DreamFactory\Core\Models\User $userModel */
             $userModel = \DreamFactory\Core\Models\User::find($user['id']);
 
             if ($userModel->is_sys_admin) {

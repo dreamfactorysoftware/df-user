@@ -2,6 +2,7 @@
 
 namespace DreamFactory\Core\User\Models;
 
+use DreamFactory\Core\Enums\ApiOptions;
 use DreamFactory\Core\Exceptions\BadRequestException;
 use DreamFactory\Core\Models\BaseCustomModel;
 use DreamFactory\Library\Utility\ArrayUtils;
@@ -195,8 +196,8 @@ class UserCustom extends BaseCustomModel
     {
         $pk = 'name';
         $id = $model->{$pk};
-        $fields = ArrayUtils::get($params, 'fields', $pk);
-        $related = ArrayUtils::get($params, 'related');
+        $fields = ArrayUtils::get($params, ApiOptions::FIELDS, $pk);
+        $related = ArrayUtils::get($params, ApiOptions::RELATED);
 
         if ($pk === $fields && empty($related)) {
             return [$pk => $id];
