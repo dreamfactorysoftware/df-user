@@ -1,0 +1,41 @@
+<?php
+
+namespace DreamFactory\Core\User\Database\Seeds;
+
+use DreamFactory\Core\Database\Seeds\BaseModelSeeder;
+use DreamFactory\Core\Models\EmailTemplate;
+use DreamFactory\Core\Models\Service;
+
+class UserServiceSeeder extends BaseModelSeeder
+{
+    protected $modelClass = Service::class;
+
+    protected $records = [
+        [
+            'name'        => 'user',
+            'label'       => 'User Management',
+            'description' => 'Service for managing system users.',
+            'is_active'   => true,
+            'type'        => 'user',
+            'mutable'     => true,
+            'deletable'   => false,
+        ]
+    ];
+
+    protected function getRecordExtras()
+    {
+        $emailService = Service::whereName('email')->first();
+        $emailTemplateInvite = EmailTemplate::whereName('User Invite Default')->first();
+        $emailTemplatePassword = EmailTemplate::whereName('Password Reset Default')->first();
+
+        return [
+            'config' => [
+                'allow_open_registration'    => false,
+                'invite_email_service_id'    => (!empty($emailService)) ? $emailService->id : null,
+                'invite_email_template_id'   => (!empty($emailTemplateInvite)) ? $emailTemplateInvite->id : null,
+                'password_email_service_id'  => (!empty($emailService)) ? $emailService->id : null,
+                'password_email_template_id' => (!empty($emailTemplatePassword)) ? $emailTemplatePassword->id : null,
+            ]
+        ];
+    }
+}
