@@ -152,9 +152,7 @@ class User extends BaseSystemResource
                     'last_name'             => $user->last_name,
                     'confirm_code'          => $user->confirm_code,
                     'display_name'          => $user->name,
-                    'from_name'             => $currentUser->first_name . ' ' . $currentUser->last_name,
-                    'df.name'               => gethostname(),
-                    'df.confirm_invite_url' => url('/dreamfactory/dist/#/user-invite')
+                    'from_name'             => $currentUser->first_name . ' ' . $currentUser->last_name
                 ];
             } catch (\Exception $e) {
                 throw new InternalServerErrorException("Error creating user invite.\n{$e->getMessage()}",
