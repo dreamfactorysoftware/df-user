@@ -57,7 +57,7 @@ class Password extends UserPasswordResource
                 $data['last_name'] = $user->last_name;
                 $data['name'] = $user->name;
                 $data['confirm_code'] = $user->confirm_code;
-                $data['link'] = url('password/reset/' . urlencode($user->confirm_code));
+                $data['df.confirm_reset_url'] = url('/dreamfactory/dist/#/reset-password');
 
                 $emailService->sendEmail($data, ArrayUtils::get($data, 'body_text'),
                     ArrayUtils::get($data, 'body_html'));
