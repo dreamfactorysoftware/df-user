@@ -17,7 +17,7 @@ class EmailTemplateSeeder extends BaseModelSeeder
             'body_html'   => 'Hi {first_name},<br/>
                             You have been invited to {df.name}. Go to the following url, enter the code below, and set your password to confirm your account.<br/>
                             <br/>
-                            {df.confirm_invite_url}<br/>
+                            {df.confirm_invite_url}?code={confirm_code}<br/>
                             <br/>
                             Confirmation Code: {confirm_code}<br/>
                             <br/>
@@ -33,7 +33,7 @@ class EmailTemplateSeeder extends BaseModelSeeder
             'body_html'   => 'Hi {first_name},<br/>
                             You have registered as a {df.name} user. Go to the following url, enter the code below, and set your password to confirm your account.<br/>
                             <br/>
-                            {df.confirm_register_url}<br/>
+                            {df.confirm_register_url}?code={confirm_code}<br/>
                             <br/>
                             Confirmation Code: {confirm_code}<br/>
                             <br/>
@@ -50,7 +50,7 @@ class EmailTemplateSeeder extends BaseModelSeeder
                             <br/>
                             You have requested to reset your password. Go to the following url, enter the code below, and set your new password.<br/>
                             <br/>
-                            {df.confirm_reset_url}<br/>
+                            {df.confirm_reset_url}?code={confirm_code}<br/>
                             <br/>
                             Confirmation Code: {confirm_code}<br/>
                             <br/>
