@@ -4,6 +4,7 @@ namespace DreamFactory\Core\User\Models;
 use DreamFactory\Core\Contracts\ServiceConfigHandlerInterface;
 use DreamFactory\Core\Models\BaseServiceConfigModel;
 use DreamFactory\Core\Models\SingleRecordModel;
+use DreamFactory\Core\Models\Role;
 
 class UserConfig extends BaseServiceConfigModel implements ServiceConfigHandlerInterface
 {
@@ -34,4 +35,30 @@ class UserConfig extends BaseServiceConfigModel implements ServiceConfigHandlerI
         'password_email_service_id'  => 'integer',
         'password_email_template_id' => 'integer',
     ];
+
+    /**
+     * @param array $schema
+     */
+    protected static function prepareConfigSchemaField(array &$schema)
+    {
+        $roles = Role::whereIsActive(1)->get();
+        $roleList = [];
+
+        foreach($roles as $role){
+            $roleList[] = [
+                'label' => $role->name,
+                'name'  => $role->id
+            ];
+        }
+
+        parent::prepareConfigSchemaField($schema);
+
+        switch ($schema['name']) {
+            case 'open_reg_role_id':
+                $schema['type'] = 'picklist';
+                $schema['values'] = $roleList;
+                $schema['description'] = 'Select a role for self registered users.';
+                break;
+        }
+    }
 }
