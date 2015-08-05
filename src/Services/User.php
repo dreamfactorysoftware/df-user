@@ -51,6 +51,25 @@ class User extends BaseRestService
     /**
      * {@inheritdoc}
      */
+    public function getAccessList()
+    {
+        $list = parent::getAccessList();
+        $nameField = $this->getResourceIdentifier();
+        foreach ($this->getResources() as $resource)
+        {
+            $name = ArrayUtils::get($resource, $nameField);
+            if (!empty($this->getPermissions())) {
+                $list[] = $name . '/';
+                $list[] = $name . '/*';
+            }
+        }
+
+        return $list;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getApiDocInfo()
     {
         $base = parent::getApiDocInfo();
