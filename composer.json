@@ -36,5 +36,10 @@
     "psr-4": {
       "DreamFactory\\Core\\User\\": "src/"
     }
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-develop": "0.0.x-dev"
+    }
   }
 }
