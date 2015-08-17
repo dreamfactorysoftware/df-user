@@ -4,6 +4,7 @@ namespace DreamFactory\Core\User\Models;
 
 use DreamFactory\Core\Enums\ApiOptions;
 use DreamFactory\Core\Exceptions\BadRequestException;
+use DreamFactory\Core\Exceptions\NotFoundException;
 use DreamFactory\Core\Models\BaseCustomModel;
 use DreamFactory\Library\Utility\ArrayUtils;
 use DreamFactory\Core\Utility\Session as SessionUtility;
@@ -112,6 +113,7 @@ class UserCustom extends BaseCustomModel
      * @return array
      * @throws \DreamFactory\Core\Exceptions\BadRequestException
      * @throws \DreamFactory\Core\Exceptions\InternalServerErrorException
+     * @throws \DreamFactory\Core\Exceptions\NotFoundException
      */
     public static function updateInternal($id, $record, $params = [])
     {
@@ -132,7 +134,7 @@ class UserCustom extends BaseCustomModel
         $model = static::whereUserId($userId)->whereName($id)->first();
 
         if (!$model instanceof Model) {
-            throw new ModelNotFoundException('No model found for ' . $id);
+            throw new NotFoundException('No resource found for ' . $id);
         }
 
         $pk = $model->primaryKey;
@@ -156,6 +158,7 @@ class UserCustom extends BaseCustomModel
      * @return array
      * @throws \DreamFactory\Core\Exceptions\BadRequestException
      * @throws \DreamFactory\Core\Exceptions\InternalServerErrorException
+     * @throws \DreamFactory\Core\Exceptions\NotFoundException
      */
     public static function deleteInternal($id, $record, $params = [])
     {
@@ -173,7 +176,7 @@ class UserCustom extends BaseCustomModel
         $model = static::whereUserId($userId)->whereName($id)->first();
 
         if (!$model instanceof Model) {
-            throw new ModelNotFoundException('No model found for ' . $id);
+            throw new NotFoundException('No resource found for ' . $id);
         }
 
         try {
