@@ -1,7 +1,6 @@
 {
   "name": "dreamfactory/df-user",
   "description": "User Management package for DreamFactory.",
-  "minimum-stability": "dev",
   "keywords": [
     "dreamfactory",
     "dsp",
@@ -36,6 +35,11 @@
   "autoload": {
     "psr-4": {
       "DreamFactory\\Core\\User\\": "src/"
+    }
+  },
+  "extra": {
+    "branch-alias": {
+      "dev-develop": "0.0.x-dev"
     }
   }
 }
