@@ -1,11 +1,11 @@
 <?php
 namespace DreamFactory\Core\User\Resources;
 
+use DreamFactory\Core\Models\Service;
 use DreamFactory\Core\Resources\UserPasswordResource;
 use DreamFactory\Core\Models\User;
 use DreamFactory\Core\Exceptions\NotFoundException;
 use DreamFactory\Core\Exceptions\UnauthorizedException;
-use DreamFactory\Core\User\Models\UserConfig;
 use DreamFactory\Core\Exceptions\InternalServerErrorException;
 use DreamFactory\Core\Utility\ApiDocUtilities;
 use DreamFactory\Core\Utility\ServiceHandler;
@@ -22,14 +22,14 @@ class Password extends UserPasswordResource
     {
         $email = $user->email;
 
-        /** @var $config UserConfig */
-        $config = UserConfig::instance();
+        $userService = Service::getCachedByName('user');
+        $config = $userService['config'];
 
         if (empty($config)) {
-            throw new InternalServerErrorException('Unable to load system configuration.');
+            throw new InternalServerErrorException('Unable to load user service configuration.');
         }
 
-        $emailServiceId = $config->password_email_service_id;
+        $emailServiceId = $config['password_email_service_id'];
 
         if (!empty($emailServiceId)) {
 
@@ -42,7 +42,7 @@ class Password extends UserPasswordResource
                 }
 
                 $data = [];
-                $templateId = $config->password_email_template_id;
+                $templateId = $config['password_email_template_id'];
 
                 if (!empty($templateId)) {
                     $data = $emailService::getTemplateDataById($templateId);

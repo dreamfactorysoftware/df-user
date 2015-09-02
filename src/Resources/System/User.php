@@ -13,8 +13,8 @@ use DreamFactory\Core\Models\BaseSystemModel;
 use DreamFactory\Core\Resources\System\BaseSystemResource;
 use DreamFactory\Library\Utility\Enums\Verbs;
 use DreamFactory\Core\Exceptions\InternalServerErrorException;
-use DreamFactory\Core\User\Models\UserConfig;
 use DreamFactory\Core\Services\Email\BaseService as EmailService;
+use DreamFactory\Core\Models\Service;
 use Log;
 
 class User extends BaseSystemResource
@@ -112,15 +112,15 @@ class User extends BaseSystemResource
         }
 
         try {
-            /** @var $config UserConfig */
-            $config = UserConfig::instance();
+            $userService = Service::getCachedByName('user');
+            $config = $userService['config'];
 
             if (empty($config)) {
                 throw new InternalServerErrorException('Unable to load system configuration.');
             }
 
-            $emailServiceId = $config->invite_email_service_id;
-            $emailTemplateId = $config->invite_email_template_id;
+            $emailServiceId = $config['invite_email_service_id'];
+            $emailTemplateId = $config['invite_email_template_id'];
 
             if (empty($emailServiceId)) {
                 throw new InternalServerErrorException('No email service configured for user invite. See system configuration.');
