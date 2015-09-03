@@ -3,6 +3,7 @@ namespace DreamFactory\Core\User\Resources;
 
 use DreamFactory\Core\Enums\DataFormats;
 use DreamFactory\Core\Enums\HttpStatusCodes;
+use DreamFactory\Core\Exceptions\BadRequestException;
 use DreamFactory\Core\Resources\BaseRestResource;
 use DreamFactory\Core\Utility\ApiDocUtilities;
 use DreamFactory\Core\Utility\Session;
@@ -31,9 +32,10 @@ class Register extends BaseRestResource
     }
 
     /**
-     * Creates new user.
+     * Registers new user.
      *
-     * @return array|\DreamFactory\Core\Utility\ServiceResponse
+     * @return array
+     * @throws \DreamFactory\Core\Exceptions\BadRequestException
      */
     protected function handlePOST()
     {
@@ -62,15 +64,17 @@ class Register extends BaseRestResource
         if ($validator->fails()) {
             $messages = $validator->errors()->getMessages();
 
-            $messages = ['error' => $messages];
-
-            return ResponseFactory::create($messages, DataFormats::PHP_ARRAY, HttpStatusCodes::HTTP_BAD_REQUEST);
+            throw new BadRequestException('Validation failed', null, null, $messages);
         } else {
             $user = $registrar->create($data);
+
             if($login) {
                 Session::setUserInfoWithJWT($user);
+
+                return ['success' => true, 'session_token' => Session::getSessionToken()];
+            } else {
+                return ['success' => true];
             }
-            return ['success' => true, 'session_token' => Session::getSessionToken()];
         }
     }
 
