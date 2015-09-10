@@ -1,15 +1,14 @@
 <?php
 namespace DreamFactory\Core\User\Resources;
 
-use DreamFactory\Core\Enums\DataFormats;
-use DreamFactory\Core\Enums\HttpStatusCodes;
 use DreamFactory\Core\Exceptions\BadRequestException;
+use DreamFactory\Core\Exceptions\ForbiddenException;
+use DreamFactory\Core\Models\Service;
 use DreamFactory\Core\Resources\BaseRestResource;
 use DreamFactory\Core\Utility\ApiDocUtilities;
 use DreamFactory\Core\Utility\Session;
 use DreamFactory\Library\Utility\ArrayUtils;
 use DreamFactory\Library\Utility\Enums\Verbs;
-use DreamFactory\Core\Utility\ResponseFactory;
 use DreamFactory\Core\Components\Registrar;
 
 class Register extends BaseRestResource
@@ -36,9 +35,15 @@ class Register extends BaseRestResource
      *
      * @return array
      * @throws \DreamFactory\Core\Exceptions\BadRequestException
+     * @throws \DreamFactory\Core\Exceptions\ForbiddenException
      */
     protected function handlePOST()
     {
+        $userService = Service::getCachedByName('user');
+        if (!$userService['config']['allow_open_registration']){
+            throw new ForbiddenException('Open Registration is not enabled.');
+        }
+
         $payload = $this->getPayloadData();
         $login = $this->request->getParameterAsBool('login');
         $registrar = new Registrar();
