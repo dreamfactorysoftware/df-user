@@ -143,17 +143,16 @@ class User extends BaseSystemResource
                 $code = \Hash::make($email);
                 $user->confirm_code = base64_encode($code);
                 $user->save();
-                $currentUser = Session::user();
 
-                $data = [
-                    'to'                    => $email,
-                    'subject'               => 'Welcome to DreamFactory',
-                    'first_name'            => $user->first_name,
-                    'last_name'             => $user->last_name,
-                    'confirm_code'          => $user->confirm_code,
-                    'display_name'          => $user->name,
-                    'from_name'             => $currentUser->first_name . ' ' . $currentUser->last_name
-                ];
+                $data = array_merge($emailTemplate->toArray(), [
+                    'to'            => $email,
+                    'subject'       => 'Welcome to DreamFactory',
+                    'code'          => $user->confirm_code,
+                    'link'          => url(\Config::get('df.confirm_invite_url')) . '?code=' . $user->confirm_code,
+                    'firstName'     => $user->first_name,
+                    'contentHeader' => 'You are invited to try DreamFactory.',
+                    'instanceName'  => \Config::get('df.instance_name')
+                ]);
             } catch (\Exception $e) {
                 throw new InternalServerErrorException("Error creating user invite.\n{$e->getMessage()}",
                     $e->getCode());
