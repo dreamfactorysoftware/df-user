@@ -56,6 +56,14 @@ class Register extends BaseRestResource
             'password_confirmation' => ArrayUtils::get($payload, 'password_confirmation', $password)
         ];
 
+        if(empty($data['first_name'])){
+            list($username, $domain) = explode('@', $data['email']);
+            $data['first_name'] = $username;
+        }
+        if(empty($data['name'])){
+            $data['name'] = $data['first_name'] . ' ' . $data['last_name'];
+        }
+
         ArrayUtils::removeNull($data);
 
         /** @var \Illuminate\Validation\Validator $validator */
@@ -69,9 +77,13 @@ class Register extends BaseRestResource
             $user = $registrar->create($data);
 
             if($login) {
-                Session::setUserInfoWithJWT($user);
+                if($user->confirm_code !== 'y'){
+                    return ['success' => true, 'confirmation_required' => true];
+                } else {
+                    Session::setUserInfoWithJWT($user);
 
-                return ['success' => true, 'session_token' => Session::getSessionToken()];
+                    return ['success' => true, 'session_token' => Session::getSessionToken()];
+                }
             } else {
                 return ['success' => true];
             }
