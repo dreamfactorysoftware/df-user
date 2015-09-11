@@ -82,7 +82,7 @@ class Register extends BaseRestResource
             $user = $registrar->create($data);
 
             if($login) {
-                if($user->confirm_code !== 'y'){
+                if($user->confirm_code !== 'y' && !is_null($user->confirm_code)){
                     return ['success' => true, 'confirmation_required' => true];
                 } else {
                     Session::setUserInfoWithJWT($user);
