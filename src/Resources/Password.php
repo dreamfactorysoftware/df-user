@@ -53,10 +53,10 @@ class Password extends UserPasswordResource
                 }
 
                 $data['to'] = $email;
-                $data['first_name'] = $user->first_name;
-                $data['last_name'] = $user->last_name;
-                $data['name'] = $user->name;
-                $data['confirm_code'] = $user->confirm_code;
+                $data['contentHeader'] = 'Password Reset';
+                $data['firstName'] = $user->first_name;
+                $data['link'] = url(\Config::get('df.confirm_reset_url')) . '?code=' . $user->confirm_code;
+                $data['code'] = $user->confirm_code;
 
                 $emailService->sendEmail($data, ArrayUtils::get($data, 'body_text'),
                     ArrayUtils::get($data, 'body_html'));
