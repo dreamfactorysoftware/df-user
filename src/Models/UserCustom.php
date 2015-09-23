@@ -94,15 +94,13 @@ class UserCustom extends BaseCustomModel
     {
         $userId = SessionUtility::getCurrentUserId();
         $name = ArrayUtils::get($record, 'name');
-        $modelExists = static::whereName($name)->whereUserId($userId)->get()->toArray();
+        $modelExists = static::whereName($name)->whereUserId($userId)->first();
         if (!empty($modelExists)) {
-            throw new BadRequestException('A custom setting by name ' .
-                $name .
-                ' already exists. Please use a different name.');
+            return $modelExists->updateInternal($modelExists->name, $record, $params);
+        } else {
+            ArrayUtils::set($record, 'user_id', $userId);
+            return parent::createInternal($record, $params);
         }
-        ArrayUtils::set($record, 'user_id', $userId);
-
-        return parent::createInternal($record, $params);
     }
 
     /**
