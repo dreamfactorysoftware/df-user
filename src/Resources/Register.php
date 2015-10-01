@@ -2,8 +2,6 @@
 namespace DreamFactory\Core\User\Resources;
 
 use DreamFactory\Core\Exceptions\BadRequestException;
-use DreamFactory\Core\Exceptions\ForbiddenException;
-use DreamFactory\Core\Models\Service;
 use DreamFactory\Core\Resources\BaseRestResource;
 use DreamFactory\Core\Utility\ApiDocUtilities;
 use DreamFactory\Core\Utility\Session;
@@ -39,11 +37,6 @@ class Register extends BaseRestResource
      */
     protected function handlePOST()
     {
-        $userService = Service::getCachedByName('user');
-        if (!$userService['config']['allow_open_registration']){
-            throw new ForbiddenException('Open Registration is not enabled.');
-        }
-
         $payload = $this->getPayloadData();
         $login = $this->request->getParameterAsBool('login');
         $registrar = new Registrar();
