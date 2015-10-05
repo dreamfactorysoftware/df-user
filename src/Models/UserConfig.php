@@ -3,6 +3,8 @@ namespace DreamFactory\Core\User\Models;
 
 use DreamFactory\Core\Contracts\ServiceConfigHandlerInterface;
 use DreamFactory\Core\Models\BaseServiceConfigModel;
+use DreamFactory\Core\Models\EmailTemplate;
+use DreamFactory\Core\Models\Service;
 use DreamFactory\Core\Models\SingleRecordModel;
 use DreamFactory\Core\Models\Role;
 
@@ -41,23 +43,58 @@ class UserConfig extends BaseServiceConfigModel implements ServiceConfigHandlerI
      */
     protected static function prepareConfigSchemaField(array &$schema)
     {
-        $roles = Role::whereIsActive(1)->get();
-        $roleList = [];
-
-        foreach($roles as $role){
-            $roleList[] = [
-                'label' => $role->name,
-                'name'  => $role->id
-            ];
-        }
-
         parent::prepareConfigSchemaField($schema);
 
+        $roleList = [];
+        $emailSvcList = [];
+        $templateList = [];
         switch ($schema['name']) {
             case 'open_reg_role_id':
+                $roles = Role::whereIsActive(1)->get();
+                foreach ($roles as $role) {
+                    $roleList[] = [
+                        'label' => $role->name,
+                        'name'  => $role->id
+                    ];
+                }
                 $schema['type'] = 'picklist';
                 $schema['values'] = $roleList;
                 $schema['description'] = 'Select a role for self registered users.';
+                break;
+            case 'open_reg_email_service_id':
+            case 'invite_email_service_id':
+            case 'password_email_service_id':
+                $services = Service::whereIsActive(1)
+                    ->whereIn('type', ['aws_ses', 'smtp_email', 'mailgun_email', 'mandrill_email', 'local_email'])
+                    ->get();
+                foreach ($services as $service) {
+                    $emailSvcList[] = [
+                        'label' => $service->label,
+                        'name'  => $service->id
+                    ];
+                }
+                $schema['type'] = 'picklist';
+                $schema['values'] = $emailSvcList;
+                $schema['description'] =
+                    'Select an Email service for sending out ' .
+                    substr($schema['label'], 0, strlen($schema['label']) - 11) .
+                    '.';
+                break;
+            case 'open_reg_email_template_id':
+            case 'invite_email_template_id':
+            case 'password_email_template_id':
+                $templates = EmailTemplate::get();
+                foreach ($templates as $template) {
+                    $templateList[] = [
+                        'label' => $template->name,
+                        'name'  => $template->id
+                    ];
+                }
+                $schema['type'] = 'picklist';
+                $schema['values'] = $templateList;
+                $schema['description'] = 'Select an Email template to use for ' .
+                    substr($schema['label'], 0, strlen($schema['label']) - 11) .
+                    '.';
                 break;
         }
     }
