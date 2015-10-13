@@ -54,11 +54,20 @@ class Register extends BaseRestResource
             'password_confirmation' => ArrayUtils::get($payload, 'password_confirmation', $password)
         ];
 
-        if(empty($data['first_name'])){
+        if (empty($data['first_name'])) {
             list($username, $domain) = explode('@', $data['email']);
             $data['first_name'] = $username;
         }
-        if(empty($data['name'])){
+        if (empty($data['last_name'])) {
+            $names = explode('.', $data['first_name']);
+            if (isset($names[1])) {
+                $data['last_name'] = $names[1];
+                $data['first_name'] = $names[0];
+            } else {
+                $data['last_name'] = $names[0];
+            }
+        }
+        if (empty($data['name'])) {
             $data['name'] = $data['first_name'] . ' ' . $data['last_name'];
         }
 
@@ -74,8 +83,8 @@ class Register extends BaseRestResource
         } else {
             $user = $registrar->create($data);
 
-            if($login) {
-                if($user->confirm_code !== 'y' && !is_null($user->confirm_code)){
+            if ($login) {
+                if ($user->confirm_code !== 'y' && !is_null($user->confirm_code)) {
                     return ['success' => true, 'confirmation_required' => true];
                 } else {
                     Session::setUserInfoWithJWT($user);

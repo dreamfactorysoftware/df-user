@@ -45,9 +45,24 @@ class UserConfig extends BaseServiceConfigModel implements ServiceConfigHandlerI
     {
         parent::prepareConfigSchemaField($schema);
 
-        $roleList = [];
-        $emailSvcList = [];
-        $templateList = [];
+        $roleList = [
+            [
+                'label'=>'',
+                'name'=>null
+            ]
+        ];
+        $emailSvcList = [
+            [
+                'label'=>'',
+                'name'=>null
+            ]
+        ];
+        $templateList = [
+            [
+                'label'=>'',
+                'name'=>null
+            ]
+        ];
         switch ($schema['name']) {
             case 'open_reg_role_id':
                 $roles = Role::whereIsActive(1)->get();
@@ -59,11 +74,13 @@ class UserConfig extends BaseServiceConfigModel implements ServiceConfigHandlerI
                 }
                 $schema['type'] = 'picklist';
                 $schema['values'] = $roleList;
+                $schema['label'] = 'Open Reg Role';
                 $schema['description'] = 'Select a role for self registered users.';
                 break;
             case 'open_reg_email_service_id':
             case 'invite_email_service_id':
             case 'password_email_service_id':
+                $label = substr($schema['label'], 0, strlen($schema['label']) - 11);
                 $services = Service::whereIsActive(1)
                     ->whereIn('type', ['aws_ses', 'smtp_email', 'mailgun_email', 'mandrill_email', 'local_email'])
                     ->get();
@@ -75,14 +92,16 @@ class UserConfig extends BaseServiceConfigModel implements ServiceConfigHandlerI
                 }
                 $schema['type'] = 'picklist';
                 $schema['values'] = $emailSvcList;
+                $schema['label'] = $label.' Service';
                 $schema['description'] =
                     'Select an Email service for sending out ' .
-                    substr($schema['label'], 0, strlen($schema['label']) - 11) .
+                    $label .
                     '.';
                 break;
             case 'open_reg_email_template_id':
             case 'invite_email_template_id':
             case 'password_email_template_id':
+                $label = substr($schema['label'], 0, strlen($schema['label']) - 11);
                 $templates = EmailTemplate::get();
                 foreach ($templates as $template) {
                     $templateList[] = [
@@ -92,8 +111,9 @@ class UserConfig extends BaseServiceConfigModel implements ServiceConfigHandlerI
                 }
                 $schema['type'] = 'picklist';
                 $schema['values'] = $templateList;
+                $schema['label'] = $label.' Template';
                 $schema['description'] = 'Select an Email template to use for ' .
-                    substr($schema['label'], 0, strlen($schema['label']) - 11) .
+                    $label .
                     '.';
                 break;
         }
