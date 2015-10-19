@@ -54,49 +54,102 @@ class User extends BaseSystemResource
         return $data;
     }
 
-    protected function postProcess()
+    /**
+     * {@inheritdoc}
+     */
+    protected function handlePOST()
     {
-        $sendInvite = $this->request->getParameterAsBool('send_invite');
-
-        switch ($this->action) {
-            case Verbs::POST:
-            case Verbs::PUT:
-            case Verbs::PATCH:
-            case Verbs::MERGE:
-                if ($sendInvite) {
-                    $response = $this->response;
-
-                    if ($response instanceof ServiceResponseInterface) {
-                        $response = $response->getContent();
-                    }
-
-                    if (is_array($response)) {
-                        $records = ArrayUtils::get($response, ResourcesWrapper::DEFAULT_WRAPPER);
-                        if (ArrayUtils::isArrayNumeric($records)) {
-                            foreach ($records as $record) {
-                                $id = ArrayUtils::get($record, 'id');
-
-                                try {
-                                    static::sendInvite($id, ($this->action === Verbs::POST));
-                                } catch (\Exception $e) {
-                                    Log::error('Error processing user invitation: ' . $e->getMessage());
-                                }
-                            }
-                        } else {
-                            $id = ArrayUtils::get($response, 'id');
-                            if (empty($id)) {
-                                throw new InternalServerErrorException('Invalid user id in response.');
-                            }
-                            static::sendInvite($id, ($this->action === Verbs::POST));
-                        }
-                    }
-                }
-                break;
-        }
-
-        parent::postProcess();
+        return $this->handleInvitation(parent::handlePOST());
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    protected function handlePATCH()
+    {
+        return $this->handleInvitation(parent::handlePATCH());
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function handlePUT()
+    {
+        return $this->handleInvitation(parent::handlePUT());
+    }
+
+    /**
+     * @param $response
+     *
+     * @return mixed
+     * @throws \Exception
+     */
+    protected function handleInvitation($response)
+    {
+        try {
+            $sendInvite = $this->request->getParameterAsBool('send_invite');
+
+            switch ($this->action) {
+                case Verbs::POST:
+                case Verbs::PUT:
+                case Verbs::PATCH:
+                case Verbs::MERGE:
+                    if ($sendInvite) {
+                        if ($response instanceof ServiceResponseInterface) {
+                            $response = $response->getContent();
+                        }
+
+                        if (is_array($response)) {
+                            $records = ArrayUtils::get($response, ResourcesWrapper::DEFAULT_WRAPPER);
+                            if (ArrayUtils::isArrayNumeric($records)) {
+                                $passed = true;
+                                foreach ($records as $record) {
+                                    $id = ArrayUtils::get($record, 'id');
+
+                                    try {
+                                        static::sendInvite($id, ($this->action === Verbs::POST));
+                                    } catch (\Exception $e) {
+                                        if (count($records) === 1) {
+                                            throw $e;
+                                        } else {
+                                            $passed = false;
+                                            Log::error('Error processing invitation for user id ' .
+                                                $id .
+                                                ': ' .
+                                                $e->getMessage());
+                                        }
+                                    }
+                                }
+                                if (!$passed) {
+                                    throw new InternalServerErrorException('Not all users were created successfully. Check log for more details.');
+                                }
+                            } else {
+                                $id = ArrayUtils::get($response, 'id');
+                                if (empty($id)) {
+                                    throw new InternalServerErrorException('Invalid user id in response.');
+                                }
+                                static::sendInvite($id, ($this->action === Verbs::POST));
+                            }
+                        }
+                    }
+                    break;
+            }
+
+            return $response;
+        } catch (\Exception $ex) {
+            throw $ex;
+        }
+    }
+
+    /**
+     * @param            $userId
+     * @param bool|false $deleteOnError
+     *
+     * @throws \DreamFactory\Core\Exceptions\BadRequestException
+     * @throws \DreamFactory\Core\Exceptions\InternalServerErrorException
+     * @throws \DreamFactory\Core\Exceptions\NotFoundException
+     * @throws \Exception
+     */
     protected static function sendInvite($userId, $deleteOnError = false)
     {
         /** @type BaseSystemModel $user */
@@ -122,7 +175,7 @@ class User extends BaseSystemResource
             $emailTemplateId = $config['invite_email_template_id'];
 
             if (empty($emailServiceId)) {
-                throw new InternalServerErrorException('No email service configured for user invite. See system configuration.');
+                throw new InternalServerErrorException('No email service configured for user invite.');
             }
 
             if (empty($emailTemplateId)) {
@@ -153,7 +206,7 @@ class User extends BaseSystemResource
                     'instanceName'  => \Config::get('df.instance_name')
                 ]);
             } catch (\Exception $e) {
-                throw new InternalServerErrorException("Error creating user invite.\n{$e->getMessage()}",
+                throw new InternalServerErrorException("Error creating user invite. {$e->getMessage()}",
                     $e->getCode());
             }
 
@@ -162,7 +215,7 @@ class User extends BaseSystemResource
             if ($deleteOnError) {
                 $user->delete();
             }
-            throw new InternalServerErrorException("Error processing user invite.\n{$e->getMessage()}", $e->getCode());
+            throw new InternalServerErrorException("Error processing user invite. {$e->getMessage()}", $e->getCode());
         }
     }
 }
