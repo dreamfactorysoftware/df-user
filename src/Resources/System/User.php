@@ -28,9 +28,9 @@ class User extends BaseSystemResource
         $condition = ArrayUtils::get($criteria, 'condition');
 
         if (!empty($condition)) {
-            $condition .= ' AND is_sys_admin = "0" ';
+            $condition .= " AND is_sys_admin = '0'";
         } else {
-            $condition = ' is_sys_admin = "0" ';
+            $condition = " is_sys_admin = '0'";
         }
 
         ArrayUtils::set($criteria, 'condition', $condition);
@@ -195,15 +195,19 @@ class User extends BaseSystemResource
                 $code = \Hash::make($email);
                 $user->confirm_code = base64_encode($code);
                 $user->save();
+                $templateData = $emailTemplate->toArray();
 
-                $data = array_merge($emailTemplate->toArray(), [
-                    'to'            => $email,
-                    'subject'       => 'Welcome to DreamFactory',
-                    'code'          => $user->confirm_code,
-                    'link'          => url(\Config::get('df.confirm_invite_url')) . '?code=' . $user->confirm_code,
-                    'firstName'     => $user->first_name,
-                    'contentHeader' => 'You are invited to try DreamFactory.',
-                    'instanceName'  => \Config::get('df.instance_name')
+                $data = array_merge($templateData, [
+                    'to'             => $email,
+                    'confirm_code'   => $user->confirm_code,
+                    'link'           => url(\Config::get('df.confirm_invite_url')) . '?code=' . $user->confirm_code,
+                    'first_name'     => $user->first_name,
+                    'last_name'      => $user->last_name,
+                    'name'           => $user->name,
+                    'email'          => $user->email,
+                    'phone'          => $user->phone,
+                    'content_header' => ArrayUtils::get($templateData, 'subject', 'You are invited to try DreamFactory.'),
+                    'instance_name'  => \Config::get('df.instance_name')
                 ]);
             } catch (\Exception $e) {
                 throw new InternalServerErrorException("Error creating user invite. {$e->getMessage()}",
