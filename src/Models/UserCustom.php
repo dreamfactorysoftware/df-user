@@ -9,7 +9,6 @@ use DreamFactory\Core\Models\BaseCustomModel;
 use DreamFactory\Library\Utility\ArrayUtils;
 use DreamFactory\Core\Utility\Session as SessionUtility;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use DreamFactory\Core\Exceptions\InternalServerErrorException;
 
 /**
