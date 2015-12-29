@@ -206,7 +206,8 @@ class User extends BaseSystemResource
                     'name'           => $user->name,
                     'email'          => $user->email,
                     'phone'          => $user->phone,
-                    'content_header' => ArrayUtils::get($templateData, 'subject', 'You are invited to try DreamFactory.'),
+                    'content_header' => ArrayUtils::get($templateData, 'subject',
+                        'You are invited to try DreamFactory.'),
                     'instance_name'  => \Config::get('df.instance_name')
                 ]);
             } catch (\Exception $e) {
@@ -214,7 +215,15 @@ class User extends BaseSystemResource
                     $e->getCode());
             }
 
-            $emailService->sendEmail($data, $emailTemplate->body_text, $emailTemplate->body_html);
+            $bodyText = $emailTemplate->body_text;
+            if (empty($bodyText)) {
+                //Strip all html tags.
+                $bodyText = strip_tags($emailTemplate->body_html);
+                //Change any multi spaces to a single space for clarity.
+                $bodyText = preg_replace('/ +/', ' ', $bodyText);
+            }
+
+            $emailService->sendEmail($data, $bodyText, $emailTemplate->body_html);
         } catch (\Exception $e) {
             if ($deleteOnError) {
                 $user->delete();

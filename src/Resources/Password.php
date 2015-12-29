@@ -62,8 +62,15 @@ class Password extends UserPasswordResource
                 $data['link'] = url(\Config::get('df.confirm_reset_url')) . '?code=' . $user->confirm_code;
                 $data['confirm_code'] = $user->confirm_code;
 
-                $emailService->sendEmail($data, ArrayUtils::get($data, 'body_text'),
-                    ArrayUtils::get($data, 'body_html'));
+                $bodyHtml = ArrayUtils::get($data, 'body_html');
+                $bodyText = ArrayUtils::get($data, 'body_text');
+
+                if (empty($bodyText) && !empty($bodyHtml)) {
+                    $bodyText = strip_tags($bodyHtml);
+                    $bodyText = preg_replace('/ +/', ' ', $bodyText);
+                }
+
+                $emailService->sendEmail($data, $bodyText, $bodyHtml);
 
                 return true;
             } catch (\Exception $ex) {
