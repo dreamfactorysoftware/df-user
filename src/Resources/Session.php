@@ -1,67 +1,93 @@
 <?php
 namespace DreamFactory\Core\User\Resources;
 
+use DreamFactory\Core\Models\Service;
 use DreamFactory\Core\Resources\UserSessionResource;
-use DreamFactory\Core\Utility\ApiDocUtilities;
+use DreamFactory\Library\Utility\ArrayUtils;
+use DreamFactory\Library\Utility\Inflector;
 
 class Session extends UserSessionResource
 {
     /**
      * {@inheritdoc}
      */
-    public function getApiDocInfo()
+    public static function getApiDocInfo(Service $service, array $resource = [])
     {
-        $path = '/' . $this->getServiceName() . '/' . $this->getFullPathName();
-        $eventPath = $this->getServiceName() . '.' . $this->getFullPathName('.');
+        $serviceName = strtolower($service->name);
+        $capitalized = Inflector::camelize($service->name);
+        $class = trim(strrchr(static::class, '\\'), '\\');
+        $resourceName = strtolower(ArrayUtils::get($resource, 'name', $class));
+        $path = '/' . $serviceName . '/' . $resourceName;
+        $eventPath = $serviceName . '.' . $resourceName;
         $apis = [
-            [
-                'path'        => $path,
-                'operations'  => [
-                    [
-                        'method'           => 'GET',
-                        'summary'          => 'getSession() - Retrieve the current user session information.',
-                        'nickname'         => 'getSession',
-                        'event_name'       => [$eventPath . '.read'],
-                        'type'             => 'Session',
-                        'responseMessages' => ApiDocUtilities::getCommonResponses([401, 500]),
-                        'notes'            => 'Calling this refreshes the current session, or returns an error for timed-out or invalid sessions.',
-                    ],
-                    [
-                        'method'           => 'POST',
-                        'summary'          => 'login() - Login and create a new user session.',
-                        'nickname'         => 'login',
-                        'type'             => 'Session',
-                        'event_name'       => [$eventPath . '.create', 'user.login'],
-                        'parameters'       => [
-                            [
-                                'name'          => 'body',
-                                'description'   => 'Data containing name-value pairs used for logging into the system.',
-                                'allowMultiple' => false,
-                                'type'          => 'Login',
-                                'paramType'     => 'body',
-                                'required'      => true,
-                            ],
+            $path => [
+                'get'    => [
+                    'tags'        => [$serviceName],
+                    'summary'     => 'get'.$capitalized.'Session() - Retrieve the current user session information.',
+                    'operationId' => 'getSession'.$capitalized,
+                    'event_name'  => [$eventPath . '.read'],
+                    'type'        => 'Session',
+                    'responses'   => [
+                        '200'     => [
+                            'description' => 'Session',
+                            'schema'      => ['$ref' => '#/definitions/Session']
                         ],
-                        'responseMessages' => ApiDocUtilities::getCommonResponses([400, 500]),
-                        'notes'            => 'Calling this creates a new session and logs in the user.',
+                        'default' => [
+                            'description' => 'Error',
+                            'schema'      => ['$ref' => '#/definitions/Error']
+                        ]
                     ],
-                    [
-                        'method'           => 'DELETE',
-                        'summary'          => 'logout() - Logout and destroy the current user session.',
-                        'nickname'         => 'logout',
-                        'type'             => 'Success',
-                        'event_name'       => [$eventPath . '.delete', 'user.logout'],
-                        'responseMessages' => ApiDocUtilities::getCommonResponses([500]),
-                        'notes'            => 'Calling this deletes the current session and logs out the user.',
-                    ],
+                    'description' => 'Calling this refreshes the current session, or returns an error for timed-out or invalid sessions.',
                 ],
-                'description' => 'Operations on a user\'s session.',
+                'post'   => [
+                    'tags'        => [$serviceName],
+                    'summary'     => 'login'.$capitalized.'() - Login and create a new user session.',
+                    'operationId' => 'login'.$capitalized,
+                    'event_name'  => [$eventPath . '.create', 'user.login'],
+                    'parameters'  => [
+                        [
+                            'name'        => 'body',
+                            'description' => 'Data containing name-value pairs used for logging into the system.',
+                            'schema'      => ['$ref' => '#/definitions/Login'],
+                            'in'          => 'body',
+                            'required'    => true,
+                        ],
+                    ],
+                    'responses'   => [
+                        '200'     => [
+                            'description' => 'Session',
+                            'schema'      => ['$ref' => '#/definitions/Session']
+                        ],
+                        'default' => [
+                            'description' => 'Error',
+                            'schema'      => ['$ref' => '#/definitions/Error']
+                        ]
+                    ],
+                    'description' => 'Calling this creates a new session and logs in the user.',
+                ],
+                'delete' => [
+                    'tags'        => [$serviceName],
+                    'summary'     => 'logout'.$capitalized.'() - Logout and destroy the current user session.',
+                    'operationId' => 'logout'.$capitalized,
+                    'event_name'  => [$eventPath . '.delete', 'user.logout'],
+                    'responses'   => [
+                        '200'     => [
+                            'description' => 'Success',
+                            'schema'      => ['$ref' => '#/definitions/Success']
+                        ],
+                        'default' => [
+                            'description' => 'Error',
+                            'schema'      => ['$ref' => '#/definitions/Error']
+                        ]
+                    ],
+                    'description' => 'Calling this deletes the current session and logs out the user.',
+                ],
             ],
         ];
 
         $models = [
             'Session'    => [
-                'id'         => 'Session',
+                'type'       => 'object',
                 'properties' => [
                     'id'              => [
                         'type'        => 'string',
@@ -99,14 +125,14 @@ class Session extends UserSessionResource
                         'type'        => 'Array',
                         'description' => 'App groups and the containing apps.',
                         'items'       => [
-                            '$ref' => 'SessionApp',
+                            '$ref' => '#/definitions/SessionApp',
                         ],
                     ],
                     'no_group_apps'   => [
                         'type'        => 'Array',
                         'description' => 'Apps that are not in any app groups.',
                         'items'       => [
-                            '$ref' => 'SessionApp',
+                            '$ref' => '#/definitions/SessionApp',
                         ],
                     ],
                     'session_id'      => [
@@ -124,7 +150,7 @@ class Session extends UserSessionResource
                 ],
             ],
             'Login'      => [
-                'id'         => 'Login',
+                'type'       => 'object',
                 'properties' => [
                     'email'    => [
                         'type'     => 'string',
@@ -142,7 +168,7 @@ class Session extends UserSessionResource
                 ],
             ],
             'SessionApp' => [
-                'id'         => 'SessionApp',
+                'type'       => 'object',
                 'properties' => [
                     'id'                      => [
                         'type'        => 'integer',
@@ -185,6 +211,6 @@ class Session extends UserSessionResource
             ],
         ];
 
-        return ['apis' => $apis, 'models' => $models];
+        return ['paths' => $apis, 'definitions' => $models];
     }
 }

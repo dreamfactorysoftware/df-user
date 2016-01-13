@@ -7,11 +7,11 @@ use DreamFactory\Core\Models\User;
 use DreamFactory\Core\Exceptions\NotFoundException;
 use DreamFactory\Core\Exceptions\UnauthorizedException;
 use DreamFactory\Core\Exceptions\InternalServerErrorException;
-use DreamFactory\Core\Utility\ApiDocUtilities;
 use DreamFactory\Core\Utility\ServiceHandler;
 use DreamFactory\Core\Services\Email\BaseService as EmailService;
 use DreamFactory\Core\Exceptions\ServiceUnavailableException;
 use DreamFactory\Library\Utility\ArrayUtils;
+use DreamFactory\Library\Utility\Inflector;
 
 class Password extends UserPasswordResource
 {
@@ -101,62 +101,67 @@ class Password extends UserPasswordResource
     /**
      * {@inheritdoc}
      */
-    public function getApiDocInfo()
+    public static function getApiDocInfo(Service $service, array $resource = [])
     {
-        $path = '/' . $this->getServiceName() . '/' . $this->getFullPathName();
-        $eventPath = $this->getServiceName() . '.' . $this->getFullPathName('.');
+        $serviceName = strtolower($service->name);
+        $capitalized = Inflector::camelize($service->name);
+        $class = trim(strrchr(static::class, '\\'), '\\');
+        $resourceName = strtolower(ArrayUtils::get($resource, 'name', $class));
+        $path = '/' . $serviceName . '/' . $resourceName;
+        $eventPath = $serviceName . '.' . $resourceName;
         $apis = [
-            [
-                'path'        => $path,
-                'operations'  => [
-                    [
-                        'method'           => 'POST',
-                        'summary'          => 'changePassword() - Change or reset the current user\'s password.',
-                        'nickname'         => 'changePassword',
-                        'type'             => 'PasswordResponse',
-                        'event_name'       => $eventPath . '.update',
-                        'parameters'       => [
-                            [
-                                'name'          => 'reset',
-                                'description'   => 'Set to true to perform password reset.',
-                                'allowMultiple' => false,
-                                'type'          => 'boolean',
-                                'paramType'     => 'query',
-                                'required'      => false,
-                            ],
-                            [
-                                'name'          => 'login',
-                                'description'   => 'Login and create a session upon successful password reset.',
-                                'allowMultiple' => false,
-                                'type'          => 'boolean',
-                                'paramType'     => 'query',
-                                'required'      => false,
-                            ],
-                            [
-                                'name'          => 'body',
-                                'description'   => 'Data containing name-value pairs for password change.',
-                                'allowMultiple' => false,
-                                'type'          => 'PasswordRequest',
-                                'paramType'     => 'body',
-                                'required'      => true,
-                            ],
+            $path => [
+                'post' => [
+                    'tags'        => [$serviceName],
+                    'summary'     => 'change'.$capitalized.'Password() - Change or reset the current user\'s password.',
+                    'operationId' => 'change'.$capitalized.'Password',
+                    'event_name'  => $eventPath . '.update',
+                    'parameters'  => [
+                        [
+                            'name'        => 'reset',
+                            'description' => 'Set to true to perform password reset.',
+                            'type'        => 'boolean',
+                            'in'          => 'query',
+                            'required'    => false,
                         ],
-                        'responseMessages' => ApiDocUtilities::getCommonResponses([400, 401, 500]),
-                        'notes'            =>
-                            'A valid current session along with old and new password are required to change ' .
-                            'the password directly posting \'old_password\' and \'new_password\'. <br/>' .
-                            'To request password reset, post \'email\' and set \'reset\' to true. <br/>' .
-                            'To reset the password from an email confirmation, post \'email\', \'code\', and \'new_password\'. <br/>' .
-                            'To reset the password from a security question, post \'email\', \'security_answer\', and \'new_password\'.',
+                        [
+                            'name'        => 'login',
+                            'description' => 'Login and create a session upon successful password reset.',
+                            'type'        => 'boolean',
+                            'in'          => 'query',
+                            'required'    => false,
+                        ],
+                        [
+                            'name'        => 'body',
+                            'description' => 'Data containing name-value pairs for password change.',
+                            'schema'      => ['$ref' => '#/definitions/PasswordRequest'],
+                            'in'          => 'body',
+                            'required'    => true,
+                        ],
                     ],
+                    'responses'   => [
+                        '200'     => [
+                            'description' => 'Success',
+                            'schema'      => ['$ref' => '#/definitions/PasswordResponse']
+                        ],
+                        'default' => [
+                            'description' => 'Error',
+                            'schema'      => ['$ref' => '#/definitions/Error']
+                        ]
+                    ],
+                    'description' =>
+                        'A valid current session along with old and new password are required to change ' .
+                        'the password directly posting \'old_password\' and \'new_password\'. <br/>' .
+                        'To request password reset, post \'email\' and set \'reset\' to true. <br/>' .
+                        'To reset the password from an email confirmation, post \'email\', \'code\', and \'new_password\'. <br/>' .
+                        'To reset the password from a security question, post \'email\', \'security_answer\', and \'new_password\'.',
                 ],
-                'description' => 'Operations on a user\'s password.',
             ],
         ];
 
         $models = [
             'PasswordRequest'  => [
-                'id'         => 'PasswordRequest',
+                'type'       => 'object',
                 'properties' => [
                     'old_password' => [
                         'type'        => 'string',
@@ -177,7 +182,7 @@ class Password extends UserPasswordResource
                 ],
             ],
             'PasswordResponse' => [
-                'id'         => 'PasswordResponse',
+                'type'       => 'object',
                 'properties' => [
                     'security_question' => [
                         'type'        => 'string',
@@ -191,6 +196,6 @@ class Password extends UserPasswordResource
             ],
         ];
 
-        return ['apis' => $apis, 'models' => $models];
+        return ['paths' => $apis, 'definitions' => $models];
     }
 }
