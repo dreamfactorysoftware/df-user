@@ -63,7 +63,6 @@ class User extends BaseRestService
             $name = ArrayUtils::get($resource, $nameField);
             if (!empty($this->getPermissions())) {
                 $list[] = $name . '/';
-                $list[] = $name . '/*';
             }
         }
 
@@ -85,8 +84,7 @@ class User extends BaseRestService
             }
 
             $resourceName = ArrayUtils::get($resourceInfo, static::RESOURCE_IDENTIFIER);
-            $access = SessionUtility::getServicePermissions($service->name, $resourceName, ServiceRequestorTypes::API);
-            if (!empty($access)) {
+            if (SessionUtility::checkForAnyServicePermissions($service->name, $resourceName)) {
                 $results = $resourceClass::getApiDocInfo($service, $resourceInfo);
                 if (isset($results, $results['paths'])) {
                     $apis = array_merge($apis, $results['paths']);
