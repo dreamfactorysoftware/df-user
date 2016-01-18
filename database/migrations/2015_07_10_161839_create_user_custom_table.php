@@ -24,10 +24,6 @@ class CreateUserCustomTable extends Migration
                 $t->longText('value')->nullable();
                 $t->timestamp('created_date');
                 $t->timestamp('last_modified_date');
-                $t->integer('created_by_id')->unsigned()->nullable();
-                $t->foreign('created_by_id')->references('id')->on('user')->onDelete('set null');
-                $t->integer('last_modified_by_id')->unsigned()->nullable();
-                $t->foreign('last_modified_by_id')->references('id')->on('user')->onDelete('set null');
             }
         );
     }
