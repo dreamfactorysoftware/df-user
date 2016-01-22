@@ -1,20 +1,16 @@
 <?php
 namespace DreamFactory\Core\User\Services;
 
-use DreamFactory\Core\Enums\ServiceRequestorTypes;
 use DreamFactory\Core\Models\Service;
-use DreamFactory\Core\User\Models\UserCustom;
 use DreamFactory\Core\User\Resources\Custom;
 use DreamFactory\Core\Exceptions\InternalServerErrorException;
 use DreamFactory\Core\Services\BaseRestService;
-use DreamFactory\Core\Resources\BaseRestResource;
 use DreamFactory\Core\User\Resources\Password;
 use DreamFactory\Core\User\Resources\Profile;
 use DreamFactory\Core\User\Resources\Register;
 use DreamFactory\Core\User\Resources\Session;
 use DreamFactory\Core\Utility\Session as SessionUtility;
 use DreamFactory\Library\Utility\ArrayUtils;
-use DreamFactory\Library\Utility\Inflector;
 
 class User extends BaseRestService
 {
