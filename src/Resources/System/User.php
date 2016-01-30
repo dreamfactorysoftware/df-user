@@ -3,21 +3,26 @@ namespace DreamFactory\Core\User\Resources\System;
 
 use DreamFactory\Core\Contracts\ServiceResponseInterface;
 use DreamFactory\Core\Exceptions\BadRequestException;
+use DreamFactory\Core\Exceptions\InternalServerErrorException;
 use DreamFactory\Core\Exceptions\NotFoundException;
 use DreamFactory\Core\Models\EmailTemplate;
+use DreamFactory\Core\Models\Service;
+use DreamFactory\Core\Models\User as UserModel;
+use DreamFactory\Core\Resources\System\BaseSystemResource;
+use DreamFactory\Core\Services\Email\BaseService as EmailService;
 use DreamFactory\Core\Utility\ResourcesWrapper;
 use DreamFactory\Core\Utility\ServiceHandler;
 use DreamFactory\Library\Utility\ArrayUtils;
-use DreamFactory\Core\Models\BaseSystemModel;
-use DreamFactory\Core\Resources\System\BaseSystemResource;
 use DreamFactory\Library\Utility\Enums\Verbs;
-use DreamFactory\Core\Exceptions\InternalServerErrorException;
-use DreamFactory\Core\Services\Email\BaseService as EmailService;
-use DreamFactory\Core\Models\Service;
 use Log;
 
 class User extends BaseSystemResource
 {
+    /**
+     * @var string DreamFactory\Core\Models\BaseSystemModel Model Class name.
+     */
+    protected static $model = UserModel::class;
+
     /**
      * {@inheritdoc}
      */
@@ -43,8 +48,8 @@ class User extends BaseSystemResource
      */
     protected function retrieveById($id, array $related = [])
     {
-        /** @var BaseSystemModel $modelClass */
-        $modelClass = $this->model;
+        /** @var UserModel $modelClass */
+        $modelClass = static::$model;
         $criteria = $this->getSelectionCriteria();
         $fields = ArrayUtils::get($criteria, 'select');
         $model = $modelClass::whereIsSysAdmin(0)->with($related)->find($id, $fields);
@@ -152,8 +157,8 @@ class User extends BaseSystemResource
      */
     protected static function sendInvite($userId, $deleteOnError = false)
     {
-        /** @type BaseSystemModel $user */
-        $user = \DreamFactory\Core\Models\User::find($userId);
+        /** @type UserModel $user */
+        $user = UserModel::find($userId);
 
         if (empty($user)) {
             throw new NotFoundException('User not found with id ' . $userId . '.');
@@ -206,7 +211,8 @@ class User extends BaseSystemResource
                     'name'           => $user->name,
                     'email'          => $user->email,
                     'phone'          => $user->phone,
-                    'content_header' => ArrayUtils::get($templateData, 'subject', 'You are invited to try DreamFactory.'),
+                    'content_header' => ArrayUtils::get($templateData, 'subject',
+                        'You are invited to try DreamFactory.'),
                     'instance_name'  => \Config::get('df.instance_name')
                 ]);
             } catch (\Exception $e) {
@@ -214,7 +220,15 @@ class User extends BaseSystemResource
                     $e->getCode());
             }
 
-            $emailService->sendEmail($data, $emailTemplate->body_text, $emailTemplate->body_html);
+            $bodyText = $emailTemplate->body_text;
+            if (empty($bodyText)) {
+                //Strip all html tags.
+                $bodyText = strip_tags($emailTemplate->body_html);
+                //Change any multi spaces to a single space for clarity.
+                $bodyText = preg_replace('/ +/', ' ', $bodyText);
+            }
+
+            $emailService->sendEmail($data, $bodyText, $emailTemplate->body_html);
         } catch (\Exception $e) {
             if ($deleteOnError) {
                 $user->delete();
