@@ -3,11 +3,17 @@
 namespace DreamFactory\Core\User\Resources;
 
 use DreamFactory\Core\Exceptions\UnauthorizedException;
+use DreamFactory\Core\User\Models\UserCustom;
 use DreamFactory\Core\Utility\Session as SessionUtility;
 
 class Custom extends \DreamFactory\Core\Resources\System\Custom
 {
     const RESOURCE_NAME = 'custom';
+
+    /**
+     * @var string DreamFactory\Core\Models\BaseSystemModel Model Class name.
+     */
+    protected static $model = UserCustom::class;
 
     /**
      * {@inheritdoc}
