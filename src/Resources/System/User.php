@@ -33,7 +33,7 @@ class User extends BaseSystemResource
         $condition = ArrayUtils::get($criteria, 'condition');
 
         if (!empty($condition)) {
-            $condition .= " AND is_sys_admin = '0'";
+            $condition = "($condition) AND is_sys_admin = '0'";
         } else {
             $condition = " is_sys_admin = '0'";
         }
