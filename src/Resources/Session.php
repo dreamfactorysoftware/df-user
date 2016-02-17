@@ -22,12 +22,13 @@ class Session extends UserSessionResource
         $apis = [
             $path => [
                 'get'    => [
-                    'tags'        => [$serviceName],
-                    'summary'     => 'get'.$capitalized.'Session() - Retrieve the current user session information.',
-                    'operationId' => 'getSession'.$capitalized,
-                    'event_name'  => [$eventPath . '.read'],
-                    'type'        => 'Session',
-                    'responses'   => [
+                    'tags'              => [$serviceName],
+                    'summary'           => 'get' .
+                        $capitalized .
+                        'Session() - Retrieve the current user session information.',
+                    'operationId'       => 'getSession' . $capitalized,
+                    'x-publishedEvents' => [$eventPath . '.read'],
+                    'responses'         => [
                         '200'     => [
                             'description' => 'Session',
                             'schema'      => ['$ref' => '#/definitions/Session']
@@ -37,14 +38,14 @@ class Session extends UserSessionResource
                             'schema'      => ['$ref' => '#/definitions/Error']
                         ]
                     ],
-                    'description' => 'Calling this refreshes the current session, or returns an error for timed-out or invalid sessions.',
+                    'description'       => 'Calling this refreshes the current session, or returns an error for timed-out or invalid sessions.',
                 ],
                 'post'   => [
-                    'tags'        => [$serviceName],
-                    'summary'     => 'login'.$capitalized.'() - Login and create a new user session.',
-                    'operationId' => 'login'.$capitalized,
-                    'event_name'  => [$eventPath . '.create', 'user.login'],
-                    'parameters'  => [
+                    'tags'              => [$serviceName],
+                    'summary'           => 'login' . $capitalized . '() - Login and create a new user session.',
+                    'operationId'       => 'login' . $capitalized,
+                    'x-publishedEvents' => [$eventPath . '.create', 'user.login'],
+                    'parameters'        => [
                         [
                             'name'        => 'body',
                             'description' => 'Data containing name-value pairs used for logging into the system.',
@@ -53,7 +54,7 @@ class Session extends UserSessionResource
                             'required'    => true,
                         ],
                     ],
-                    'responses'   => [
+                    'responses'         => [
                         '200'     => [
                             'description' => 'Session',
                             'schema'      => ['$ref' => '#/definitions/Session']
@@ -63,14 +64,16 @@ class Session extends UserSessionResource
                             'schema'      => ['$ref' => '#/definitions/Error']
                         ]
                     ],
-                    'description' => 'Calling this creates a new session and logs in the user.',
+                    'description'       => 'Calling this creates a new session and logs in the user.',
                 ],
                 'delete' => [
-                    'tags'        => [$serviceName],
-                    'summary'     => 'logout'.$capitalized.'() - Logout and destroy the current user session.',
-                    'operationId' => 'logout'.$capitalized,
-                    'event_name'  => [$eventPath . '.delete', 'user.logout'],
-                    'responses'   => [
+                    'tags'              => [$serviceName],
+                    'summary'           => 'logout' .
+                        $capitalized .
+                        '() - Logout and destroy the current user session.',
+                    'operationId'       => 'logout' . $capitalized,
+                    'x-publishedEvents' => [$eventPath . '.delete', 'user.logout'],
+                    'responses'         => [
                         '200'     => [
                             'description' => 'Success',
                             'schema'      => ['$ref' => '#/definitions/Success']
@@ -80,7 +83,7 @@ class Session extends UserSessionResource
                             'schema'      => ['$ref' => '#/definitions/Error']
                         ]
                     ],
-                    'description' => 'Calling this deletes the current session and logs out the user.',
+                    'description'       => 'Calling this deletes the current session and logs out the user.',
                 ],
             ],
         ];
@@ -122,14 +125,14 @@ class Session extends UserSessionResource
                         'description' => 'Date timestamp of the last login for the current user.',
                     ],
                     'app_groups'      => [
-                        'type'        => 'Array',
+                        'type'        => 'array',
                         'description' => 'App groups and the containing apps.',
                         'items'       => [
                             '$ref' => '#/definitions/SessionApp',
                         ],
                     ],
                     'no_group_apps'   => [
-                        'type'        => 'Array',
+                        'type'        => 'array',
                         'description' => 'Apps that are not in any app groups.',
                         'items'       => [
                             '$ref' => '#/definitions/SessionApp',
@@ -151,14 +154,13 @@ class Session extends UserSessionResource
             ],
             'Login'      => [
                 'type'       => 'object',
+                'required'   => ['email', 'password'],
                 'properties' => [
                     'email'    => [
-                        'type'     => 'string',
-                        'required' => true,
+                        'type' => 'string'
                     ],
                     'password' => [
-                        'type'     => 'string',
-                        'required' => true,
+                        'type' => 'string'
                     ],
                     'duration' => [
                         'type'        => 'integer',
