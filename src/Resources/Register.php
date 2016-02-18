@@ -89,7 +89,8 @@ class Register extends BaseRestResource
                 if ($user->confirm_code !== 'y' && !is_null($user->confirm_code)) {
                     return ['success' => true, 'confirmation_required' => true];
                 } else {
-                    Session::setUserInfoWithJWT($user);
+                    $appId = Session::get('app.id');
+                    Session::setUserInfoWithJWT($user, false, $appId);
 
                     return ['success' => true, 'session_token' => Session::getSessionToken()];
                 }
