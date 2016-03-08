@@ -89,7 +89,8 @@ class Register extends BaseRestResource
                 if ($user->confirm_code !== 'y' && !is_null($user->confirm_code)) {
                     return ['success' => true, 'confirmation_required' => true];
                 } else {
-                    Session::setUserInfoWithJWT($user);
+                    $appId = Session::get('app.id');
+                    Session::setUserInfoWithJWT($user, false, $appId);
 
                     return ['success' => true, 'session_token' => Session::getSessionToken()];
                 }
@@ -110,27 +111,27 @@ class Register extends BaseRestResource
         $apis = [
             $path => [
                 'post' => [
-                    'tags'        => [$serviceName],
-                    'summary'     => 'register'.$capitalized.'() - Register a new user in the system.',
-                    'operationId' => 'register'.$capitalized,
-                    'event_name'  => [$eventPath . '.create'],
-                    'parameters'  => [
+                    'tags'              => [$serviceName],
+                    'summary'           => 'register' . $capitalized . '() - Register a new user in the system.',
+                    'operationId'       => 'register' . $capitalized,
+                    'x-publishedEvents' => [$eventPath . '.create'],
+                    'parameters'        => [
                         [
-                            'name'          => 'login',
-                            'description'   => 'Login and create a session upon successful registration.',
-                            'type'          => 'boolean',
-                            'in'            => 'query',
-                            'required'      => false,
+                            'name'        => 'login',
+                            'description' => 'Login and create a session upon successful registration.',
+                            'type'        => 'boolean',
+                            'in'          => 'query',
+                            'required'    => false,
                         ],
                         [
-                            'name'          => 'body',
-                            'description'   => 'Data containing name-value pairs for new user registration.',
-                            'schema'        => ['$ref' => '#/definitions/Register'],
-                            'in'            => 'body',
-                            'required'      => true,
+                            'name'        => 'body',
+                            'description' => 'Data containing name-value pairs for new user registration.',
+                            'schema'      => ['$ref' => '#/definitions/Register'],
+                            'in'          => 'body',
+                            'required'    => true,
                         ],
                     ],
-                    'responses'   => [
+                    'responses'         => [
                         '200'     => [
                             'description' => 'Success',
                             'schema'      => ['$ref' => '#/definitions/Success']
@@ -140,7 +141,7 @@ class Register extends BaseRestResource
                             'schema'      => ['$ref' => '#/definitions/Error']
                         ]
                     ],
-                    'description' =>
+                    'description'       =>
                         'The new user is created and, if required, sent an email for confirmation. ' .
                         'This also handles the registration confirmation by posting email, ' .
                         'confirmation code and new password.',
@@ -151,11 +152,11 @@ class Register extends BaseRestResource
         $models = [
             'Register' => [
                 'type'       => 'object',
+                'required'   => ['email'],
                 'properties' => [
                     'email'        => [
                         'type'        => 'string',
                         'description' => 'Email address of the new user.',
-                        'required'    => true,
                     ],
                     'first_name'   => [
                         'type'        => 'string',

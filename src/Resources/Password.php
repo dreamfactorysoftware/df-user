@@ -112,11 +112,13 @@ class Password extends UserPasswordResource
         $apis = [
             $path => [
                 'post' => [
-                    'tags'        => [$serviceName],
-                    'summary'     => 'change'.$capitalized.'Password() - Change or reset the current user\'s password.',
-                    'operationId' => 'change'.$capitalized.'Password',
-                    'event_name'  => $eventPath . '.update',
-                    'parameters'  => [
+                    'tags'              => [$serviceName],
+                    'summary'           => 'change' .
+                        $capitalized .
+                        'Password() - Change or reset the current user\'s password.',
+                    'operationId'       => 'change' . $capitalized . 'Password',
+                    'x-publishedEvents' => [$eventPath . '.update'],
+                    'parameters'        => [
                         [
                             'name'        => 'reset',
                             'description' => 'Set to true to perform password reset.',
@@ -139,7 +141,7 @@ class Password extends UserPasswordResource
                             'required'    => true,
                         ],
                     ],
-                    'responses'   => [
+                    'responses'         => [
                         '200'     => [
                             'description' => 'Success',
                             'schema'      => ['$ref' => '#/definitions/PasswordResponse']
@@ -149,7 +151,7 @@ class Password extends UserPasswordResource
                             'schema'      => ['$ref' => '#/definitions/Error']
                         ]
                     ],
-                    'description' =>
+                    'description'       =>
                         'A valid current session along with old and new password are required to change ' .
                         'the password directly posting \'old_password\' and \'new_password\'. <br/>' .
                         'To request password reset, post \'email\' and set \'reset\' to true. <br/>' .
