@@ -8,10 +8,18 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 
 ### Fixed
+
+## [0.2.3] - 2016-03-08
+### Fixed
+- Swagger documentation update to pass validation
 - Setting role properly for newly registered user using open registration.
 
 ## [0.2.2] - 2016-02-08
 ### Fixed
 - Fixed user search filter on 'Users' tab in admin app.
 
-[Unreleased]: https://github.com/dreamfactorysoftware/df-user/compare/0.2.2...HEAD
+[Unreleased]: https://github.com/dreamfactorysoftware/df-user/compare/0.2.3...HEAD
+[0.2.3]: https://github.com/dreamfactorysoftware/df-user/compare/0.2.2...0.2.3
+[0.2.2]: https://github.com/dreamfactorysoftware/df-user/compare/0.2.1...0.2.2
+[0.2.1]: https://github.com/dreamfactorysoftware/df-user/compare/0.2.0...0.2.1
+[0.2.0]: https://github.com/dreamfactorysoftware/df-user/compare/0.1.2...0.2.0
