@@ -117,18 +117,18 @@ class Register extends BaseRestResource
                     'x-publishedEvents' => [$eventPath . '.create'],
                     'parameters'        => [
                         [
-                            'name'        => 'login',
-                            'description' => 'Login and create a session upon successful registration.',
-                            'type'        => 'boolean',
-                            'in'          => 'query',
-                            'required'    => false,
-                        ],
-                        [
                             'name'        => 'body',
                             'description' => 'Data containing name-value pairs for new user registration.',
                             'schema'      => ['$ref' => '#/definitions/Register'],
                             'in'          => 'body',
                             'required'    => true,
+                        ],
+                        [
+                            'name'        => 'login',
+                            'description' => 'Login and create a session upon successful registration.',
+                            'type'        => 'boolean',
+                            'in'          => 'query',
+                            'required'    => false,
                         ],
                     ],
                     'responses'         => [

@@ -120,6 +120,13 @@ class Password extends UserPasswordResource
                     'x-publishedEvents' => [$eventPath . '.update'],
                     'parameters'        => [
                         [
+                            'name'        => 'body',
+                            'description' => 'Data containing name-value pairs for password change.',
+                            'schema'      => ['$ref' => '#/definitions/PasswordRequest'],
+                            'in'          => 'body',
+                            'required'    => true,
+                        ],
+                        [
                             'name'        => 'reset',
                             'description' => 'Set to true to perform password reset.',
                             'type'        => 'boolean',
@@ -132,13 +139,6 @@ class Password extends UserPasswordResource
                             'type'        => 'boolean',
                             'in'          => 'query',
                             'required'    => false,
-                        ],
-                        [
-                            'name'        => 'body',
-                            'description' => 'Data containing name-value pairs for password change.',
-                            'schema'      => ['$ref' => '#/definitions/PasswordRequest'],
-                            'in'          => 'body',
-                            'required'    => true,
                         ],
                     ],
                     'responses'         => [
