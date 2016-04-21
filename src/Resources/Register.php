@@ -1,16 +1,14 @@
 <?php
 namespace DreamFactory\Core\User\Resources;
 
-use DreamFactory\Core\Enums\DataFormats;
-use DreamFactory\Core\Enums\HttpStatusCodes;
 use DreamFactory\Core\Exceptions\BadRequestException;
+use DreamFactory\Core\Models\Service;
 use DreamFactory\Core\Resources\BaseRestResource;
-use DreamFactory\Core\Utility\ApiDocUtilities;
 use DreamFactory\Core\Utility\Session;
 use DreamFactory\Library\Utility\ArrayUtils;
 use DreamFactory\Library\Utility\Enums\Verbs;
-use DreamFactory\Core\Utility\ResponseFactory;
 use DreamFactory\Core\Components\Registrar;
+use DreamFactory\Library\Utility\Inflector;
 
 class Register extends BaseRestResource
 {
@@ -36,6 +34,7 @@ class Register extends BaseRestResource
      *
      * @return array
      * @throws \DreamFactory\Core\Exceptions\BadRequestException
+     * @throws \DreamFactory\Core\Exceptions\ForbiddenException
      */
     protected function handlePOST()
     {
@@ -56,6 +55,24 @@ class Register extends BaseRestResource
             'password_confirmation' => ArrayUtils::get($payload, 'password_confirmation', $password)
         ];
 
+        if (empty($data['first_name'])) {
+            /** @noinspection PhpUnusedLocalVariableInspection */
+            list($username, $domain) = explode('@', $data['email']);
+            $data['first_name'] = $username;
+        }
+        if (empty($data['last_name'])) {
+            $names = explode('.', $data['first_name']);
+            if (isset($names[1])) {
+                $data['last_name'] = $names[1];
+                $data['first_name'] = $names[0];
+            } else {
+                $data['last_name'] = $names[0];
+            }
+        }
+        if (empty($data['name'])) {
+            $data['name'] = $data['first_name'] . ' ' . $data['last_name'];
+        }
+
         ArrayUtils::removeNull($data);
 
         /** @var \Illuminate\Validation\Validator $validator */
@@ -68,67 +85,78 @@ class Register extends BaseRestResource
         } else {
             $user = $registrar->create($data);
 
-            if($login) {
-                Session::setUserInfoWithJWT($user);
+            if ($login) {
+                if ($user->confirm_code !== 'y' && !is_null($user->confirm_code)) {
+                    return ['success' => true, 'confirmation_required' => true];
+                } else {
+                    $appId = Session::get('app.id');
+                    Session::setUserInfoWithJWT($user, false, $appId);
 
-                return ['success' => true, 'session_token' => Session::getSessionToken()];
+                    return ['success' => true, 'session_token' => Session::getSessionToken()];
+                }
             } else {
                 return ['success' => true];
             }
         }
     }
 
-    public function getApiDocInfo()
+    public static function getApiDocInfo(Service $service, array $resource = [])
     {
-        $path = '/' . $this->getServiceName() . '/' . $this->getFullPathName();
-        $eventPath = $this->getServiceName() . '.' . $this->getFullPathName('.');
+        $serviceName = strtolower($service->name);
+        $capitalized = Inflector::camelize($service->name);
+        $class = trim(strrchr(static::class, '\\'), '\\');
+        $resourceName = strtolower(ArrayUtils::get($resource, 'name', $class));
+        $path = '/' . $serviceName . '/' . $resourceName;
+        $eventPath = $serviceName . '.' . $resourceName;
         $apis = [
-            [
-                'path'        => $path,
-                'operations'  => [
-                    [
-                        'method'           => 'POST',
-                        'summary'          => 'register() - Register a new user in the system.',
-                        'nickname'         => 'register',
-                        'type'             => 'Success',
-                        'event_name'       => [$eventPath . '.create'],
-                        'parameters'       => [
-                            [
-                                'name'          => 'login',
-                                'description'   => 'Login and create a session upon successful registration.',
-                                'allowMultiple' => false,
-                                'type'          => 'boolean',
-                                'paramType'     => 'query',
-                                'required'      => false,
-                            ],
-                            [
-                                'name'          => 'body',
-                                'description'   => 'Data containing name-value pairs for new user registration.',
-                                'allowMultiple' => false,
-                                'type'          => 'Register',
-                                'paramType'     => 'body',
-                                'required'      => true,
-                            ],
+            $path => [
+                'post' => [
+                    'tags'              => [$serviceName],
+                    'summary'           => 'register' . $capitalized . '() - Register a new user in the system.',
+                    'operationId'       => 'register' . $capitalized,
+                    'x-publishedEvents' => [$eventPath . '.create'],
+                    'parameters'        => [
+                        [
+                            'name'        => 'body',
+                            'description' => 'Data containing name-value pairs for new user registration.',
+                            'schema'      => ['$ref' => '#/definitions/Register'],
+                            'in'          => 'body',
+                            'required'    => true,
                         ],
-                        'responseMessages' => ApiDocUtilities::getCommonResponses([400, 500]),
-                        'notes'            =>
-                            'The new user is created and, if required, sent an email for confirmation. ' .
-                            'This also handles the registration confirmation by posting email, ' .
-                            'confirmation code and new password.',
+                        [
+                            'name'        => 'login',
+                            'description' => 'Login and create a session upon successful registration.',
+                            'type'        => 'boolean',
+                            'in'          => 'query',
+                            'required'    => false,
+                        ],
                     ],
+                    'responses'         => [
+                        '200'     => [
+                            'description' => 'Success',
+                            'schema'      => ['$ref' => '#/definitions/Success']
+                        ],
+                        'default' => [
+                            'description' => 'Error',
+                            'schema'      => ['$ref' => '#/definitions/Error']
+                        ]
+                    ],
+                    'description'       =>
+                        'The new user is created and, if required, sent an email for confirmation. ' .
+                        'This also handles the registration confirmation by posting email, ' .
+                        'confirmation code and new password.',
                 ],
-                'description' => 'Operations to register a new user.',
             ],
         ];
 
         $models = [
             'Register' => [
-                'id'         => 'Register',
+                'type'       => 'object',
+                'required'   => ['email'],
                 'properties' => [
                     'email'        => [
                         'type'        => 'string',
                         'description' => 'Email address of the new user.',
-                        'required'    => true,
                     ],
                     'first_name'   => [
                         'type'        => 'string',
@@ -154,6 +182,6 @@ class Register extends BaseRestResource
             ],
         ];
 
-        return ['apis' => $apis, 'models' => $models];
+        return ['paths' => $apis, 'definitions' => $models];
     }
 }

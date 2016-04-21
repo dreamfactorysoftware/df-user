@@ -16,8 +16,8 @@ class EmailServiceSeeder extends BaseModelSeeder
             'description' => 'Email service used for sending user invites and/or password reset confirmation.',
             'is_active'   => true,
             'type'        => 'local_email',
-            'mutable'     => false,
-            'deletable'   => false
+            'mutable'     => true,
+            'deletable'   => true
         ]
     ];
 }
