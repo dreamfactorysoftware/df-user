@@ -9,6 +9,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
+## [0.2.4] - 2016-04-21
+### Fixed
+- Swagger ordering.
+
 ## [0.2.3] - 2016-03-08
 ### Fixed
 - Swagger documentation update to pass validation
@@ -18,7 +22,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 - Fixed user search filter on 'Users' tab in admin app.
 
-[Unreleased]: https://github.com/dreamfactorysoftware/df-user/compare/0.2.3...HEAD
+[Unreleased]: https://github.com/dreamfactorysoftware/df-user/compare/0.2.4...HEAD
+[0.2.4]: https://github.com/dreamfactorysoftware/df-user/compare/0.2.3...0.2.4
 [0.2.3]: https://github.com/dreamfactorysoftware/df-user/compare/0.2.2...0.2.3
 [0.2.2]: https://github.com/dreamfactorysoftware/df-user/compare/0.2.1...0.2.2
 [0.2.1]: https://github.com/dreamfactorysoftware/df-user/compare/0.2.0...0.2.1
