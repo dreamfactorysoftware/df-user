@@ -1,5 +1,4 @@
 <?php
-use DreamFactory\Core\Utility\ServiceHandler;
 use DreamFactory\Library\Utility\Enums\Verbs;
 use DreamFactory\Core\Utility\Session;
 use DreamFactory\Core\Models\User;
@@ -55,7 +54,7 @@ class RegisterResourceTest extends \DreamFactory\Core\Testing\TestCase
         Session::set('role.name', 'test');
         Session::set('role.id', 1);
 
-        $this->service = ServiceHandler::getService('user');
+        $this->service = ServiceManager::getService('user');
         $r = $this->makeRequest(
             Verbs::POST,
             'session',

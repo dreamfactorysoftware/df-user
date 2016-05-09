@@ -11,10 +11,10 @@ use DreamFactory\Core\Models\User as UserModel;
 use DreamFactory\Core\Resources\System\BaseSystemResource;
 use DreamFactory\Core\Services\Email\BaseService as EmailService;
 use DreamFactory\Core\Utility\ResourcesWrapper;
-use DreamFactory\Core\Utility\ServiceHandler;
 use DreamFactory\Library\Utility\ArrayUtils;
 use DreamFactory\Library\Utility\Enums\Verbs;
 use Log;
+use ServiceManager;
 
 class User extends BaseSystemResource
 {
@@ -188,7 +188,7 @@ class User extends BaseSystemResource
             }
 
             /** @var EmailService $emailService */
-            $emailService = ServiceHandler::getServiceById($emailServiceId);
+            $emailService = ServiceManager::getServiceById($emailServiceId);
             $emailTemplate = EmailTemplate::find($emailTemplateId);
 
             if (empty($emailTemplate)) {
