@@ -7,11 +7,11 @@ use DreamFactory\Core\Models\User;
 use DreamFactory\Core\Exceptions\NotFoundException;
 use DreamFactory\Core\Exceptions\UnauthorizedException;
 use DreamFactory\Core\Exceptions\InternalServerErrorException;
-use DreamFactory\Core\Utility\ServiceHandler;
 use DreamFactory\Core\Services\Email\BaseService as EmailService;
 use DreamFactory\Core\Exceptions\ServiceUnavailableException;
 use DreamFactory\Library\Utility\ArrayUtils;
 use DreamFactory\Library\Utility\Inflector;
+use ServiceManager;
 
 class Password extends UserPasswordResource
 {
@@ -35,7 +35,7 @@ class Password extends UserPasswordResource
 
             try {
                 /** @var EmailService $emailService */
-                $emailService = ServiceHandler::getServiceById($emailServiceId);
+                $emailService = ServiceManager::getServiceById($emailServiceId);
 
                 if (empty($emailService)) {
                     throw new ServiceUnavailableException("Bad service identifier '$emailServiceId'.");
@@ -101,10 +101,10 @@ class Password extends UserPasswordResource
     /**
      * {@inheritdoc}
      */
-    public static function getApiDocInfo(Service $service, array $resource = [])
+    public static function getApiDocInfo($service, array $resource = [])
     {
-        $serviceName = strtolower($service->name);
-        $capitalized = Inflector::camelize($service->name);
+        $serviceName = strtolower($service);
+        $capitalized = Inflector::camelize($service);
         $class = trim(strrchr(static::class, '\\'), '\\');
         $resourceName = strtolower(ArrayUtils::get($resource, 'name', $class));
         $path = '/' . $serviceName . '/' . $resourceName;

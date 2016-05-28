@@ -1,7 +1,6 @@
 <?php
 use DreamFactory\Library\Utility\Enums\Verbs;
 use DreamFactory\Core\Enums\ApiOptions;
-use DreamFactory\Core\Utility\ServiceHandler;
 use DreamFactory\Core\Utility\Session;
 use Illuminate\Support\Arr;
 
@@ -112,7 +111,7 @@ class SessionResourceTest extends \DreamFactory\Core\Testing\TestCase
         Session::authenticate(['email' => $user['email'], 'password' => $this->user1['password']]);
 
         //Using a new instance here. Prev instance is set for user resource.
-        $this->service = ServiceHandler::getService('system');
+        $this->service = ServiceManager::getService('system');
 
         $this->setExpectedException('\DreamFactory\Core\Exceptions\UnauthorizedException');
         $this->makeRequest(Verbs::GET, 'admin/session');
@@ -173,12 +172,14 @@ class SessionResourceTest extends \DreamFactory\Core\Testing\TestCase
         $user = $this->{'user' . $num};
         $payload = json_encode([$user], JSON_UNESCAPED_SLASHES);
 
-        $this->service = ServiceHandler::getService('system');
+        $this->service = ServiceManager::getService('system');
         $rs =
-            $this->makeRequest(Verbs::POST, 'user', [ApiOptions::FIELDS => '*', ApiOptions::RELATED => 'user_lookup_by_user_id'], $payload);
-        $this->service = ServiceHandler::getService($this->serviceId);
+            $this->makeRequest(Verbs::POST, 'user',
+                [ApiOptions::FIELDS => '*', ApiOptions::RELATED => 'user_lookup_by_user_id'], $payload);
+        $this->service = ServiceManager::getService($this->serviceId);
 
         $data = $rs->getContent();
+
         return Arr::get($data, static::$wrapper . '.0');
     }
 

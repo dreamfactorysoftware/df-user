@@ -1,9 +1,9 @@
 <?php
 
-namespace DreamFactory\Core\User\Database\Seeds;
+namespace DreamFactory\Core\User\Models\Seeds;
 
 use DreamFactory\Core\Models\EmailTemplate;
-use DreamFactory\Core\Database\Seeds\BaseModelSeeder;
+use DreamFactory\Core\Models\Seeds\BaseModelSeeder;
 
 class EmailTemplateSeeder extends BaseModelSeeder
 {

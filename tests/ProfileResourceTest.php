@@ -1,6 +1,5 @@
 <?php
 use DreamFactory\Core\Enums\ApiOptions;
-use DreamFactory\Core\Utility\ServiceHandler;
 use DreamFactory\Core\Utility\Session;
 use DreamFactory\Core\Models\User;
 use DreamFactory\Library\Utility\Enums\Verbs;
@@ -105,14 +104,14 @@ class ProfileResourceTest extends \DreamFactory\Core\Testing\TestCase
         $user = $this->{'user' . $num};
         $payload = json_encode([$user], JSON_UNESCAPED_SLASHES);
 
-        $this->service = ServiceHandler::getService('system');
+        $this->service = ServiceManager::getService('system');
         $rs = $this->makeRequest(
             Verbs::POST,
             'user',
             [ApiOptions::FIELDS => '*', ApiOptions::RELATED => 'user_lookup_by_user_id'],
             $payload
         );
-        $this->service = ServiceHandler::getService($this->serviceId);
+        $this->service = ServiceManager::getService($this->serviceId);
 
         $data = $rs->getContent();
 

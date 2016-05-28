@@ -1,8 +1,8 @@
 <?php
 
-namespace DreamFactory\Core\User\Database\Seeds;
+namespace DreamFactory\Core\User\Models\Seeds;
 
-use DreamFactory\Core\Database\Seeds\BaseModelSeeder;
+use DreamFactory\Core\Models\Seeds\BaseModelSeeder;
 use DreamFactory\Core\Models\Service;
 
 class EmailServiceSeeder extends BaseModelSeeder

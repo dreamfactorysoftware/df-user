@@ -1,10 +1,9 @@
 <?php
 namespace DreamFactory\Core\User\Services;
 
-use DreamFactory\Core\Models\Service;
-use DreamFactory\Core\User\Resources\Custom;
 use DreamFactory\Core\Exceptions\InternalServerErrorException;
 use DreamFactory\Core\Services\BaseRestService;
+use DreamFactory\Core\User\Resources\Custom;
 use DreamFactory\Core\User\Resources\Password;
 use DreamFactory\Core\User\Resources\Profile;
 use DreamFactory\Core\User\Resources\Register;
@@ -65,9 +64,9 @@ class User extends BaseRestService
         return $list;
     }
 
-    public static function getApiDocInfo(Service $service)
+    public function getApiDocInfo()
     {
-        $base = parent::getApiDocInfo($service);
+        $base = parent::getApiDocInfo();
 
         $apis = [];
         $models = [];
@@ -80,8 +79,8 @@ class User extends BaseRestService
             }
 
             $resourceName = ArrayUtils::get($resourceInfo, static::RESOURCE_IDENTIFIER);
-            if (SessionUtility::checkForAnyServicePermissions($service->name, $resourceName)) {
-                $results = $resourceClass::getApiDocInfo($service, $resourceInfo);
+            if (SessionUtility::checkForAnyServicePermissions($this->name, $resourceName)) {
+                $results = $resourceClass::getApiDocInfo($this->name, $resourceInfo);
                 if (isset($results, $results['paths'])) {
                     $apis = array_merge($apis, $results['paths']);
                 }
