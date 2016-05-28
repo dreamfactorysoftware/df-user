@@ -9,6 +9,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 
+## [0.3.0] - 2016-05-27
+### Changed
+- Moved seeding functionality to service provider to adhere to df-core changes.
+
 ## [0.2.4] - 2016-04-21
 ### Fixed
 - Swagger ordering.
@@ -22,7 +26,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 - Fixed user search filter on 'Users' tab in admin app.
 
-[Unreleased]: https://github.com/dreamfactorysoftware/df-user/compare/0.2.4...HEAD
+[Unreleased]: https://github.com/dreamfactorysoftware/df-user/compare/0.3.0...HEAD
+[0.3.0]: https://github.com/dreamfactorysoftware/df-user/compare/0.2.4...0.3.0
 [0.2.4]: https://github.com/dreamfactorysoftware/df-user/compare/0.2.3...0.2.4
 [0.2.3]: https://github.com/dreamfactorysoftware/df-user/compare/0.2.2...0.2.3
 [0.2.2]: https://github.com/dreamfactorysoftware/df-user/compare/0.2.1...0.2.2
