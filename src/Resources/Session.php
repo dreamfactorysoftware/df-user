@@ -2,7 +2,6 @@
 namespace DreamFactory\Core\User\Resources;
 
 use DreamFactory\Core\Resources\UserSessionResource;
-use DreamFactory\Library\Utility\ArrayUtils;
 use DreamFactory\Library\Utility\Inflector;
 
 class Session extends UserSessionResource
@@ -15,7 +14,7 @@ class Session extends UserSessionResource
         $serviceName = strtolower($service);
         $capitalized = Inflector::camelize($service);
         $class = trim(strrchr(static::class, '\\'), '\\');
-        $resourceName = strtolower(ArrayUtils::get($resource, 'name', $class));
+        $resourceName = strtolower(array_get($resource, 'name', $class));
         $path = '/' . $serviceName . '/' . $resourceName;
         $eventPath = $serviceName . '.' . $resourceName;
         $apis = [

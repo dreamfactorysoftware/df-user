@@ -66,7 +66,7 @@ class UserCustom extends BaseCustomModel
         $criteria = static::cleanCriteria($criteria);
         $response = static::whereUserId($userId)->whereIn('name', $ids)->get()->toArray();
 
-        return static::cleanResult($response, ArrayUtils::get($criteria, 'select'));
+        return static::cleanResult($response, array_get($criteria, 'select'));
     }
 
     /**
@@ -78,7 +78,7 @@ class UserCustom extends BaseCustomModel
         $criteria = static::cleanCriteria($criteria);
         $response = static::whereUserId($userId)->get()->toArray();
 
-        return static::cleanResult($response, ArrayUtils::get($criteria, 'select'));
+        return static::cleanResult($response, array_get($criteria, 'select'));
     }
 
     /**
@@ -92,12 +92,12 @@ class UserCustom extends BaseCustomModel
     protected static function createInternal($record, $params = [])
     {
         $userId = SessionUtility::getCurrentUserId();
-        $name = ArrayUtils::get($record, 'name');
+        $name = array_get($record, 'name');
         $modelExists = static::whereName($name)->whereUserId($userId)->first();
         if (!empty($modelExists)) {
             return $modelExists->updateInternal($modelExists->name, $record, $params);
         } else {
-            ArrayUtils::set($record, 'user_id', $userId);
+            $record['user_id'] = $userId;
             return parent::createInternal($record, $params);
         }
     }
@@ -125,9 +125,9 @@ class UserCustom extends BaseCustomModel
         }
 
         $userId = SessionUtility::getCurrentUserId();
-        ArrayUtils::set($record, 'user_id', $userId);
-        //Making sure name is not changed during update as it not be unique.
-        ArrayUtils::set($record, 'name', $id);
+        $record['user_id'] = $userId;
+        // Making sure name is not changed during update as it not be unique.
+        $record['name'] = $id;
         $model = static::whereUserId($userId)->whereName($id)->first();
 
         if (!$model instanceof Model) {
@@ -196,8 +196,8 @@ class UserCustom extends BaseCustomModel
     {
         $pk = 'name';
         $id = $model->{$pk};
-        $fields = ArrayUtils::get($params, ApiOptions::FIELDS, $pk);
-        $related = ArrayUtils::get($params, ApiOptions::RELATED);
+        $fields = array_get($params, ApiOptions::FIELDS, $pk);
+        $related = array_get($params, ApiOptions::RELATED);
 
         if ($pk === $fields && empty($related)) {
             return [$pk => $id];

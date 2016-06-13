@@ -30,7 +30,7 @@ class User extends BaseSystemResource
     {
         $criteria = parent::getSelectionCriteria();
 
-        $condition = ArrayUtils::get($criteria, 'condition');
+        $condition = array_get($criteria, 'condition');
 
         if (!empty($condition)) {
             $condition = "($condition) AND is_sys_admin = '0'";
@@ -38,7 +38,7 @@ class User extends BaseSystemResource
             $condition = " is_sys_admin = '0'";
         }
 
-        ArrayUtils::set($criteria, 'condition', $condition);
+        $criteria['condition'] = $condition;
 
         return $criteria;
     }
@@ -51,7 +51,7 @@ class User extends BaseSystemResource
         /** @var UserModel $modelClass */
         $modelClass = static::$model;
         $criteria = $this->getSelectionCriteria();
-        $fields = ArrayUtils::get($criteria, 'select');
+        $fields = array_get($criteria, 'select');
         $model = $modelClass::whereIsSysAdmin(0)->with($related)->find($id, $fields);
 
         $data = (!empty($model)) ? $model->toArray() : [];
@@ -105,11 +105,11 @@ class User extends BaseSystemResource
                         }
 
                         if (is_array($response)) {
-                            $records = ArrayUtils::get($response, ResourcesWrapper::DEFAULT_WRAPPER);
+                            $records = array_get($response, ResourcesWrapper::DEFAULT_WRAPPER);
                             if (ArrayUtils::isArrayNumeric($records)) {
                                 $passed = true;
                                 foreach ($records as $record) {
-                                    $id = ArrayUtils::get($record, 'id');
+                                    $id = array_get($record, 'id');
 
                                     try {
                                         static::sendInvite($id, ($this->action === Verbs::POST));
@@ -129,7 +129,7 @@ class User extends BaseSystemResource
                                     throw new InternalServerErrorException('Not all users were created successfully. Check log for more details.');
                                 }
                             } else {
-                                $id = ArrayUtils::get($response, 'id');
+                                $id = array_get($response, 'id');
                                 if (empty($id)) {
                                     throw new InternalServerErrorException('Invalid user id in response.');
                                 }
@@ -212,7 +212,7 @@ class User extends BaseSystemResource
                     'display_name'   => $user->name,
                     'email'          => $user->email,
                     'phone'          => $user->phone,
-                    'content_header' => ArrayUtils::get($templateData, 'subject',
+                    'content_header' => array_get($templateData, 'subject',
                         'You are invited to try DreamFactory.'),
                     'instance_name'  => \Config::get('df.instance_name')
                 ]);
