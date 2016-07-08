@@ -9,7 +9,6 @@ use DreamFactory\Core\Exceptions\UnauthorizedException;
 use DreamFactory\Core\Exceptions\InternalServerErrorException;
 use DreamFactory\Core\Services\Email\BaseService as EmailService;
 use DreamFactory\Core\Exceptions\ServiceUnavailableException;
-use DreamFactory\Library\Utility\ArrayUtils;
 use DreamFactory\Library\Utility\Inflector;
 use ServiceManager;
 
@@ -62,8 +61,8 @@ class Password extends UserPasswordResource
                 $data['link'] = url(\Config::get('df.confirm_reset_url')) . '?code=' . $user->confirm_code;
                 $data['confirm_code'] = $user->confirm_code;
 
-                $bodyHtml = ArrayUtils::get($data, 'body_html');
-                $bodyText = ArrayUtils::get($data, 'body_text');
+                $bodyHtml = array_get($data, 'body_html');
+                $bodyText = array_get($data, 'body_text');
 
                 if (empty($bodyText) && !empty($bodyHtml)) {
                     $bodyText = strip_tags($bodyHtml);
@@ -106,7 +105,7 @@ class Password extends UserPasswordResource
         $serviceName = strtolower($service);
         $capitalized = Inflector::camelize($service);
         $class = trim(strrchr(static::class, '\\'), '\\');
-        $resourceName = strtolower(ArrayUtils::get($resource, 'name', $class));
+        $resourceName = strtolower(array_get($resource, 'name', $class));
         $path = '/' . $serviceName . '/' . $resourceName;
         $eventPath = $serviceName . '.' . $resourceName;
         $apis = [

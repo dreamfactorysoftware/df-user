@@ -18,12 +18,12 @@ class Register extends BaseRestResource
      */
     public function __construct($settings = [])
     {
-        $verbAliases = [
+        $settings = (array)$settings;
+        $settings['verbAliases'] = [
             Verbs::PUT   => Verbs::POST,
             Verbs::MERGE => Verbs::POST,
             Verbs::PATCH => Verbs::POST
         ];
-        ArrayUtils::set($settings, "verbAliases", $verbAliases);
 
         parent::__construct($settings);
     }
@@ -41,17 +41,17 @@ class Register extends BaseRestResource
         $login = $this->request->getParameterAsBool('login');
         $registrar = new Registrar();
 
-        $password = ArrayUtils::get($payload, 'new_password', ArrayUtils::get($payload, 'password'));
+        $password = array_get($payload, 'new_password', array_get($payload, 'password'));
         $data = [
-            'first_name'            => ArrayUtils::get($payload, 'first_name'),
-            'last_name'             => ArrayUtils::get($payload, 'last_name'),
-            'name'                  => ArrayUtils::get($payload, 'name'),
-            'email'                 => ArrayUtils::get($payload, 'email'),
-            'phone'                 => ArrayUtils::get($payload, 'phone'),
-            'security_question'     => ArrayUtils::get($payload, 'security_question'),
-            'security_answer'       => ArrayUtils::get($payload, 'security_answer'),
+            'first_name'            => array_get($payload, 'first_name'),
+            'last_name'             => array_get($payload, 'last_name'),
+            'name'                  => array_get($payload, 'name'),
+            'email'                 => array_get($payload, 'email'),
+            'phone'                 => array_get($payload, 'phone'),
+            'security_question'     => array_get($payload, 'security_question'),
+            'security_answer'       => array_get($payload, 'security_answer'),
             'password'              => $password,
-            'password_confirmation' => ArrayUtils::get($payload, 'password_confirmation', $password)
+            'password_confirmation' => array_get($payload, 'password_confirmation', $password)
         ];
 
         if (empty($data['first_name'])) {
@@ -104,7 +104,7 @@ class Register extends BaseRestResource
         $serviceName = strtolower($service);
         $capitalized = Inflector::camelize($service);
         $class = trim(strrchr(static::class, '\\'), '\\');
-        $resourceName = strtolower(ArrayUtils::get($resource, 'name', $class));
+        $resourceName = strtolower(array_get($resource, 'name', $class));
         $path = '/' . $serviceName . '/' . $resourceName;
         $eventPath = $serviceName . '.' . $resourceName;
         $apis = [

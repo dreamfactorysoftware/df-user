@@ -9,7 +9,6 @@ use DreamFactory\Core\User\Resources\Profile;
 use DreamFactory\Core\User\Resources\Register;
 use DreamFactory\Core\User\Resources\Session;
 use DreamFactory\Core\Utility\Session as SessionUtility;
-use DreamFactory\Library\Utility\ArrayUtils;
 
 class User extends BaseRestService
 {
@@ -55,7 +54,7 @@ class User extends BaseRestService
         $nameField = static::getResourceIdentifier();
         foreach ($this->getResources() as $resource)
         {
-            $name = ArrayUtils::get($resource, $nameField);
+            $name = array_get($resource, $nameField);
             if (!empty($this->getPermissions())) {
                 $list[] = $name . '/';
             }
@@ -71,14 +70,14 @@ class User extends BaseRestService
         $apis = [];
         $models = [];
         foreach (static::$resources as $resourceInfo) {
-            $resourceClass = ArrayUtils::get($resourceInfo, 'class_name');
+            $resourceClass = array_get($resourceInfo, 'class_name');
 
             if (!class_exists($resourceClass)) {
                 throw new InternalServerErrorException('Service configuration class name lookup failed for resource ' .
                     $resourceClass);
             }
 
-            $resourceName = ArrayUtils::get($resourceInfo, static::RESOURCE_IDENTIFIER);
+            $resourceName = array_get($resourceInfo, static::RESOURCE_IDENTIFIER);
             if (SessionUtility::checkForAnyServicePermissions($this->name, $resourceName)) {
                 $results = $resourceClass::getApiDocInfo($this->name, $resourceInfo);
                 if (isset($results, $results['paths'])) {
