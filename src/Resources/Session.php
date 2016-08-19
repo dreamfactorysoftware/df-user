@@ -25,7 +25,6 @@ class Session extends UserSessionResource
                         $capitalized .
                         'Session() - Retrieve the current user session information.',
                     'operationId'       => 'getSession' . $capitalized,
-                    'x-publishedEvents' => [$eventPath . '.read'],
                     'responses'         => [
                         '200'     => [
                             'description' => 'Session',
@@ -42,7 +41,6 @@ class Session extends UserSessionResource
                     'tags'              => [$serviceName],
                     'summary'           => 'login' . $capitalized . '() - Login and create a new user session.',
                     'operationId'       => 'login' . $capitalized,
-                    'x-publishedEvents' => [$eventPath . '.create', 'user.login'],
                     'parameters'        => [
                         [
                             'name'        => 'body',
@@ -70,7 +68,6 @@ class Session extends UserSessionResource
                         $capitalized .
                         '() - Logout and destroy the current user session.',
                     'operationId'       => 'logout' . $capitalized,
-                    'x-publishedEvents' => [$eventPath . '.delete', 'user.logout'],
                     'responses'         => [
                         '200'     => [
                             'description' => 'Success',

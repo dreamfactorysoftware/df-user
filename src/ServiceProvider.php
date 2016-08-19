@@ -1,6 +1,7 @@
 <?php
 namespace DreamFactory\Core\User;
 
+use DreamFactory\Core\Components\ServiceDocBuilder;
 use DreamFactory\Core\Resources\System\SystemResourceManager;
 use DreamFactory\Core\Resources\System\SystemResourceType;
 use DreamFactory\Core\Enums\ServiceTypeGroups;
@@ -12,19 +13,24 @@ use DreamFactory\Core\User\Resources\System\User as UserResource;
 
 class ServiceProvider extends \Illuminate\Support\ServiceProvider
 {
+    use ServiceDocBuilder;
+
     public function register()
     {
         // Add our service types.
-        $this->app->resolving('df.service', function (ServiceManager $df){
+        $this->app->resolving('df.service', function (ServiceManager $df) {
             $df->addType(
                 new ServiceType([
-                    'name'           => 'user',
-                    'label'          => 'User service',
-                    'description'    => 'User service to allow user management.',
-                    'group'          => ServiceTypeGroups::USER,
-                    'singleton'      => true,
-                    'config_handler' => UserConfig::class,
-                    'factory'        => function ($config){
+                    'name'            => 'user',
+                    'label'           => 'User service',
+                    'description'     => 'User service to allow user management.',
+                    'group'           => ServiceTypeGroups::USER,
+                    'singleton'       => true,
+                    'config_handler'  => UserConfig::class,
+                    'default_api_doc' => function ($service) {
+                        return $this->buildServiceDoc($service->id, User::getApiDocInfo($service));
+                    },
+                    'factory'         => function ($config) {
                         return new User($config);
                     },
                 ])
@@ -32,15 +38,15 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         });
 
         // Add our service types.
-        $this->app->resolving('df.system.resource', function (SystemResourceManager $df){
+        $this->app->resolving('df.system.resource', function (SystemResourceManager $df) {
             $df->addType(
                 new SystemResourceType([
-            'name'        => 'user',
-            'label'       => 'User Management',
-            'description' => 'Allows user management capability.',
-            'class_name'  => UserResource::class,
-            'singleton'   => false,
-            'read_only'   => false
+                    'name'        => 'user',
+                    'label'       => 'User Management',
+                    'description' => 'Allows user management capability.',
+                    'class_name'  => UserResource::class,
+                    'singleton'   => false,
+                    'read_only'   => false
                 ])
             );
         });

@@ -116,7 +116,6 @@ class Password extends UserPasswordResource
                         $capitalized .
                         'Password() - Change or reset the current user\'s password.',
                     'operationId'       => 'change' . $capitalized . 'Password',
-                    'x-publishedEvents' => [$eventPath . '.update'],
                     'parameters'        => [
                         [
                             'name'        => 'body',
