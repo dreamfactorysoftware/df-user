@@ -113,7 +113,6 @@ class Register extends BaseRestResource
                     'tags'              => [$serviceName],
                     'summary'           => 'register' . $capitalized . '() - Register a new user in the system.',
                     'operationId'       => 'register' . $capitalized,
-                    'x-publishedEvents' => [$eventPath . '.create'],
                     'parameters'        => [
                         [
                             'name'        => 'body',
