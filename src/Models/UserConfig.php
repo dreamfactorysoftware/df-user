@@ -1,6 +1,7 @@
 <?php
 namespace DreamFactory\Core\User\Models;
 
+use DreamFactory\Core\Components\AppRoleMapper;
 use DreamFactory\Core\Contracts\ServiceConfigHandlerInterface;
 use DreamFactory\Core\Models\BaseServiceConfigModel;
 use DreamFactory\Core\Models\EmailTemplate;
@@ -10,7 +11,7 @@ use DreamFactory\Core\Models\Role;
 
 class UserConfig extends BaseServiceConfigModel implements ServiceConfigHandlerInterface
 {
-    use SingleRecordModel;
+    use SingleRecordModel, AppRoleMapper;
 
     protected $table = 'user_config';
 
@@ -47,20 +48,20 @@ class UserConfig extends BaseServiceConfigModel implements ServiceConfigHandlerI
 
         $roleList = [
             [
-                'label'=>'',
-                'name'=>null
+                'label' => '',
+                'name'  => null
             ]
         ];
         $emailSvcList = [
             [
-                'label'=>'',
-                'name'=>null
+                'label' => '',
+                'name'  => null
             ]
         ];
         $templateList = [
             [
-                'label'=>'',
-                'name'=>null
+                'label' => '',
+                'name'  => null
             ]
         ];
         switch ($schema['name']) {
@@ -92,7 +93,7 @@ class UserConfig extends BaseServiceConfigModel implements ServiceConfigHandlerI
                 }
                 $schema['type'] = 'picklist';
                 $schema['values'] = $emailSvcList;
-                $schema['label'] = $label.' Service';
+                $schema['label'] = $label . ' Service';
                 $schema['description'] =
                     'Select an Email service for sending out ' .
                     $label .
@@ -111,7 +112,7 @@ class UserConfig extends BaseServiceConfigModel implements ServiceConfigHandlerI
                 }
                 $schema['type'] = 'picklist';
                 $schema['values'] = $templateList;
-                $schema['label'] = $label.' Template';
+                $schema['label'] = $label . ' Template';
                 $schema['description'] = 'Select an Email template to use for ' .
                     $label .
                     '.';
