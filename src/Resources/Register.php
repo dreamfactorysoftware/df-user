@@ -83,9 +83,7 @@ class Register extends BaseRestResource
 
             throw new BadRequestException('Validation failed', null, null, $messages);
         } else {
-            $user = $registrar->create($data);
-            $serviceId = $this->getServiceId();
-            User::applyAppRoleMapByService($user, $serviceId);
+            $user = $registrar->create($data, $this->getServiceId());
 
             if ($login) {
                 if ($user->confirm_code !== 'y' && !is_null($user->confirm_code)) {
