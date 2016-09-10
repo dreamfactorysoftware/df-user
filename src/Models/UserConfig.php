@@ -3,6 +3,8 @@ namespace DreamFactory\Core\User\Models;
 
 use DreamFactory\Core\Components\AppRoleMapper;
 use DreamFactory\Core\Contracts\ServiceConfigHandlerInterface;
+use DreamFactory\Core\Models\App;
+use DreamFactory\Core\Models\AppRoleMap;
 use DreamFactory\Core\Models\BaseServiceConfigModel;
 use DreamFactory\Core\Models\EmailTemplate;
 use DreamFactory\Core\Models\Service;
@@ -40,6 +42,17 @@ class UserConfig extends BaseServiceConfigModel implements ServiceConfigHandlerI
     ];
 
     /**
+     * {@inheritdoc}
+     */
+    public static function getConfigSchema()
+    {
+        $schema = parent::getConfigSchema();
+        $schema[] = AppRoleMap::getConfigSchema();
+
+        return $schema;
+    }
+
+    /**
      * @param array $schema
      */
     protected static function prepareConfigSchemaField(array &$schema)
@@ -64,6 +77,7 @@ class UserConfig extends BaseServiceConfigModel implements ServiceConfigHandlerI
                 'name'  => null
             ]
         ];
+
         switch ($schema['name']) {
             case 'open_reg_role_id':
                 $roles = Role::whereIsActive(1)->get();
