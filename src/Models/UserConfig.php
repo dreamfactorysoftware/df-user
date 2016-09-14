@@ -1,7 +1,10 @@
 <?php
 namespace DreamFactory\Core\User\Models;
 
+use DreamFactory\Core\Components\AppRoleMapper;
 use DreamFactory\Core\Contracts\ServiceConfigHandlerInterface;
+use DreamFactory\Core\Models\App;
+use DreamFactory\Core\Models\AppRoleMap;
 use DreamFactory\Core\Models\BaseServiceConfigModel;
 use DreamFactory\Core\Models\EmailTemplate;
 use DreamFactory\Core\Models\Service;
@@ -10,7 +13,7 @@ use DreamFactory\Core\Models\Role;
 
 class UserConfig extends BaseServiceConfigModel implements ServiceConfigHandlerInterface
 {
-    use SingleRecordModel;
+    use SingleRecordModel, AppRoleMapper;
 
     protected $table = 'user_config';
 
@@ -39,6 +42,17 @@ class UserConfig extends BaseServiceConfigModel implements ServiceConfigHandlerI
     ];
 
     /**
+     * {@inheritdoc}
+     */
+    public static function getConfigSchema()
+    {
+        $schema = parent::getConfigSchema();
+        $schema[] = AppRoleMap::getConfigSchema();
+
+        return $schema;
+    }
+
+    /**
      * @param array $schema
      */
     protected static function prepareConfigSchemaField(array &$schema)
@@ -47,22 +61,23 @@ class UserConfig extends BaseServiceConfigModel implements ServiceConfigHandlerI
 
         $roleList = [
             [
-                'label'=>'',
-                'name'=>null
+                'label' => '',
+                'name'  => null
             ]
         ];
         $emailSvcList = [
             [
-                'label'=>'',
-                'name'=>null
+                'label' => '',
+                'name'  => null
             ]
         ];
         $templateList = [
             [
-                'label'=>'',
-                'name'=>null
+                'label' => '',
+                'name'  => null
             ]
         ];
+
         switch ($schema['name']) {
             case 'open_reg_role_id':
                 $roles = Role::whereIsActive(1)->get();
@@ -92,7 +107,7 @@ class UserConfig extends BaseServiceConfigModel implements ServiceConfigHandlerI
                 }
                 $schema['type'] = 'picklist';
                 $schema['values'] = $emailSvcList;
-                $schema['label'] = $label.' Service';
+                $schema['label'] = $label . ' Service';
                 $schema['description'] =
                     'Select an Email service for sending out ' .
                     $label .
@@ -111,7 +126,7 @@ class UserConfig extends BaseServiceConfigModel implements ServiceConfigHandlerI
                 }
                 $schema['type'] = 'picklist';
                 $schema['values'] = $templateList;
-                $schema['label'] = $label.' Template';
+                $schema['label'] = $label . ' Template';
                 $schema['description'] = 'Select an Email template to use for ' .
                     $label .
                     '.';
