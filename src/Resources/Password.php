@@ -1,14 +1,13 @@
 <?php
 namespace DreamFactory\Core\User\Resources;
 
-use DreamFactory\Core\Models\Service;
-use DreamFactory\Core\Resources\UserPasswordResource;
 use DreamFactory\Core\Models\User;
-use DreamFactory\Core\Exceptions\NotFoundException;
-use DreamFactory\Core\Exceptions\UnauthorizedException;
 use DreamFactory\Core\Exceptions\InternalServerErrorException;
-use DreamFactory\Core\Services\Email\BaseService as EmailService;
+use DreamFactory\Core\Exceptions\NotFoundException;
 use DreamFactory\Core\Exceptions\ServiceUnavailableException;
+use DreamFactory\Core\Exceptions\UnauthorizedException;
+use DreamFactory\Core\Resources\UserPasswordResource;
+use DreamFactory\Core\Services\Email\BaseService as EmailService;
 use DreamFactory\Library\Utility\Inflector;
 use ServiceManager;
 
@@ -17,34 +16,25 @@ class Password extends UserPasswordResource
     /**
      * {@inheritdoc}
      */
-    protected static function sendPasswordResetEmail(User $user)
+    protected function sendPasswordResetEmail(User $user)
     {
         $email = $user->email;
 
-        $userService = Service::getCachedByName('user');
-        $config = $userService['config'];
+        /** @var \DreamFactory\Core\User\Services\User $parent */
+        $parent = $this->getParent();
 
-        if (empty($config)) {
-            throw new InternalServerErrorException('Unable to load user service configuration.');
-        }
-
-        $emailServiceId = $config['password_email_service_id'];
-
-        if (!empty($emailServiceId)) {
-
+        if (!empty($parent->passwordEmailServiceId)) {
             try {
                 /** @var EmailService $emailService */
-                $emailService = ServiceManager::getServiceById($emailServiceId);
+                $emailService = ServiceManager::getServiceById($parent->passwordEmailServiceId);
 
                 if (empty($emailService)) {
-                    throw new ServiceUnavailableException("Bad service identifier '$emailServiceId'.");
+                    throw new ServiceUnavailableException("Bad email service identifier.");
                 }
 
                 $data = [];
-                $templateId = $config['password_email_template_id'];
-
-                if (!empty($templateId)) {
-                    $data = $emailService::getTemplateDataById($templateId);
+                if (!empty($parent->passwordEmailTemplateId)) {
+                    $data = $emailService::getTemplateDataById($parent->passwordEmailTemplateId);
                 }
 
                 if (empty($data) || !is_array($data)) {
@@ -107,7 +97,6 @@ class Password extends UserPasswordResource
         $class = trim(strrchr(static::class, '\\'), '\\');
         $resourceName = strtolower(array_get($resource, 'name', $class));
         $path = '/' . $serviceName . '/' . $resourceName;
-        $eventPath = $serviceName . '.' . $resourceName;
         $apis = [
             $path => [
                 'post' => [
