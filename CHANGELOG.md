@@ -11,6 +11,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 
 ## [0.4.0] - 2016-08-21
+### Fixed
+- DF-829 Fix user_custom_by_user_id relationship.
+
+## [0.4.0] - 2016-08-21
 ### Changed
 - General cleanup from declaration changes in df-core for service doc and providers
 
@@ -35,8 +39,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 - Fixed user search filter on 'Users' tab in admin app
 
-[Unreleased]: https://github.com/dreamfactorysoftware/df-user/compare/0.4.0...HEAD
-[0.3.1]: https://github.com/dreamfactorysoftware/df-user/compare/0.3.1...0.4.0
+[Unreleased]: https://github.com/dreamfactorysoftware/df-user/compare/0.4.1...HEAD
+[0.4.1]: https://github.com/dreamfactorysoftware/df-user/compare/0.4.0...0.4.1
+[0.4.0]: https://github.com/dreamfactorysoftware/df-user/compare/0.3.1...0.4.0
 [0.3.1]: https://github.com/dreamfactorysoftware/df-user/compare/0.3.0...0.3.1
 [0.3.0]: https://github.com/dreamfactorysoftware/df-user/compare/0.2.4...0.3.0
 [0.2.4]: https://github.com/dreamfactorysoftware/df-user/compare/0.2.3...0.2.4

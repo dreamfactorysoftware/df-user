@@ -5,9 +5,11 @@ use DreamFactory\Core\Components\ServiceDocBuilder;
 use DreamFactory\Core\Resources\System\SystemResourceManager;
 use DreamFactory\Core\Resources\System\SystemResourceType;
 use DreamFactory\Core\Enums\ServiceTypeGroups;
+use DreamFactory\Core\Models\SystemTableModelMapper;
 use DreamFactory\Core\Services\ServiceManager;
 use DreamFactory\Core\Services\ServiceType;
 use DreamFactory\Core\User\Models\UserConfig;
+use DreamFactory\Core\User\Models\UserCustom;
 use DreamFactory\Core\User\Services\User;
 use DreamFactory\Core\User\Resources\System\User as UserResource;
 
@@ -49,6 +51,11 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
                     'read_only'   => false
                 ])
             );
+        });
+
+        // Add our table model mapping
+        $this->app->resolving('df.system.table_model_map', function (SystemTableModelMapper $df) {
+            $df->addMapping('user_custom', UserCustom::class);
         });
     }
 }
