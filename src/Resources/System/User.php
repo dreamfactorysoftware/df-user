@@ -1,6 +1,7 @@
 <?php
 namespace DreamFactory\Core\User\Resources\System;
 
+use DreamFactory\Core\Components\Registrar;
 use DreamFactory\Core\Contracts\ServiceResponseInterface;
 use DreamFactory\Core\Exceptions\BadRequestException;
 use DreamFactory\Core\Exceptions\InternalServerErrorException;
@@ -192,15 +193,16 @@ class User extends BaseSystemResource
 
             try {
                 $email = $user->email;
-                $code = \Hash::make($email);
-                $user->confirm_code = base64_encode($code);
+                $user->confirm_code = Registrar::generateConfirmationCode(\Config::get('df.confirm_code_length', 32));
                 $user->save();
                 $templateData = $emailTemplate->toArray();
 
                 $data = array_merge($templateData, [
                     'to'             => $email,
                     'confirm_code'   => $user->confirm_code,
-                    'link'           => url(\Config::get('df.confirm_invite_url')) . '?code=' . $user->confirm_code,
+                    'link'           => url(\Config::get('df.confirm_invite_url')) .
+                        '?code=' . $user->confirm_code .
+                        '&email=' . $email,
                     'first_name'     => $user->first_name,
                     'last_name'      => $user->last_name,
                     'name'           => $user->name,

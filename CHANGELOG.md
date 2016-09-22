@@ -7,6 +7,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - DF-425 Allowing configurable role per app for open registration, OAuth, and AD/Ldap services.
 
 ### Changed
+- DF-742 Customizable user confirmation code length.
 
 ### Fixed
 
