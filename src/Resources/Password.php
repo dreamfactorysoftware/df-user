@@ -48,7 +48,9 @@ class Password extends UserPasswordResource
                 $data['name'] = $user->name;
                 $data['phone'] = $user->phone;
                 $data['email'] = $user->email;
-                $data['link'] = url(\Config::get('df.confirm_reset_url')) . '?code=' . $user->confirm_code;
+                $data['link'] = url(\Config::get('df.confirm_reset_url')) .
+                    '?code=' . $user->confirm_code .
+                    '&email=' . $email;
                 $data['confirm_code'] = $user->confirm_code;
 
                 $bodyHtml = array_get($data, 'body_html');
@@ -100,12 +102,12 @@ class Password extends UserPasswordResource
         $apis = [
             $path => [
                 'post' => [
-                    'tags'              => [$serviceName],
-                    'summary'           => 'change' .
+                    'tags'        => [$serviceName],
+                    'summary'     => 'change' .
                         $capitalized .
                         'Password() - Change or reset the current user\'s password.',
-                    'operationId'       => 'change' . $capitalized . 'Password',
-                    'parameters'        => [
+                    'operationId' => 'change' . $capitalized . 'Password',
+                    'parameters'  => [
                         [
                             'name'        => 'body',
                             'description' => 'Data containing name-value pairs for password change.',
@@ -128,7 +130,7 @@ class Password extends UserPasswordResource
                             'required'    => false,
                         ],
                     ],
-                    'responses'         => [
+                    'responses'   => [
                         '200'     => [
                             'description' => 'Success',
                             'schema'      => ['$ref' => '#/definitions/PasswordResponse']
@@ -138,7 +140,7 @@ class Password extends UserPasswordResource
                             'schema'      => ['$ref' => '#/definitions/Error']
                         ]
                     ],
-                    'description'       =>
+                    'description' =>
                         'A valid current session along with old and new password are required to change ' .
                         'the password directly posting \'old_password\' and \'new_password\'. <br/>' .
                         'To request password reset, post \'email\' and set \'reset\' to true. <br/>' .
