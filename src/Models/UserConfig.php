@@ -48,6 +48,7 @@ class UserConfig extends BaseServiceConfigModel implements ServiceConfigHandlerI
     {
         $schema = parent::getConfigSchema();
         $appRoleMap = AppRoleMap::getConfigSchema();
+        $appRoleMap['label'] = 'Per App Open Reg Role';
         array_splice($schema, 2, 0, [$appRoleMap]);
 
         return $schema;
