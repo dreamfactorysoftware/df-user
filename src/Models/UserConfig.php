@@ -47,7 +47,8 @@ class UserConfig extends BaseServiceConfigModel implements ServiceConfigHandlerI
     public static function getConfigSchema()
     {
         $schema = parent::getConfigSchema();
-        $schema[] = AppRoleMap::getConfigSchema();
+        $appRoleMap = AppRoleMap::getConfigSchema();
+        array_splice($schema, 2, 0, [$appRoleMap]);
 
         return $schema;
     }
@@ -89,7 +90,7 @@ class UserConfig extends BaseServiceConfigModel implements ServiceConfigHandlerI
                 }
                 $schema['type'] = 'picklist';
                 $schema['values'] = $roleList;
-                $schema['label'] = 'Open Reg Role';
+                $schema['label'] = 'Default Open Reg Role';
                 $schema['description'] = 'Select a role for self registered users.';
                 break;
             case 'open_reg_email_service_id':
