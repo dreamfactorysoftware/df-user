@@ -1,14 +1,13 @@
 <?php
 namespace DreamFactory\Core\User\Resources;
 
-use DreamFactory\Core\Models\Service;
-use DreamFactory\Core\Resources\UserPasswordResource;
 use DreamFactory\Core\Models\User;
-use DreamFactory\Core\Exceptions\NotFoundException;
-use DreamFactory\Core\Exceptions\UnauthorizedException;
 use DreamFactory\Core\Exceptions\InternalServerErrorException;
-use DreamFactory\Core\Services\Email\BaseService as EmailService;
+use DreamFactory\Core\Exceptions\NotFoundException;
 use DreamFactory\Core\Exceptions\ServiceUnavailableException;
+use DreamFactory\Core\Exceptions\UnauthorizedException;
+use DreamFactory\Core\Resources\UserPasswordResource;
+use DreamFactory\Core\Services\Email\BaseService as EmailService;
 use DreamFactory\Library\Utility\Inflector;
 use ServiceManager;
 
@@ -17,34 +16,25 @@ class Password extends UserPasswordResource
     /**
      * {@inheritdoc}
      */
-    protected static function sendPasswordResetEmail(User $user)
+    protected function sendPasswordResetEmail(User $user)
     {
         $email = $user->email;
 
-        $userService = Service::getCachedByName('user');
-        $config = $userService['config'];
+        /** @var \DreamFactory\Core\User\Services\User $parent */
+        $parent = $this->getParent();
 
-        if (empty($config)) {
-            throw new InternalServerErrorException('Unable to load user service configuration.');
-        }
-
-        $emailServiceId = $config['password_email_service_id'];
-
-        if (!empty($emailServiceId)) {
-
+        if (!empty($parent->passwordEmailServiceId)) {
             try {
                 /** @var EmailService $emailService */
-                $emailService = ServiceManager::getServiceById($emailServiceId);
+                $emailService = ServiceManager::getServiceById($parent->passwordEmailServiceId);
 
                 if (empty($emailService)) {
-                    throw new ServiceUnavailableException("Bad service identifier '$emailServiceId'.");
+                    throw new ServiceUnavailableException("Bad email service identifier.");
                 }
 
                 $data = [];
-                $templateId = $config['password_email_template_id'];
-
-                if (!empty($templateId)) {
-                    $data = $emailService::getTemplateDataById($templateId);
+                if (!empty($parent->passwordEmailTemplateId)) {
+                    $data = $emailService::getTemplateDataById($parent->passwordEmailTemplateId);
                 }
 
                 if (empty($data) || !is_array($data)) {
@@ -58,7 +48,9 @@ class Password extends UserPasswordResource
                 $data['name'] = $user->name;
                 $data['phone'] = $user->phone;
                 $data['email'] = $user->email;
-                $data['link'] = url(\Config::get('df.confirm_reset_url')) . '?code=' . $user->confirm_code;
+                $data['link'] = url(\Config::get('df.confirm_reset_url')) .
+                    '?code=' . $user->confirm_code .
+                    '&email=' . $email;
                 $data['confirm_code'] = $user->confirm_code;
 
                 $bodyHtml = array_get($data, 'body_html');
@@ -107,16 +99,15 @@ class Password extends UserPasswordResource
         $class = trim(strrchr(static::class, '\\'), '\\');
         $resourceName = strtolower(array_get($resource, 'name', $class));
         $path = '/' . $serviceName . '/' . $resourceName;
-        $eventPath = $serviceName . '.' . $resourceName;
         $apis = [
             $path => [
                 'post' => [
-                    'tags'              => [$serviceName],
-                    'summary'           => 'change' .
+                    'tags'        => [$serviceName],
+                    'summary'     => 'change' .
                         $capitalized .
                         'Password() - Change or reset the current user\'s password.',
-                    'operationId'       => 'change' . $capitalized . 'Password',
-                    'parameters'        => [
+                    'operationId' => 'change' . $capitalized . 'Password',
+                    'parameters'  => [
                         [
                             'name'        => 'body',
                             'description' => 'Data containing name-value pairs for password change.',
@@ -139,7 +130,7 @@ class Password extends UserPasswordResource
                             'required'    => false,
                         ],
                     ],
-                    'responses'         => [
+                    'responses'   => [
                         '200'     => [
                             'description' => 'Success',
                             'schema'      => ['$ref' => '#/definitions/PasswordResponse']
@@ -149,7 +140,7 @@ class Password extends UserPasswordResource
                             'schema'      => ['$ref' => '#/definitions/Error']
                         ]
                     ],
-                    'description'       =>
+                    'description' =>
                         'A valid current session along with old and new password are required to change ' .
                         'the password directly posting \'old_password\' and \'new_password\'. <br/>' .
                         'To request password reset, post \'email\' and set \'reset\' to true. <br/>' .

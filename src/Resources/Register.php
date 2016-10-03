@@ -2,6 +2,7 @@
 namespace DreamFactory\Core\User\Resources;
 
 use DreamFactory\Core\Exceptions\BadRequestException;
+use DreamFactory\Core\Models\User;
 use DreamFactory\Core\Resources\BaseRestResource;
 use DreamFactory\Core\Utility\Session;
 use DreamFactory\Library\Utility\ArrayUtils;
@@ -82,7 +83,7 @@ class Register extends BaseRestResource
 
             throw new BadRequestException('Validation failed', null, null, $messages);
         } else {
-            $user = $registrar->create($data);
+            $user = $registrar->create($data, $this->getServiceId());
 
             if ($login) {
                 if ($user->confirm_code !== 'y' && !is_null($user->confirm_code)) {
@@ -106,14 +107,13 @@ class Register extends BaseRestResource
         $class = trim(strrchr(static::class, '\\'), '\\');
         $resourceName = strtolower(array_get($resource, 'name', $class));
         $path = '/' . $serviceName . '/' . $resourceName;
-        $eventPath = $serviceName . '.' . $resourceName;
         $apis = [
             $path => [
                 'post' => [
-                    'tags'              => [$serviceName],
-                    'summary'           => 'register' . $capitalized . '() - Register a new user in the system.',
-                    'operationId'       => 'register' . $capitalized,
-                    'parameters'        => [
+                    'tags'        => [$serviceName],
+                    'summary'     => 'register' . $capitalized . '() - Register a new user in the system.',
+                    'operationId' => 'register' . $capitalized,
+                    'parameters'  => [
                         [
                             'name'        => 'body',
                             'description' => 'Data containing name-value pairs for new user registration.',
@@ -129,7 +129,7 @@ class Register extends BaseRestResource
                             'required'    => false,
                         ],
                     ],
-                    'responses'         => [
+                    'responses'   => [
                         '200'     => [
                             'description' => 'Success',
                             'schema'      => ['$ref' => '#/definitions/Success']
@@ -139,7 +139,7 @@ class Register extends BaseRestResource
                             'schema'      => ['$ref' => '#/definitions/Error']
                         ]
                     ],
-                    'description'       =>
+                    'description' =>
                         'The new user is created and, if required, sent an email for confirmation. ' .
                         'This also handles the registration confirmation by posting email, ' .
                         'confirmation code and new password.',

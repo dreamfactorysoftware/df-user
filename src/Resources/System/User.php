@@ -1,12 +1,12 @@
 <?php
 namespace DreamFactory\Core\User\Resources\System;
 
+use DreamFactory\Core\Components\Registrar;
 use DreamFactory\Core\Contracts\ServiceResponseInterface;
 use DreamFactory\Core\Exceptions\BadRequestException;
 use DreamFactory\Core\Exceptions\InternalServerErrorException;
 use DreamFactory\Core\Exceptions\NotFoundException;
 use DreamFactory\Core\Models\EmailTemplate;
-use DreamFactory\Core\Models\Service;
 use DreamFactory\Core\Models\User as UserModel;
 use DreamFactory\Core\Resources\System\BaseSystemResource;
 use DreamFactory\Core\Services\Email\BaseService as EmailService;
@@ -169,27 +169,23 @@ class User extends BaseSystemResource
         }
 
         try {
-            $userService = Service::getCachedByName('user');
-            $config = $userService['config'];
-
-            if (empty($config)) {
-                throw new InternalServerErrorException('Unable to load system configuration.');
+            /** @var \DreamFactory\Core\User\Services\User $userService */
+            $userService = ServiceManager::getService('user');
+            if (empty($userService)) {
+                throw new InternalServerErrorException('Unable to load user service.');
             }
 
-            $emailServiceId = $config['invite_email_service_id'];
-            $emailTemplateId = $config['invite_email_template_id'];
-
-            if (empty($emailServiceId)) {
+            if (empty($userService->inviteEmailServiceId)) {
                 throw new InternalServerErrorException('No email service configured for user invite.');
             }
 
-            if (empty($emailTemplateId)) {
+            if (empty($userService->inviteEmailTemplateId)) {
                 throw new InternalServerErrorException("No default email template for user invite.");
             }
 
             /** @var EmailService $emailService */
-            $emailService = ServiceManager::getServiceById($emailServiceId);
-            $emailTemplate = EmailTemplate::find($emailTemplateId);
+            $emailService = ServiceManager::getServiceById($userService->inviteEmailServiceId);
+            $emailTemplate = EmailTemplate::find($userService->inviteEmailTemplateId);
 
             if (empty($emailTemplate)) {
                 throw new InternalServerErrorException("No data found in default email template for user invite.");
@@ -197,15 +193,16 @@ class User extends BaseSystemResource
 
             try {
                 $email = $user->email;
-                $code = \Hash::make($email);
-                $user->confirm_code = base64_encode($code);
+                $user->confirm_code = Registrar::generateConfirmationCode(\Config::get('df.confirm_code_length', 32));
                 $user->save();
                 $templateData = $emailTemplate->toArray();
 
                 $data = array_merge($templateData, [
                     'to'             => $email,
                     'confirm_code'   => $user->confirm_code,
-                    'link'           => url(\Config::get('df.confirm_invite_url')) . '?code=' . $user->confirm_code,
+                    'link'           => url(\Config::get('df.confirm_invite_url')) .
+                        '?code=' . $user->confirm_code .
+                        '&email=' . $email,
                     'first_name'     => $user->first_name,
                     'last_name'      => $user->last_name,
                     'name'           => $user->name,
