@@ -4,14 +4,17 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 ### Added
-- DF-425 Allowing configurable role per app for open registration, OAuth, and AD/Ldap services.
-
 ### Changed
-- DF-742 Customizable user confirmation code length.
-
 ### Fixed
 
-## [0.4.0] - 2016-08-21
+## [0.5.0] - 2016-10-03
+### Added
+- DF-425 Allowing configurable role per app for open registration, OAuth, and AD/Ldap services
+
+### Changed
+- DF-742 Customizable user confirmation code length for password reset
+
+## [0.4.1] - 2016-08-21
 ### Fixed
 - DF-829 Fix user_custom_by_user_id relationship.
 
@@ -40,7 +43,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 - Fixed user search filter on 'Users' tab in admin app
 
-[Unreleased]: https://github.com/dreamfactorysoftware/df-user/compare/0.4.1...HEAD
+[Unreleased]: https://github.com/dreamfactorysoftware/df-user/compare/0.5.0...HEAD
+[0.5.0]: https://github.com/dreamfactorysoftware/df-user/compare/0.4.1...0.5.0
 [0.4.1]: https://github.com/dreamfactorysoftware/df-user/compare/0.4.0...0.4.1
 [0.4.0]: https://github.com/dreamfactorysoftware/df-user/compare/0.3.1...0.4.0
 [0.3.1]: https://github.com/dreamfactorysoftware/df-user/compare/0.3.0...0.3.1
