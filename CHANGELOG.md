@@ -7,6 +7,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 ### Fixed
 
+## [0.6.0] - 2016-11-17
+### Added
+- DF-887 Adding system/admin API doc and events for password, profile and session resources
+
 ## [0.5.0] - 2016-10-03
 ### Added
 - DF-425 Allowing configurable role per app for open registration, OAuth, and AD/Ldap services
@@ -43,7 +47,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 - Fixed user search filter on 'Users' tab in admin app
 
-[Unreleased]: https://github.com/dreamfactorysoftware/df-user/compare/0.5.0...HEAD
+[Unreleased]: https://github.com/dreamfactorysoftware/df-user/compare/0.6.0...HEAD
+[0.6.0]: https://github.com/dreamfactorysoftware/df-user/compare/0.5.0...0.6.0
 [0.5.0]: https://github.com/dreamfactorysoftware/df-user/compare/0.4.1...0.5.0
 [0.4.1]: https://github.com/dreamfactorysoftware/df-user/compare/0.4.0...0.4.1
 [0.4.0]: https://github.com/dreamfactorysoftware/df-user/compare/0.3.1...0.4.0
