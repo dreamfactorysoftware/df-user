@@ -1,14 +1,14 @@
 <?php
 namespace DreamFactory\Core\User\Resources;
 
-use DreamFactory\Core\Models\User;
+use DreamFactory\Core\Contracts\EmailServiceInterface;
 use DreamFactory\Core\Exceptions\InternalServerErrorException;
 use DreamFactory\Core\Exceptions\NotFoundException;
 use DreamFactory\Core\Exceptions\ServiceUnavailableException;
 use DreamFactory\Core\Exceptions\UnauthorizedException;
+use DreamFactory\Core\Models\EmailTemplate;
+use DreamFactory\Core\Models\User;
 use DreamFactory\Core\Resources\UserPasswordResource;
-use DreamFactory\Core\Services\Email\BaseService as EmailService;
-use DreamFactory\Library\Utility\Inflector;
 use ServiceManager;
 
 class Password extends UserPasswordResource
@@ -25,7 +25,7 @@ class Password extends UserPasswordResource
 
         if (!empty($parent->passwordEmailServiceId)) {
             try {
-                /** @var EmailService $emailService */
+                /** @var EmailServiceInterface $emailService */
                 $emailService = ServiceManager::getServiceById($parent->passwordEmailServiceId);
 
                 if (empty($emailService)) {
@@ -34,7 +34,13 @@ class Password extends UserPasswordResource
 
                 $data = [];
                 if (!empty($parent->passwordEmailTemplateId)) {
-                    $data = $emailService::getTemplateDataById($parent->passwordEmailTemplateId);
+                    // find template in system db
+                    $template = EmailTemplate::whereId($parent->passwordEmailTemplateId)->first();
+                    if (empty($template)) {
+                        throw new NotFoundException("Email Template id '{$parent->passwordEmailTemplateId}' not found");
+                    }
+
+                    $data = $template->toArray();
                 }
 
                 if (empty($data) || !is_array($data)) {

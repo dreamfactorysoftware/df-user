@@ -2,6 +2,7 @@
 namespace DreamFactory\Core\User\Resources\System;
 
 use DreamFactory\Core\Components\Registrar;
+use DreamFactory\Core\Contracts\EmailServiceInterface;
 use DreamFactory\Core\Contracts\ServiceResponseInterface;
 use DreamFactory\Core\Exceptions\BadRequestException;
 use DreamFactory\Core\Exceptions\InternalServerErrorException;
@@ -9,7 +10,6 @@ use DreamFactory\Core\Exceptions\NotFoundException;
 use DreamFactory\Core\Models\EmailTemplate;
 use DreamFactory\Core\Models\User as UserModel;
 use DreamFactory\Core\Resources\System\BaseSystemResource;
-use DreamFactory\Core\Services\Email\BaseService as EmailService;
 use DreamFactory\Core\Utility\ResourcesWrapper;
 use DreamFactory\Library\Utility\ArrayUtils;
 use DreamFactory\Library\Utility\Enums\Verbs;
@@ -158,6 +158,7 @@ class User extends BaseSystemResource
     protected static function sendInvite($userId, $deleteOnError = false)
     {
         /** @type UserModel $user */
+        /** @noinspection PhpUndefinedMethodInspection */
         $user = UserModel::find($userId);
 
         if (empty($user)) {
@@ -183,8 +184,10 @@ class User extends BaseSystemResource
                 throw new InternalServerErrorException("No default email template for user invite.");
             }
 
-            /** @var EmailService $emailService */
+            /** @var EmailServiceInterface $emailService */
             $emailService = ServiceManager::getServiceById($userService->inviteEmailServiceId);
+            /** @var EmailTemplate $emailTemplate */
+            /** @noinspection PhpUndefinedMethodInspection */
             $emailTemplate = EmailTemplate::find($userService->inviteEmailTemplateId);
 
             if (empty($emailTemplate)) {
