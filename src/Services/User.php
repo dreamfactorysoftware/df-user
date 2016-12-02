@@ -107,8 +107,7 @@ class User extends BaseRestService
     {
         $list = parent::getAccessList();
         $nameField = static::getResourceIdentifier();
-        foreach ($this->getResources() as $resource)
-        {
+        foreach ($this->getResources() as $resource) {
             $name = array_get($resource, $nameField);
             if (!empty($this->getPermissions())) {
                 $list[] = $name . '/';
