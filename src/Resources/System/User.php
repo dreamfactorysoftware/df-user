@@ -12,7 +12,6 @@ use DreamFactory\Core\Models\User as UserModel;
 use DreamFactory\Core\Resources\System\BaseSystemResource;
 use DreamFactory\Core\Utility\ResourcesWrapper;
 use DreamFactory\Library\Utility\ArrayUtils;
-use DreamFactory\Library\Utility\Enums\Verbs;
 use Log;
 use ServiceManager;
 
@@ -64,7 +63,12 @@ class User extends BaseSystemResource
      */
     protected function handlePOST()
     {
-        return $this->handleInvitation(parent::handlePOST());
+        $response = parent::handlePOST();
+        if ($this->request->getParameterAsBool('send_invite')) {
+            $this->handleInvitation($response, true);
+        }
+
+        return $response;
     }
 
     /**
@@ -72,7 +76,12 @@ class User extends BaseSystemResource
      */
     protected function handlePATCH()
     {
-        return $this->handleInvitation(parent::handlePATCH());
+        $response = parent::handlePATCH();
+        if ($this->request->getParameterAsBool('send_invite')) {
+            $this->handleInvitation($response);
+        }
+
+        return $response;
     }
 
     /**
@@ -80,80 +89,92 @@ class User extends BaseSystemResource
      */
     protected function handlePUT()
     {
-        return $this->handleInvitation(parent::handlePUT());
+        $response = parent::handlePUT();
+        if ($this->request->getParameterAsBool('send_invite')) {
+            $this->handleInvitation($response);
+        }
+
+        return $response;
     }
 
     /**
-     * @param $response
+     * @param      $response
+     * @param bool $delete_on_error
      *
-     * @return mixed
+     * @throws InternalServerErrorException
      * @throws \Exception
      */
-    protected function handleInvitation($response)
+    protected static function handleInvitation(&$response, $delete_on_error = false)
     {
-        try {
-            $sendInvite = $this->request->getParameterAsBool('send_invite');
+        if ($response instanceof ServiceResponseInterface) {
+            if ($response->getStatusCode() >= 300) {
+                return;
+            }
+            $records = $response->getContent();
+            if (is_array($records)) {
+                $wrapped = false;
+                if (array_key_exists(ResourcesWrapper::DEFAULT_WRAPPER, $records)) {
+                    $wrapped = true;
+                    $records = array_get($records, ResourcesWrapper::DEFAULT_WRAPPER);
+                }
+                if (ArrayUtils::isArrayNumeric($records)) {
+                    $passed = true;
+                    foreach ($records as &$record) {
+                        $id = array_get($record, 'id');
 
-            switch ($this->action) {
-                case Verbs::POST:
-                case Verbs::PUT:
-                case Verbs::PATCH:
-                case Verbs::MERGE:
-                    if ($sendInvite) {
-                        if ($response instanceof ServiceResponseInterface) {
-                            $response = $response->getContent();
-                        }
-
-                        if (is_array($response)) {
-                            $records = array_get($response, ResourcesWrapper::DEFAULT_WRAPPER);
-                            if (ArrayUtils::isArrayNumeric($records)) {
-                                $passed = true;
-                                foreach ($records as $record) {
-                                    $id = array_get($record, 'id');
-
-                                    try {
-                                        static::sendInvite($id, ($this->action === Verbs::POST));
-                                    } catch (\Exception $e) {
-                                        if (count($records) === 1) {
-                                            throw $e;
-                                        } else {
-                                            $passed = false;
-                                            Log::error('Error processing invitation for user id ' .
-                                                $id .
-                                                ': ' .
-                                                $e->getMessage());
-                                        }
-                                    }
-                                }
-                                if (!$passed) {
-                                    throw new InternalServerErrorException('Not all users were created successfully. Check log for more details.');
-                                }
+                        try {
+                            $code = static::sendInvite($id, $delete_on_error);
+                            if (array_key_exists('confirm_code', $record)) {
+                                array_set($record, 'confirm_code', $code);
+                            }
+                            if (array_key_exists('confirmed', $record)) {
+                                array_set($record, 'confirmed', false);
+                            }
+                        } catch (\Exception $e) {
+                            if (count($records) === 1) {
+                                throw $e;
                             } else {
-                                $id = array_get($response, 'id');
-                                if (empty($id)) {
-                                    throw new InternalServerErrorException('Invalid user id in response.');
-                                }
-                                static::sendInvite($id, ($this->action === Verbs::POST));
+                                $passed = false;
+                                Log::error('Error processing invitation for user id ' .
+                                    $id .
+                                    ': ' .
+                                    $e->getMessage());
                             }
                         }
                     }
-                    break;
+                    if (!$passed) {
+                        throw new InternalServerErrorException('Not all users were created successfully. Check log for more details.');
+                    }
+                } else {
+                    $id = array_get($records, 'id');
+                    if (empty($id)) {
+                        throw new InternalServerErrorException('Invalid user id in response.');
+                    }
+                    $code = static::sendInvite($id, $delete_on_error);
+                    if (array_key_exists('confirm_code', $records)) {
+                        array_set($records, 'confirm_code', $code);
+                    }
+                    if (array_key_exists('confirmed', $records)) {
+                        array_set($records, 'confirmed', false);
+                    }
+                }
+                if ($wrapped) {
+                    $records = [ResourcesWrapper::DEFAULT_WRAPPER => $records];
+                }
+                $response->setContent($records);
             }
-
-            return $response;
-        } catch (\Exception $ex) {
-            throw $ex;
         }
     }
 
     /**
-     * @param            $userId
-     * @param bool|false $deleteOnError
+     * @param integer $userId
+     * @param bool    $deleteOnError
      *
      * @throws \DreamFactory\Core\Exceptions\BadRequestException
      * @throws \DreamFactory\Core\Exceptions\InternalServerErrorException
      * @throws \DreamFactory\Core\Exceptions\NotFoundException
      * @throws \Exception
+     * @return string
      */
     protected static function sendInvite($userId, $deleteOnError = false)
     {
@@ -236,5 +257,7 @@ class User extends BaseSystemResource
             }
             throw new InternalServerErrorException("Error processing user invite. {$e->getMessage()}", $e->getCode());
         }
+
+        return $user->confirm_code;
     }
 }
