@@ -7,6 +7,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 ### Fixed
 - Fields confirmed and confirm_code now updated upon invitation being sent
+- DF-821 Adding send_invite parameter to swagger definition
 
 ## [0.6.0] - 2016-11-17
 ### Added

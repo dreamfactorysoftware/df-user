@@ -4,6 +4,7 @@ namespace DreamFactory\Core\User\Resources\System;
 use DreamFactory\Core\Components\Registrar;
 use DreamFactory\Core\Contracts\EmailServiceInterface;
 use DreamFactory\Core\Contracts\ServiceResponseInterface;
+use DreamFactory\Core\Enums\ApiOptions;
 use DreamFactory\Core\Exceptions\BadRequestException;
 use DreamFactory\Core\Exceptions\InternalServerErrorException;
 use DreamFactory\Core\Exceptions\NotFoundException;
@@ -259,5 +260,23 @@ class User extends BaseSystemResource
         }
 
         return $user->confirm_code;
+    }
+
+    /** {@inheritdoc} */
+    public static function getApiDocInfo($service, array $resource = [])
+    {
+        $baseDoc = parent::getApiDocInfo($service, $resource);
+
+        $inviteOption = ApiOptions::documentOption(ApiOptions::SEND_INVITE);
+
+        $post = array_get($baseDoc, 'paths./system/user.post.parameters', []);
+        $post[] = $inviteOption;
+        $patch = array_get($baseDoc, 'paths./system/user.patch.parameters', []);
+        $patch[] = $inviteOption;
+
+        array_set($baseDoc, 'paths./system/user.post.parameters', $post);
+        array_set($baseDoc, 'paths./system/user.patch.parameters', $patch);
+
+        return $baseDoc;
     }
 }
