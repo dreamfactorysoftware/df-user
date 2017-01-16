@@ -2,7 +2,6 @@
 namespace DreamFactory\Core\User\Resources;
 
 use DreamFactory\Core\Exceptions\BadRequestException;
-use DreamFactory\Core\Models\User;
 use DreamFactory\Core\Resources\BaseRestResource;
 use DreamFactory\Core\Utility\Session;
 use DreamFactory\Library\Utility\ArrayUtils;
@@ -22,7 +21,6 @@ class Register extends BaseRestResource
         $settings = (array)$settings;
         $settings['verbAliases'] = [
             Verbs::PUT   => Verbs::POST,
-            Verbs::MERGE => Verbs::POST,
             Verbs::PATCH => Verbs::POST
         ];
 
