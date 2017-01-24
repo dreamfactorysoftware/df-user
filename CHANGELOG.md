@@ -6,6 +6,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 ### Changed
 ### Fixed
+- Fixed migrations with timestamp fields due to Laravel issue #11518 with some MySQL versions
 
 ## [0.7.0] - 2017-01-16
 ### Fixed
