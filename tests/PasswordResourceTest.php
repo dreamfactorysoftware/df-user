@@ -82,8 +82,8 @@ class PasswordResourceTest extends \DreamFactory\Core\Testing\TestCase
     {
         parent::setUp();
 
-        Session::set('role.name', 'test');
-        Session::set('role.id', 1);
+        Session::put('role.name', 'test');
+        Session::put('role.id', 1);
     }
 
     /************************************************
