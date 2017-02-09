@@ -9,7 +9,7 @@ use DreamFactory\Core\Exceptions\BadRequestException;
 use DreamFactory\Core\Exceptions\InternalServerErrorException;
 use DreamFactory\Core\Exceptions\NotFoundException;
 use DreamFactory\Core\Models\EmailTemplate;
-use DreamFactory\Core\Models\User as UserModel;
+use DreamFactory\Core\Models\NonAdminUser;
 use DreamFactory\Core\Resources\System\BaseSystemResource;
 use DreamFactory\Core\Utility\ResourcesWrapper;
 use DreamFactory\Library\Utility\ArrayUtils;
@@ -21,7 +21,7 @@ class User extends BaseSystemResource
     /**
      * @var string DreamFactory\Core\Models\BaseSystemModel Model Class name.
      */
-    protected static $model = UserModel::class;
+    protected static $model = NonAdminUser::class;
 
     /**
      * {@inheritdoc}
@@ -41,22 +41,6 @@ class User extends BaseSystemResource
         $criteria['condition'] = $condition;
 
         return $criteria;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function retrieveById($id, array $related = [])
-    {
-        /** @var UserModel $modelClass */
-        $modelClass = static::$model;
-        $criteria = $this->getSelectionCriteria();
-        $fields = array_get($criteria, 'select');
-        $model = $modelClass::whereIsSysAdmin(0)->with($related)->find($id, $fields);
-
-        $data = (!empty($model)) ? $model->toArray() : [];
-
-        return $data;
     }
 
     /**
@@ -179,9 +163,9 @@ class User extends BaseSystemResource
      */
     protected static function sendInvite($userId, $deleteOnError = false)
     {
-        /** @type UserModel $user */
+        /** @type NonAdminUser $user */
         /** @noinspection PhpUndefinedMethodInspection */
-        $user = UserModel::find($userId);
+        $user = NonAdminUser::find($userId);
 
         if (empty($user)) {
             throw new NotFoundException('User not found with id ' . $userId . '.');
