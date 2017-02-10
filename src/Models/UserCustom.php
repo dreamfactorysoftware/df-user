@@ -131,7 +131,7 @@ class UserCustom extends BaseCustomModel
         $model = static::whereUserId($userId)->whereName($id)->first();
 
         if (!$model instanceof Model) {
-            throw new NotFoundException('No resource found for ' . $id);
+            throw new NotFoundException("Record with identifier '$id' not found.");
         }
 
         $pk = $model->primaryKey;
@@ -173,7 +173,7 @@ class UserCustom extends BaseCustomModel
         $model = static::whereUserId($userId)->whereName($id)->first();
 
         if (!$model instanceof Model) {
-            throw new NotFoundException('No resource found for ' . $id);
+            throw new NotFoundException("Record with identifier '$id' not found.");
         }
 
         try {
