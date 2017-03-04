@@ -51,8 +51,8 @@ class RegisterResourceTest extends \DreamFactory\Core\Testing\TestCase
 
         $this->assertTrue(Arr::get($c, 'success'));
 
-        Session::set('role.name', 'test');
-        Session::set('role.id', 1);
+        Session::put('role.name', 'test');
+        Session::put('role.id', 1);
 
         $this->service = ServiceManager::getService('user');
         $r = $this->makeRequest(

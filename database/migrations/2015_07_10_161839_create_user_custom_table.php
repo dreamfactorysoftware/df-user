@@ -22,8 +22,8 @@ class CreateUserCustomTable extends Migration
                 $t->foreign('user_id')->references('id')->on('user')->onDelete('cascade');
                 $t->string('name');
                 $t->longText('value')->nullable();
-                $t->timestamp('created_date');
-                $t->timestamp('last_modified_date');
+                $t->timestamp('created_date')->nullable();
+                $t->timestamp('last_modified_date')->useCurrent();
             }
         );
     }

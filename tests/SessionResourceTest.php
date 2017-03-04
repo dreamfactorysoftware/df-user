@@ -119,8 +119,8 @@ class SessionResourceTest extends \DreamFactory\Core\Testing\TestCase
 
     public function testLogin()
     {
-        Session::set('role.name', 'test');
-        Session::set('role.id', 1);
+        Session::put('role.name', 'test');
+        Session::put('role.id', 1);
 
         $user = $this->createUser(1);
 
@@ -144,8 +144,8 @@ class SessionResourceTest extends \DreamFactory\Core\Testing\TestCase
 
     public function testLogout()
     {
-        Session::set('role.name', 'test');
-        Session::set('role.id', 1);
+        Session::put('role.name', 'test');
+        Session::put('role.id', 1);
 
         $user = $this->createUser(1);
         $payload = ['email' => $user['email'], 'password' => $this->user1['password']];

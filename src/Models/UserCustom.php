@@ -39,7 +39,7 @@ class UserCustom extends BaseCustomModel
     /**
      * {@inheritdoc}
      */
-    public static function selectById($id, array $related = [], array $fields = ['*'])
+    public static function selectById($id, array $options = [], array $fields = ['*'])
     {
         $userId = SessionUtility::getCurrentUserId();
         $fields = static::cleanFields($fields);
@@ -57,7 +57,7 @@ class UserCustom extends BaseCustomModel
     /**
      * {@inheritdoc}
      */
-    public static function selectByIds($ids, array $related = [], array $criteria = [])
+    public static function selectByIds($ids, array $options = [], array $criteria = [])
     {
         if (!is_array($ids)) {
             $ids = explode(',', $ids);
@@ -72,7 +72,7 @@ class UserCustom extends BaseCustomModel
     /**
      * {@inheritdoc}
      */
-    public static function selectByRequest(array $criteria = [], array $related = [])
+    public static function selectByRequest(array $criteria = [], array $options = [])
     {
         $userId = SessionUtility::getCurrentUserId();
         $criteria = static::cleanCriteria($criteria);
@@ -131,7 +131,7 @@ class UserCustom extends BaseCustomModel
         $model = static::whereUserId($userId)->whereName($id)->first();
 
         if (!$model instanceof Model) {
-            throw new NotFoundException('No resource found for ' . $id);
+            throw new NotFoundException("Record with identifier '$id' not found.");
         }
 
         $pk = $model->primaryKey;
@@ -173,7 +173,7 @@ class UserCustom extends BaseCustomModel
         $model = static::whereUserId($userId)->whereName($id)->first();
 
         if (!$model instanceof Model) {
-            throw new NotFoundException('No resource found for ' . $id);
+            throw new NotFoundException("Record with identifier '$id' not found.");
         }
 
         try {
@@ -204,9 +204,8 @@ class UserCustom extends BaseCustomModel
         }
 
         $fieldsArray = explode(',', $fields);
-        $relatedArray = (!empty($related)) ? explode(',', $related) : [];
 
-        $result = static::selectById($id, $relatedArray, $fieldsArray);
+        $result = static::selectById($id, $params, $fieldsArray);
 
         return $result;
     }

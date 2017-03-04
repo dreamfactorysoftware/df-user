@@ -58,4 +58,10 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             $df->addMapping('user_custom', UserCustom::class);
         });
     }
+
+    public function boot()
+    {
+        // add migrations
+        $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
+    }
 }
