@@ -3,7 +3,7 @@
   "description": "User Management package for DreamFactory.",
   "keywords": [
     "dreamfactory",
-    "dsp",
+    "api",
     "auth",
     "user"
   ],
@@ -26,7 +26,7 @@
     "wiki": "https://wiki.dreamfactory.com"
   },
   "require": {
-    "dreamfactory/df-core": "~0.7.0"
+    "dreamfactory/df-core": "~0.8.0"
   },
   "autoload": {
     "psr-4": {
@@ -35,7 +35,7 @@
   },
   "extra": {
     "branch-alias": {
-      "dev-develop": "0.7.x-dev"
+      "dev-develop": "0.8.x-dev"
     }
   }
 }

@@ -6,7 +6,15 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 ### Changed
 ### Fixed
+
+## [0.8.0] - 2017-03-03
+### Changed
+- Restructuring to upgrade to Laravel 5.4
+
+### Fixed
 - Fixed migrations with timestamp fields due to Laravel issue #11518 with some MySQL versions
+- Cleanup of error messages and batch handling on system resources
+- DF-1047 Fixed related retrieval on all verb calls
 
 ## [0.7.0] - 2017-01-16
 ### Fixed
@@ -53,7 +61,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 - Fixed user search filter on 'Users' tab in admin app
 
-[Unreleased]: https://github.com/dreamfactorysoftware/df-user/compare/0.7.0...HEAD
+[Unreleased]: https://github.com/dreamfactorysoftware/df-user/compare/0.8.0...HEAD
+[0.8.0]: https://github.com/dreamfactorysoftware/df-user/compare/0.7.0...0.8.0
 [0.7.0]: https://github.com/dreamfactorysoftware/df-user/compare/0.6.0...0.7.0
 [0.6.0]: https://github.com/dreamfactorysoftware/df-user/compare/0.5.0...0.6.0
 [0.5.0]: https://github.com/dreamfactorysoftware/df-user/compare/0.4.1...0.5.0
