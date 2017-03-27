@@ -2,8 +2,6 @@
 namespace DreamFactory\Core\User\Models;
 
 use DreamFactory\Core\Components\AppRoleMapper;
-use DreamFactory\Core\Contracts\ServiceConfigHandlerInterface;
-use DreamFactory\Core\Models\App;
 use DreamFactory\Core\Models\AppRoleMap;
 use DreamFactory\Core\Models\BaseServiceConfigModel;
 use DreamFactory\Core\Models\EmailTemplate;
@@ -11,7 +9,7 @@ use DreamFactory\Core\Models\Service;
 use DreamFactory\Core\Models\SingleRecordModel;
 use DreamFactory\Core\Models\Role;
 
-class UserConfig extends BaseServiceConfigModel implements ServiceConfigHandlerInterface
+class UserConfig extends BaseServiceConfigModel
 {
     use SingleRecordModel, AppRoleMapper;
 
