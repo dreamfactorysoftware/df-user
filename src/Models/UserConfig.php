@@ -11,7 +11,10 @@ use DreamFactory\Core\Models\Role;
 
 class UserConfig extends BaseServiceConfigModel
 {
-    use SingleRecordModel, AppRoleMapper;
+    use SingleRecordModel;
+    use AppRoleMapper {
+        getConfigSchema as public getConfigSchemaMapper;
+    }
 
     protected $table = 'user_config';
 
@@ -44,10 +47,10 @@ class UserConfig extends BaseServiceConfigModel
      */
     public static function getConfigSchema()
     {
-        $schema = parent::getConfigSchema();
-        $appRoleMap = AppRoleMap::getConfigSchema();
-        $appRoleMap['label'] = 'Per App Open Reg Role';
-        array_splice($schema, 2, 0, [$appRoleMap]);
+        $schema = static::getConfigSchemaMapper();
+        $map = array_pop($schema);
+        $map['label'] = 'Per App Open Reg Role';
+        array_splice($schema, 2, 0, [$map]);
 
         return $schema;
     }
@@ -59,28 +62,15 @@ class UserConfig extends BaseServiceConfigModel
     {
         parent::prepareConfigSchemaField($schema);
 
-        $roleList = [
-            [
-                'label' => '',
-                'name'  => null
-            ]
-        ];
-        $emailSvcList = [
-            [
-                'label' => '',
-                'name'  => null
-            ]
-        ];
-        $templateList = [
-            [
-                'label' => '',
-                'name'  => null
-            ]
-        ];
-
         switch ($schema['name']) {
             case 'open_reg_role_id':
                 $roles = Role::whereIsActive(1)->get();
+                $roleList = [
+                    [
+                        'label' => '',
+                        'name'  => null
+                    ]
+                ];
                 foreach ($roles as $role) {
                     $roleList[] = [
                         'label' => $role->name,
@@ -99,6 +89,12 @@ class UserConfig extends BaseServiceConfigModel
                 $services = Service::whereIsActive(1)
                     ->whereIn('type', ['aws_ses', 'smtp_email', 'mailgun_email', 'mandrill_email', 'local_email'])
                     ->get();
+                $emailSvcList = [
+                    [
+                        'label' => '',
+                        'name'  => null
+                    ]
+                ];
                 foreach ($services as $service) {
                     $emailSvcList[] = [
                         'label' => $service->label,
@@ -118,6 +114,12 @@ class UserConfig extends BaseServiceConfigModel
             case 'password_email_template_id':
                 $label = substr($schema['label'], 0, strlen($schema['label']) - 11);
                 $templates = EmailTemplate::get();
+                $templateList = [
+                    [
+                        'label' => '',
+                        'name'  => null
+                    ]
+                ];
                 foreach ($templates as $template) {
                     $templateList[] = [
                         'label' => $template->name,
