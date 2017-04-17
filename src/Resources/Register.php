@@ -42,6 +42,7 @@ class Register extends BaseRestResource
 
         $password = array_get($payload, 'new_password', array_get($payload, 'password'));
         $data = [
+            'username'              => array_get($payload, 'username'),
             'first_name'            => array_get($payload, 'first_name'),
             'last_name'             => array_get($payload, 'last_name'),
             'name'                  => array_get($payload, 'name'),
