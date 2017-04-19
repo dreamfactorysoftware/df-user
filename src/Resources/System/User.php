@@ -1,10 +1,13 @@
 <?php
+
 namespace DreamFactory\Core\User\Resources\System;
 
 use DreamFactory\Core\Components\Invitable;
+use DreamFactory\Core\Contracts\ServiceResponseInterface;
 use DreamFactory\Core\Enums\ApiOptions;
 use DreamFactory\Core\Models\NonAdminUser;
 use DreamFactory\Core\Resources\System\BaseSystemResource;
+use DreamFactory\Core\Utility\ResponseFactory;
 
 class User extends BaseSystemResource
 {
@@ -54,6 +57,9 @@ class User extends BaseSystemResource
     {
         $response = parent::handlePATCH();
         if ($this->request->getParameterAsBool('send_invite')) {
+            if (!$response instanceof ServiceResponseInterface) {
+                $response = ResponseFactory::create($response);
+            }
             $this->handleInvitation($response);
         }
 
