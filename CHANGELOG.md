@@ -3,9 +3,11 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+
+## [0.9.0] - 2017-04-21
 ### Added
-### Changed
-### Fixed
+- DF-895 Added support for username based authentication
+- DF-1084 Added support for Admin User email invites
 
 ## [0.8.0] - 2017-03-03
 ### Changed
@@ -61,7 +63,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 - Fixed user search filter on 'Users' tab in admin app
 
-[Unreleased]: https://github.com/dreamfactorysoftware/df-user/compare/0.8.0...HEAD
+[Unreleased]: https://github.com/dreamfactorysoftware/df-user/compare/0.9.0...HEAD
+[0.9.0]: https://github.com/dreamfactorysoftware/df-user/compare/0.8.0...0.9.0
 [0.8.0]: https://github.com/dreamfactorysoftware/df-user/compare/0.7.0...0.8.0
 [0.7.0]: https://github.com/dreamfactorysoftware/df-user/compare/0.6.0...0.7.0
 [0.6.0]: https://github.com/dreamfactorysoftware/df-user/compare/0.5.0...0.6.0
