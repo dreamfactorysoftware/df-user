@@ -2,7 +2,6 @@
 namespace DreamFactory\Core\User\Models;
 
 use DreamFactory\Core\Components\AppRoleMapper;
-use DreamFactory\Core\Models\AppRoleMap;
 use DreamFactory\Core\Models\BaseServiceConfigModel;
 use DreamFactory\Core\Models\EmailTemplate;
 use DreamFactory\Core\Models\Service;
