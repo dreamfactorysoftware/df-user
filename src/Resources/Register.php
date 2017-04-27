@@ -4,10 +4,8 @@ namespace DreamFactory\Core\User\Resources;
 use DreamFactory\Core\Exceptions\BadRequestException;
 use DreamFactory\Core\Resources\BaseRestResource;
 use DreamFactory\Core\Utility\Session;
-use DreamFactory\Library\Utility\ArrayUtils;
-use DreamFactory\Library\Utility\Enums\Verbs;
+use DreamFactory\Core\Enums\Verbs;
 use DreamFactory\Core\Components\Registrar;
-use DreamFactory\Library\Utility\Inflector;
 
 class Register extends BaseRestResource
 {
@@ -72,7 +70,7 @@ class Register extends BaseRestResource
             $data['name'] = $data['first_name'] . ' ' . $data['last_name'];
         }
 
-        ArrayUtils::removeNull($data);
+        $data = array_filter($data, function ($value) { return !is_null($value);});
 
         /** @var \Illuminate\Validation\Validator $validator */
         $validator = $registrar->validator($data);
@@ -102,7 +100,7 @@ class Register extends BaseRestResource
     public static function getApiDocInfo($service, array $resource = [])
     {
         $serviceName = strtolower($service);
-        $capitalized = Inflector::camelize($service);
+        $capitalized = camelize($service);
         $class = trim(strrchr(static::class, '\\'), '\\');
         $resourceName = strtolower(array_get($resource, 'name', $class));
         $path = '/' . $serviceName . '/' . $resourceName;

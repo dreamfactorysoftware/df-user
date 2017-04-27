@@ -2,7 +2,7 @@
 use DreamFactory\Core\Enums\ApiOptions;
 use DreamFactory\Core\Utility\Session;
 use DreamFactory\Core\Models\User;
-use DreamFactory\Library\Utility\Enums\Verbs;
+use DreamFactory\Core\Enums\Verbs;
 use Illuminate\Support\Arr;
 
 class ProfileResourceTest extends \DreamFactory\Core\Testing\TestCase
