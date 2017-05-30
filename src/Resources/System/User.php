@@ -2,16 +2,12 @@
 
 namespace DreamFactory\Core\User\Resources\System;
 
-use DreamFactory\Core\Components\Invitable;
-use DreamFactory\Core\Contracts\ServiceResponseInterface;
 use DreamFactory\Core\Enums\ApiOptions;
 use DreamFactory\Core\Models\NonAdminUser;
-use DreamFactory\Core\Resources\System\BaseSystemResource;
-use DreamFactory\Core\Utility\ResponseFactory;
+use DreamFactory\Core\Resources\System\BaseUserResource;
 
-class User extends BaseSystemResource
+class User extends BaseUserResource
 {
-    use Invitable;
     /**
      * @var string DreamFactory\Core\Models\BaseSystemModel Model Class name.
      */
@@ -35,48 +31,6 @@ class User extends BaseSystemResource
         $criteria['condition'] = $condition;
 
         return $criteria;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function handlePOST()
-    {
-        $response = parent::handlePOST();
-        if ($this->request->getParameterAsBool('send_invite')) {
-            $this->handleInvitation($response, true);
-        }
-
-        return $response;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function handlePATCH()
-    {
-        $response = parent::handlePATCH();
-        if ($this->request->getParameterAsBool('send_invite')) {
-            if (!$response instanceof ServiceResponseInterface) {
-                $response = ResponseFactory::create($response);
-            }
-            $this->handleInvitation($response);
-        }
-
-        return $response;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function handlePUT()
-    {
-        $response = parent::handlePUT();
-        if ($this->request->getParameterAsBool('send_invite')) {
-            $this->handleInvitation($response);
-        }
-
-        return $response;
     }
 
     /** {@inheritdoc} */
