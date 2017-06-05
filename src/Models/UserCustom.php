@@ -4,12 +4,11 @@ namespace DreamFactory\Core\User\Models;
 
 use DreamFactory\Core\Enums\ApiOptions;
 use DreamFactory\Core\Exceptions\BadRequestException;
+use DreamFactory\Core\Exceptions\InternalServerErrorException;
 use DreamFactory\Core\Exceptions\NotFoundException;
 use DreamFactory\Core\Models\BaseCustomModel;
-use DreamFactory\Library\Utility\ArrayUtils;
 use DreamFactory\Core\Utility\Session as SessionUtility;
 use Illuminate\Database\Eloquent\Model;
-use DreamFactory\Core\Exceptions\InternalServerErrorException;
 
 /**
  * UserCustom
@@ -45,12 +44,6 @@ class UserCustom extends BaseCustomModel
         $fields = static::cleanFields($fields);
         $response = static::whereUserId($userId)->whereName($id)->first();
 
-        if (!empty($response)) {
-            $response = $response->toArray();
-        } else {
-            $response = [];
-        }
-
         return static::cleanResult($response, $fields);
     }
 
@@ -64,7 +57,7 @@ class UserCustom extends BaseCustomModel
         }
         $userId = SessionUtility::getCurrentUserId();
         $criteria = static::cleanCriteria($criteria);
-        $response = static::whereUserId($userId)->whereIn('name', $ids)->get()->toArray();
+        $response = static::whereUserId($userId)->whereIn('name', $ids)->get();
 
         return static::cleanResult($response, array_get($criteria, 'select'));
     }
@@ -76,7 +69,7 @@ class UserCustom extends BaseCustomModel
     {
         $userId = SessionUtility::getCurrentUserId();
         $criteria = static::cleanCriteria($criteria);
-        $response = static::whereUserId($userId)->get()->toArray();
+        $response = static::whereUserId($userId)->get();
 
         return static::cleanResult($response, array_get($criteria, 'select'));
     }
@@ -136,7 +129,7 @@ class UserCustom extends BaseCustomModel
 
         $pk = $model->primaryKey;
         //	Remove the PK from the record since this is an update
-        ArrayUtils::remove($record, $pk);
+        unset($record[$pk]);
 
         try {
             $model->update($record);
