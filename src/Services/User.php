@@ -73,6 +73,27 @@ class User extends BaseRestService
      */
     public $passwordEmailTemplateId;
 
+    /**
+     * @param array $settings
+     */
+    public function __construct($settings = [])
+    {
+        parent::__construct($settings);
+
+        foreach ($this->config as $key => $value) {
+            if (!property_exists($this, $key)) {
+                // try camel cased
+                $camel = camel_case($key);
+                if (property_exists($this, $camel)) {
+                    $this->{$camel} = $value;
+                    continue;
+                }
+            } else {
+                $this->{$key} = $value;
+            }
+        }
+    }
+
     public function getResources($only_handlers = false)
     {
         return ($only_handlers) ? static::$resources : array_values(static::$resources);
