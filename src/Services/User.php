@@ -1,4 +1,5 @@
 <?php
+
 namespace DreamFactory\Core\User\Services;
 
 use DreamFactory\Core\Exceptions\InternalServerErrorException;
@@ -8,7 +9,6 @@ use DreamFactory\Core\User\Resources\Password;
 use DreamFactory\Core\User\Resources\Profile;
 use DreamFactory\Core\User\Resources\Register;
 use DreamFactory\Core\User\Resources\Session;
-use DreamFactory\Core\Utility\Session as SessionUtility;
 
 class User extends BaseRestService
 {
@@ -114,37 +114,5 @@ class User extends BaseRestService
         }
 
         return $list;
-    }
-
-    public static function getApiDocInfo($service)
-    {
-        $base = parent::getApiDocInfo($service);
-
-        $apis = [];
-        $models = [];
-        foreach (static::$resources as $resourceInfo) {
-            $resourceClass = array_get($resourceInfo, 'class_name');
-
-            if (!class_exists($resourceClass)) {
-                throw new InternalServerErrorException('Service configuration class name lookup failed for resource ' .
-                    $resourceClass);
-            }
-
-            $resourceName = array_get($resourceInfo, static::RESOURCE_IDENTIFIER);
-            if (SessionUtility::checkForAnyServicePermissions($service->name, $resourceName)) {
-                $results = $resourceClass::getApiDocInfo($service->name, $resourceInfo);
-                if (isset($results, $results['paths'])) {
-                    $apis = array_merge($apis, $results['paths']);
-                }
-                if (isset($results, $results['definitions'])) {
-                    $models = array_merge($models, $results['definitions']);
-                }
-            }
-        }
-
-        $base['paths'] = array_merge($base['paths'], $apis);
-        $base['definitions'] = array_merge($base['definitions'], $models);
-
-        return $base;
     }
 }
