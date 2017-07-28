@@ -28,7 +28,7 @@ class SessionResourceTest extends \DreamFactory\Core\Testing\TestCase
         'email'                  => 'jadoe@dreamfactory.com',
         'password'               => 'test1234',
         'is_active'              => true,
-        'user_lookup_by_user_id' => [
+        'lookup_by_user_id' => [
             [
                 'name'    => 'test',
                 'value'   => '1234',
@@ -49,7 +49,7 @@ class SessionResourceTest extends \DreamFactory\Core\Testing\TestCase
         'email'                  => 'ddoe@dreamfactory.com',
         'password'               => 'test1234',
         'is_active'              => true,
-        'user_lookup_by_user_id' => [
+        'lookup_by_user_id' => [
             [
                 'name'    => 'test',
                 'value'   => '1234',
@@ -175,7 +175,7 @@ class SessionResourceTest extends \DreamFactory\Core\Testing\TestCase
         $this->service = ServiceManager::getService('system');
         $rs =
             $this->makeRequest(Verbs::POST, 'user',
-                [ApiOptions::FIELDS => '*', ApiOptions::RELATED => 'user_lookup_by_user_id'], $payload);
+                [ApiOptions::FIELDS => '*', ApiOptions::RELATED => 'lookup_by_user_id'], $payload);
         $this->service = ServiceManager::getService($this->serviceId);
 
         $data = $rs->getContent();

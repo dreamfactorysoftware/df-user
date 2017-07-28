@@ -4,6 +4,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [0.11.0] - 2017-07-27
+- Use functionality of base classes
+
 ## [0.10.0] - 2017-06-05
 ### Changed
 - Cleanup - removal of php-utils dependency
@@ -69,7 +72,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 - Fixed user search filter on 'Users' tab in admin app
 
-[Unreleased]: https://github.com/dreamfactorysoftware/df-user/compare/0.10.0...HEAD
+[Unreleased]: https://github.com/dreamfactorysoftware/df-user/compare/0.11.0...HEAD
+[0.11.0]: https://github.com/dreamfactorysoftware/df-user/compare/0.10.0...0.11.0
 [0.10.0]: https://github.com/dreamfactorysoftware/df-user/compare/0.9.0...0.10.0
 [0.9.0]: https://github.com/dreamfactorysoftware/df-user/compare/0.8.0...0.9.0
 [0.8.0]: https://github.com/dreamfactorysoftware/df-user/compare/0.7.0...0.8.0

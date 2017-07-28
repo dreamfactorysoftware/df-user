@@ -108,7 +108,7 @@ class ProfileResourceTest extends \DreamFactory\Core\Testing\TestCase
         $rs = $this->makeRequest(
             Verbs::POST,
             'user',
-            [ApiOptions::FIELDS => '*', ApiOptions::RELATED => 'user_lookup_by_user_id'],
+            [ApiOptions::FIELDS => '*', ApiOptions::RELATED => 'lookup_by_user_id'],
             $payload
         );
         $this->service = ServiceManager::getService($this->serviceId);
