@@ -4,6 +4,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [0.12.0] - 2017-08-17
+### Changed
+- Reworked API doc usage and generation
+
 ## [0.11.0] - 2017-07-27
 - Use functionality of base classes
 
@@ -72,7 +76,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 - Fixed user search filter on 'Users' tab in admin app
 
-[Unreleased]: https://github.com/dreamfactorysoftware/df-user/compare/0.11.0...HEAD
+[Unreleased]: https://github.com/dreamfactorysoftware/df-user/compare/0.12.0...HEAD
+[0.12.0]: https://github.com/dreamfactorysoftware/df-user/compare/0.11.0...0.12.0
 [0.11.0]: https://github.com/dreamfactorysoftware/df-user/compare/0.10.0...0.11.0
 [0.10.0]: https://github.com/dreamfactorysoftware/df-user/compare/0.9.0...0.10.0
 [0.9.0]: https://github.com/dreamfactorysoftware/df-user/compare/0.8.0...0.9.0

@@ -1,7 +1,6 @@
 <?php
 namespace DreamFactory\Core\User;
 
-use DreamFactory\Core\Components\ServiceDocBuilder;
 use DreamFactory\Core\Resources\System\SystemResourceManager;
 use DreamFactory\Core\Resources\System\SystemResourceType;
 use DreamFactory\Core\Enums\ServiceTypeGroups;
@@ -15,8 +14,6 @@ use DreamFactory\Core\User\Resources\System\User as UserResource;
 
 class ServiceProvider extends \Illuminate\Support\ServiceProvider
 {
-    use ServiceDocBuilder;
-
     public function register()
     {
         // Add our service types.
@@ -29,9 +26,6 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
                     'group'           => ServiceTypeGroups::USER,
                     'singleton'       => true,
                     'config_handler'  => UserConfig::class,
-                    'default_api_doc' => function ($service) {
-                        return $this->buildServiceDoc($service->id, User::getApiDocInfo($service));
-                    },
                     'factory'         => function ($config) {
                         return new User($config);
                     },
