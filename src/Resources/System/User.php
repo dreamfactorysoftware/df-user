@@ -33,20 +33,19 @@ class User extends BaseUserResource
         return $criteria;
     }
 
-    /** {@inheritdoc} */
-    public static function getApiDocInfo($service, array $resource = [])
+    protected function getApiDocPaths()
     {
-        $baseDoc = parent::getApiDocInfo($service, $resource);
+        $baseDoc = parent::getApiDocPaths();
 
         $inviteOption = ApiOptions::documentOption(ApiOptions::SEND_INVITE);
 
-        $post = array_get($baseDoc, 'paths./system/user.post.parameters', []);
+        $post = array_get($baseDoc, '/user.post.parameters', []);
         $post[] = $inviteOption;
-        $patch = array_get($baseDoc, 'paths./system/user.patch.parameters', []);
+        $patch = array_get($baseDoc, '/user.patch.parameters', []);
         $patch[] = $inviteOption;
 
-        array_set($baseDoc, 'paths./system/user.post.parameters', $post);
-        array_set($baseDoc, 'paths./system/user.patch.parameters', $patch);
+        array_set($baseDoc, '/user.post.parameters', $post);
+        array_set($baseDoc, '/user.patch.parameters', $patch);
 
         return $baseDoc;
     }
