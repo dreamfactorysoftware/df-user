@@ -110,7 +110,11 @@ class Register extends BaseRestResource
         return [
             $path => [
                 'post' => [
-                    'summary'     => 'register' . $capitalized . '() - Register a new user in the system.',
+                    'summary'     => 'Register a new user in the system.',
+                    'description' =>
+                        'The new user is created and, if required, sent an email for confirmation. ' .
+                        'This also handles the registration confirmation by posting email, ' .
+                        'confirmation code and new password.',
                     'operationId' => 'register' . $capitalized,
                     'parameters'  => [
                         [
@@ -127,10 +131,6 @@ class Register extends BaseRestResource
                     'responses'   => [
                         '200' => ['$ref' => '#/components/responses/Success']
                     ],
-                    'description' =>
-                        'The new user is created and, if required, sent an email for confirmation. ' .
-                        'This also handles the registration confirmation by posting email, ' .
-                        'confirmation code and new password.',
                 ],
             ],
         ];
