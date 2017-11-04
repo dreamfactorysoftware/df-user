@@ -1,4 +1,5 @@
 <?php
+
 namespace DreamFactory\Core\User;
 
 use DreamFactory\Core\Resources\System\SystemResourceManager;
@@ -20,15 +21,33 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         $this->app->resolving('df.service', function (ServiceManager $df) {
             $df->addType(
                 new ServiceType([
-                    'name'            => 'user',
-                    'label'           => 'User service',
-                    'description'     => 'User service to allow user management.',
-                    'group'           => ServiceTypeGroups::USER,
-                    'singleton'       => true,
-                    'config_handler'  => UserConfig::class,
-                    'factory'         => function ($config) {
+                    'name'              => 'user',
+                    'label'             => 'User service',
+                    'description'       => 'User service to allow user management.',
+                    'group'             => ServiceTypeGroups::USER,
+                    'singleton'         => true,
+                    'config_handler'    => UserConfig::class,
+                    'factory'           => function ($config) {
                         return new User($config);
                     },
+                    'access_exceptions' => [
+                        [
+                            'verb_mask' => 31, //Allow all verbs
+                            'resource'  => 'session',
+                        ],
+                        [
+                            'verb_mask' => 2, //Allow POST only
+                            'resource'  => 'password',
+                        ],
+                        [
+                            'verb_mask' => 2, //Allow POST only
+                            'resource'  => 'register',
+                        ],
+                        [
+                            'verb_mask' => 15,
+                            'resource'  => 'profile',
+                        ],
+                    ],
                 ])
             );
         });

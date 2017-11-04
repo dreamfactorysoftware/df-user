@@ -4,6 +4,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [0.13.0] - 2017-11-03
+### Changed
+- Moving access check exceptions to the actual services domain
+- Upgrade Swagger to OpenAPI 3.0 specification
+
 ## [0.12.0] - 2017-08-17
 ### Changed
 - Reworked API doc usage and generation
@@ -76,7 +81,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 - Fixed user search filter on 'Users' tab in admin app
 
-[Unreleased]: https://github.com/dreamfactorysoftware/df-user/compare/0.12.0...HEAD
+[Unreleased]: https://github.com/dreamfactorysoftware/df-user/compare/0.13.0...HEAD
+[0.13.0]: https://github.com/dreamfactorysoftware/df-user/compare/0.12.0...0.13.0
 [0.12.0]: https://github.com/dreamfactorysoftware/df-user/compare/0.11.0...0.12.0
 [0.11.0]: https://github.com/dreamfactorysoftware/df-user/compare/0.10.0...0.11.0
 [0.10.0]: https://github.com/dreamfactorysoftware/df-user/compare/0.9.0...0.10.0

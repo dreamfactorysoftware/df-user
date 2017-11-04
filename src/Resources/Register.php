@@ -1,4 +1,5 @@
 <?php
+
 namespace DreamFactory\Core\User\Resources;
 
 use DreamFactory\Core\Exceptions\BadRequestException;
@@ -70,7 +71,9 @@ class Register extends BaseRestResource
             $data['name'] = $data['first_name'] . ' ' . $data['last_name'];
         }
 
-        $data = array_filter($data, function ($value) { return !is_null($value);});
+        $data = array_filter($data, function ($value) {
+            return !is_null($value);
+        });
 
         /** @var \Illuminate\Validation\Validator $validator */
         $validator = $registrar->validator($data);
@@ -97,55 +100,63 @@ class Register extends BaseRestResource
         }
     }
 
-    public static function getApiDocInfo($service, array $resource = [])
+    protected function getApiDocPaths()
     {
-        $serviceName = strtolower($service);
+        $service = $this->getServiceName();
         $capitalized = camelize($service);
-        $class = trim(strrchr(static::class, '\\'), '\\');
-        $resourceName = strtolower(array_get($resource, 'name', $class));
-        $path = '/' . $serviceName . '/' . $resourceName;
-        $apis = [
+        $resourceName = strtolower($this->name);
+        $path = '/' . $resourceName;
+
+        return [
             $path => [
                 'post' => [
-                    'tags'        => [$serviceName],
-                    'summary'     => 'register' . $capitalized . '() - Register a new user in the system.',
-                    'operationId' => 'register' . $capitalized,
-                    'parameters'  => [
-                        [
-                            'name'        => 'body',
-                            'description' => 'Data containing name-value pairs for new user registration.',
-                            'schema'      => ['$ref' => '#/definitions/Register'],
-                            'in'          => 'body',
-                            'required'    => true,
-                        ],
-                        [
-                            'name'        => 'login',
-                            'description' => 'Login and create a session upon successful registration.',
-                            'type'        => 'boolean',
-                            'in'          => 'query',
-                            'required'    => false,
-                        ],
-                    ],
-                    'responses'   => [
-                        '200'     => [
-                            'description' => 'Success',
-                            'schema'      => ['$ref' => '#/definitions/Success']
-                        ],
-                        'default' => [
-                            'description' => 'Error',
-                            'schema'      => ['$ref' => '#/definitions/Error']
-                        ]
-                    ],
+                    'summary'     => 'Register a new user in the system.',
                     'description' =>
                         'The new user is created and, if required, sent an email for confirmation. ' .
                         'This also handles the registration confirmation by posting email, ' .
                         'confirmation code and new password.',
+                    'operationId' => 'register' . $capitalized,
+                    'parameters'  => [
+                        [
+                            'name'        => 'login',
+                            'description' => 'Login and create a session upon successful registration.',
+                            'schema'      => ['type' => 'boolean'],
+                            'in'          => 'query',
+                            'required'    => false,
+                        ],
+                    ],
+                    'requestBody' => [
+                        '$ref' => '#/components/requestBodies/RegisterRequest'
+                    ],
+                    'responses'   => [
+                        '200' => ['$ref' => '#/components/responses/Success']
+                    ],
                 ],
             ],
         ];
+    }
 
-        $models = [
-            'Register' => [
+    protected function getApiDocRequests()
+    {
+        return [
+            'RegisterRequest' => [
+                'description' => 'Register Request',
+                'content'     => [
+                    'application/json' => [
+                        'schema' => ['$ref' => '#/components/schemas/RegisterRequest']
+                    ],
+                    'application/xml'  => [
+                        'schema' => ['$ref' => '#/components/schemas/RegisterRequest']
+                    ],
+                ],
+            ]
+        ];
+    }
+
+    protected function getApiDocSchemas()
+    {
+        return [
+            'RegisterRequest' => [
                 'type'       => 'object',
                 'required'   => ['email'],
                 'properties' => [
@@ -176,7 +187,5 @@ class Register extends BaseRestResource
                 ],
             ],
         ];
-
-        return ['paths' => $apis, 'definitions' => $models];
     }
 }
