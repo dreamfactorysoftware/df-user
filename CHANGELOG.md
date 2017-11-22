@@ -3,6 +3,8 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+### Added
+- DF-1251 Added alternative means (external db) of authentication.
 
 ## [0.13.0] - 2017-11-03
 ### Changed
