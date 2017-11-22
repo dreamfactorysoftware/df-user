@@ -26,7 +26,35 @@ class RegisterResourceTest extends \DreamFactory\Core\Testing\TestCase
         $email = Arr::get($this->user1, 'email');
         User::whereEmail($email)->delete();
 
+        // Restoring user service
+//        $data = [
+//            'allow_open_registration' => 0,
+//            'open_reg_role_id' => null,
+//            'open_reg_email_service_id' => 6,
+//            'open_reg_email_template_id' => 2,
+//            'invite_email_service_id' => 6,
+//            'invite_email_template_id' => 1
+//        ];
+//        \DreamFactory\Core\User\Models\UserConfig::whereServiceId(7)->update($data);
+
         parent::tearDown();
+    }
+
+    public function setUp()
+    {
+        parent::setUp();
+        \Illuminate\Database\Eloquent\Model::unguard(false);
+
+        // Enable open registration
+        $data = [
+            'allow_open_registration' => 1,
+            'open_reg_role_id' => null,
+            'open_reg_email_service_id' => null,
+            'open_reg_email_template_id' => null,
+            'invite_email_service_id' => null,
+            'invite_email_template_id' => null
+        ];
+        \DreamFactory\Core\User\Models\UserConfig::whereServiceId(7)->update($data);
     }
 
     public function testPOSTRegister()
@@ -48,7 +76,6 @@ class RegisterResourceTest extends \DreamFactory\Core\Testing\TestCase
         Session::setUserInfoWithJWT(User::find(1));
         $r = $this->makeRequest(Verbs::POST, static::RESOURCE, [], $payload);
         $c = $r->getContent();
-
         $this->assertTrue(Arr::get($c, 'success'));
 
         Session::put('role.name', 'test');
