@@ -1,43 +1,44 @@
 {
-  "name": "dreamfactory/df-user",
+  "name":        "dreamfactory/df-user",
   "description": "User Management package for DreamFactory.",
-  "keywords": [
+  "keywords":    [
     "dreamfactory",
     "api",
     "auth",
     "user"
   ],
-  "homepage": "https://www.dreamfactory.com/",
-  "license": "Apache-2.0",
-  "authors": [
+  "homepage":    "https://www.dreamfactory.com/",
+  "license":     "Apache-2.0",
+  "authors":     [
     {
-      "name": "Arif Islam",
+      "name":  "Arif Islam",
       "email": "arifislam@dreamfactory.com"
     },
     {
-      "name": "Lee Hicks",
+      "name":  "Lee Hicks",
       "email": "leehicks@dreamfactory.com"
     }
   ],
-  "support": {
-    "email": "support@dreamfactory.com",
+  "support":     {
+    "email":  "support@dreamfactory.com",
     "source": "https://github.com/dreamfactorysoftware/df-user",
     "issues": "https://github.com/dreamfactorysoftware/df-user/issues",
-    "wiki": "https://wiki.dreamfactory.com"
+    "wiki":   "https://wiki.dreamfactory.com"
   },
-  "require": {
-    "dreamfactory/df-core": "~0.13.0"
+  "require":     {
+    "dreamfactory/df-core":   "~0.13.0",
+    "dreamfactory/df-system": "~0.1.0"
   },
-  "autoload": {
+  "autoload":    {
     "psr-4": {
       "DreamFactory\\Core\\User\\": "src/"
     }
   },
-  "extra": {
+  "extra":       {
     "branch-alias": {
       "dev-develop": "0.13.x-dev"
     },
-    "laravel": {
+    "laravel":      {
       "providers": [
         "DreamFactory\\Core\\User\\ServiceProvider"
       ]

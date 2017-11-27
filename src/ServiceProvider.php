@@ -2,8 +2,8 @@
 
 namespace DreamFactory\Core\User;
 
-use DreamFactory\Core\Resources\System\SystemResourceManager;
-use DreamFactory\Core\Resources\System\SystemResourceType;
+use DreamFactory\Core\System\Components\SystemResourceManager;
+use DreamFactory\Core\System\Components\SystemResourceType;
 use DreamFactory\Core\Enums\ServiceTypeGroups;
 use DreamFactory\Core\Models\SystemTableModelMapper;
 use DreamFactory\Core\Services\ServiceManager;

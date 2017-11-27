@@ -2,7 +2,6 @@
 
 namespace DreamFactory\Core\User\Services;
 
-use DreamFactory\Core\Exceptions\InternalServerErrorException;
 use DreamFactory\Core\Services\BaseRestService;
 use DreamFactory\Core\User\Resources\Custom;
 use DreamFactory\Core\User\Resources\Password;

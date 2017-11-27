@@ -6,7 +6,7 @@ use DreamFactory\Core\Exceptions\UnauthorizedException;
 use DreamFactory\Core\User\Models\UserCustom;
 use DreamFactory\Core\Utility\Session as SessionUtility;
 
-class Custom extends \DreamFactory\Core\Resources\System\Custom
+class Custom extends \DreamFactory\Core\System\Resources\Custom
 {
     const RESOURCE_NAME = 'custom';
 

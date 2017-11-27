@@ -4,7 +4,7 @@ namespace DreamFactory\Core\User\Resources\System;
 
 use DreamFactory\Core\Enums\ApiOptions;
 use DreamFactory\Core\Models\NonAdminUser;
-use DreamFactory\Core\Resources\System\BaseUserResource;
+use DreamFactory\Core\System\Resources\BaseUserResource;
 
 class User extends BaseUserResource
 {
