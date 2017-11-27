@@ -31,8 +31,8 @@ class ProfileResourceTest extends \DreamFactory\Core\Testing\TestCase
 
     public function testNoProfileFound()
     {
-        $this->setExpectedException('\DreamFactory\Core\Exceptions\NotFoundException');
-        $this->makeRequest(Verbs::GET, static::RESOURCE);
+        $rs = $this->makeRequest(Verbs::GET, static::RESOURCE);
+        $this->assertEquals(401, $rs->getStatusCode());
     }
 
     public function testGETProfile()
@@ -45,14 +45,17 @@ class ProfileResourceTest extends \DreamFactory\Core\Testing\TestCase
         $c = $rs->getContent();
 
         $e = [
+            'username'          => Arr::get($user, 'username'),
             'first_name'        => Arr::get($user, 'first_name'),
             'last_name'         => Arr::get($user, 'last_name'),
             'name'              => Arr::get($user, 'name'),
             'email'             => Arr::get($user, 'email'),
             'phone'             => Arr::get($user, 'phone'),
-            'security_question' => Arr::get($user, 'security_question')
+            'security_question' => Arr::get($user, 'security_question'),
+            'default_app_id'    => Arr::get($user, 'default_app_id'),
+            'oauth_provider'    => Arr::get($user, 'oauth_provider'),
+            'adldap'            => Arr::get($user, 'adldap')
         ];
-
         $this->assertEquals($e, $c);
     }
 
@@ -72,13 +75,17 @@ class ProfileResourceTest extends \DreamFactory\Core\Testing\TestCase
         $sAnswer = 'bar';
 
         $payload = [
+            'username'          => $email,
             'first_name'        => $fName,
             'last_name'         => $lName,
             'name'              => $name,
             'email'             => $email,
             'phone'             => $phone,
             'security_question' => $sQuestion,
-            'security_answer'   => $sAnswer
+            'security_answer'   => $sAnswer,
+            'default_app_id'    => 0,
+            'oauth_provider'    => '',
+            'adldap'            => ''
         ];
 
         $r = $this->makeRequest(Verbs::POST, static::RESOURCE, [], $payload);

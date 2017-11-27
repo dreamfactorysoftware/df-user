@@ -3,6 +3,7 @@
 namespace DreamFactory\Core\User\Services;
 
 use DreamFactory\Core\Services\BaseRestService;
+use DreamFactory\Core\User\Components\AlternateAuth;
 use DreamFactory\Core\User\Resources\Custom;
 use DreamFactory\Core\User\Resources\Password;
 use DreamFactory\Core\User\Resources\Profile;
@@ -93,6 +94,9 @@ class User extends BaseRestService
         }
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getResources($only_handlers = false)
     {
         return ($only_handlers) ? static::$resources : array_values(static::$resources);
@@ -113,5 +117,52 @@ class User extends BaseRestService
         }
 
         return $list;
+    }
+
+    /**
+     * Checks to see if the service handles alternative authentication
+     *
+     * @return bool
+     */
+    public function handlesAlternateAuth()
+    {
+        if (
+            config('df.alternate_auth') === true &&
+            !empty(array_get($this->config, 'alt_auth_db_service_id')) &&
+            !empty(array_get($this->config, 'alt_auth_table')) &&
+            !empty(array_get($this->config, 'alt_auth_username_field')) &&
+            !empty(array_get($this->config, 'alt_auth_password_field')) &&
+            !empty(array_get($this->config, 'alt_auth_email_field'))
+        ) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * If the service handles alternative authentication then
+     * this method will return the alternative authenticator
+     *
+     * @return \DreamFactory\Core\User\Components\AlternateAuth
+     * @throws \DreamFactory\Core\Exceptions\InternalServerErrorException
+     */
+    public function getAltAuthenticator()
+    {
+        if ($this->handlesAlternateAuth()) {
+            $authenticator = new AlternateAuth(
+                array_get($this->config, 'alt_auth_db_service_id'),
+                array_get($this->config, 'alt_auth_table'),
+                array_get($this->config, 'alt_auth_username_field'),
+                array_get($this->config, 'alt_auth_password_field'),
+                array_get($this->config, 'alt_auth_email_field')
+            );
+            $authenticator->setOtherFields(array_get($this->config, 'alt_auth_other_fields'));
+            $authenticator->setFilters(array_get($this->config, 'alt_auth_filter'));
+
+            return $authenticator;
+        } else {
+            throw new InternalServerErrorException('No alternate authentication is configured for this service.');
+        }
     }
 }

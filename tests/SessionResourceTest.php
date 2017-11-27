@@ -83,7 +83,7 @@ class SessionResourceTest extends \DreamFactory\Core\Testing\TestCase
 
     public function testGET()
     {
-        $rs = $this->makeRequest(Verbs::GET);
+        $rs = $this->makeRequest(Verbs::GET, null, ['as_list' => true]);
         $content = $rs->getContent();
 
         $expected = [
@@ -91,17 +91,17 @@ class SessionResourceTest extends \DreamFactory\Core\Testing\TestCase
                 'password',
                 'profile',
                 'register',
-                'session'
+                'session',
+                'custom'
             ]
         ];
-
         $this->assertEquals($expected, $content);
     }
 
     public function testSessionNotFound()
     {
-        $this->setExpectedException('\DreamFactory\Core\Exceptions\UnauthorizedException');
-        $this->makeRequest(Verbs::GET, static::RESOURCE);
+        $rs = $this->makeRequest(Verbs::GET, static::RESOURCE);
+        $this->assertEquals(401, $rs->getStatusCode());
     }
 
     public function testUnauthorizedSessionRequest()
@@ -112,9 +112,8 @@ class SessionResourceTest extends \DreamFactory\Core\Testing\TestCase
 
         //Using a new instance here. Prev instance is set for user resource.
         $this->service = ServiceManager::getService('system');
-
-        $this->setExpectedException('\DreamFactory\Core\Exceptions\UnauthorizedException');
-        $this->makeRequest(Verbs::GET, 'admin/session');
+        $rs = $this->makeRequest(Verbs::GET, 'admin/session');
+        $this->assertEquals(401, $rs->getStatusCode());
     }
 
     public function testLogin()
@@ -138,8 +137,8 @@ class SessionResourceTest extends \DreamFactory\Core\Testing\TestCase
         $user = $this->createUser(1);
         $payload = ['name' => 'foo'];
 
-        $this->setExpectedException('\DreamFactory\Core\Exceptions\BadRequestException');
-        $this->makeRequest(Verbs::PATCH, static::RESOURCE . '/' . $user['id'], [], $payload);
+        $rs = $this->makeRequest(Verbs::PATCH, static::RESOURCE . '/' . $user['id'], [], $payload);
+        $this->assertEquals(400, $rs->getStatusCode());
     }
 
     public function testLogout()
@@ -159,8 +158,8 @@ class SessionResourceTest extends \DreamFactory\Core\Testing\TestCase
 
         $this->assertTrue($content['success']);
 
-        $this->setExpectedException('\DreamFactory\Core\Exceptions\UnauthorizedException');
-        $this->makeRequest(Verbs::GET, static::RESOURCE);
+        $rs = $this->makeRequest(Verbs::GET, static::RESOURCE);
+        $this->assertEquals(401, $rs->getStatusCode());
     }
 
     /************************************************
