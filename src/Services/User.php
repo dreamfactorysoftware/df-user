@@ -97,14 +97,6 @@ class User extends BaseRestService
     /**
      * {@inheritdoc}
      */
-    public function getResources($only_handlers = false)
-    {
-        return ($only_handlers) ? static::$resources : array_values(static::$resources);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getAccessList()
     {
         $list = parent::getAccessList();
