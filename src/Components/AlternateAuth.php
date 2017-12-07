@@ -47,6 +47,7 @@ class AlternateAuth
      * @param $usernameField
      * @param $passwordField
      * @param $emailField
+     * @throws \Exception
      */
     public function __construct($serviceId, $table, $usernameField, $passwordField, $emailField)
     {
@@ -66,6 +67,7 @@ class AlternateAuth
      * @throws \DreamFactory\Core\Exceptions\InternalServerErrorException
      * @throws \DreamFactory\Core\Exceptions\RestException
      * @throws \DreamFactory\Core\Exceptions\UnauthorizedException
+     * @throws \Exception
      */
     public function handleLogin($request)
     {
@@ -128,9 +130,11 @@ class AlternateAuth
      * @param $filter
      *
      * @return mixed
+     * @throws \DreamFactory\Core\Exceptions\BadRequestException
      * @throws \DreamFactory\Core\Exceptions\InternalServerErrorException
      * @throws \DreamFactory\Core\Exceptions\RestException
      * @throws \DreamFactory\Core\Exceptions\UnauthorizedException
+     * @throws \Exception
      */
     protected function getRemoteUser($filter)
     {
@@ -179,10 +183,15 @@ class AlternateAuth
      */
     protected function verifyPassword($password, $hash)
     {
+        // Check plain password.
+        if($password === $hash){
+            return true;
+        }
+        // Check md5 hash
         if (md5($password) === $hash) {
             return true;
         }
-
+        // Check bcrypt hash
         return password_verify($password, $hash);
     }
 
@@ -193,6 +202,7 @@ class AlternateAuth
      *
      * @return \DreamFactory\Core\Models\BaseModel|\Illuminate\Database\Eloquent\Model|null|static
      * @throws \DreamFactory\Core\Exceptions\InternalServerErrorException
+     * @throws \Exception
      */
     protected function createShadowUser($userInfo)
     {
