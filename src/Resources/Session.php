@@ -18,7 +18,7 @@ class Session extends UserSessionResource
             try {
                 $authenticator = $userService->getAltAuthenticator();
 
-                return $authenticator->handLogin($this->request);
+                return $authenticator->handleLogin($this->request);
             } catch (\Exception $e) {
                 throw new RestException(
                     $e->getCode(),

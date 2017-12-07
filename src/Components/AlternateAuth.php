@@ -47,6 +47,7 @@ class AlternateAuth
      * @param $usernameField
      * @param $passwordField
      * @param $emailField
+     * @throws \Exception
      */
     public function __construct($serviceId, $table, $usernameField, $passwordField, $emailField)
     {
@@ -63,9 +64,12 @@ class AlternateAuth
      * @param \DreamFactory\Core\Contracts\ServiceRequestInterface $request
      *
      * @return array
+     * @throws \DreamFactory\Core\Exceptions\InternalServerErrorException
+     * @throws \DreamFactory\Core\Exceptions\RestException
      * @throws \DreamFactory\Core\Exceptions\UnauthorizedException
+     * @throws \Exception
      */
-    public function handLogin($request)
+    public function handleLogin($request)
     {
         $filterString = $this->generateFilter($request);
         $remoteUser = $this->getRemoteUser($filterString);
@@ -95,9 +99,8 @@ class AlternateAuth
     {
         $this->filters[$this->usernameField] = trim($request->input($this->usernameField));
         foreach ($this->otherFields as $of) {
-            if (!is_null($ov = $request->input($of))) {
-                $this->filters[$of] = $ov;
-            }
+            $of = trim($of);
+            $this->filters[$of] = $request->input($of);
         }
 
         $string = '';
@@ -126,9 +129,11 @@ class AlternateAuth
      * @param $filter
      *
      * @return mixed
+     * @throws \DreamFactory\Core\Exceptions\BadRequestException
      * @throws \DreamFactory\Core\Exceptions\InternalServerErrorException
      * @throws \DreamFactory\Core\Exceptions\RestException
      * @throws \DreamFactory\Core\Exceptions\UnauthorizedException
+     * @throws \Exception
      */
     protected function getRemoteUser($filter)
     {
@@ -177,10 +182,15 @@ class AlternateAuth
      */
     protected function verifyPassword($password, $hash)
     {
+        // Check plain password.
+        if($password === $hash){
+            return true;
+        }
+        // Check md5 hash
         if (md5($password) === $hash) {
             return true;
         }
-
+        // Check bcrypt hash
         return password_verify($password, $hash);
     }
 
@@ -191,6 +201,7 @@ class AlternateAuth
      *
      * @return \DreamFactory\Core\Models\BaseModel|\Illuminate\Database\Eloquent\Model|null|static
      * @throws \DreamFactory\Core\Exceptions\InternalServerErrorException
+     * @throws \Exception
      */
     protected function createShadowUser($userInfo)
     {
@@ -329,6 +340,9 @@ class AlternateAuth
      */
     public function setFilters($filters)
     {
+        if(is_null($filters)){
+            $filters = "";
+        }
         if (is_string($filters)) {
             $filters = $this->parseFilters($filters);
         }
@@ -346,7 +360,7 @@ class AlternateAuth
     protected function parseFilters($filters)
     {
         $parsed = [];
-        if (is_string($filters)) {
+        if (!empty($filters) && is_string($filters)) {
             $filters = trim($filters);
             if (!empty($filters)) {
                 $filterArray = array_filter(explode(',', $filters), function ($value){

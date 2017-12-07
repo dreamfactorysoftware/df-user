@@ -9,6 +9,7 @@ use DreamFactory\Core\User\Resources\Password;
 use DreamFactory\Core\User\Resources\Profile;
 use DreamFactory\Core\User\Resources\Register;
 use DreamFactory\Core\User\Resources\Session;
+use DreamFactory\Core\Exceptions\InternalServerErrorException;
 
 class User extends BaseRestService
 {
