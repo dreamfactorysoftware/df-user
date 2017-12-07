@@ -63,9 +63,11 @@ class AlternateAuth
      * @param \DreamFactory\Core\Contracts\ServiceRequestInterface $request
      *
      * @return array
+     * @throws \DreamFactory\Core\Exceptions\InternalServerErrorException
+     * @throws \DreamFactory\Core\Exceptions\RestException
      * @throws \DreamFactory\Core\Exceptions\UnauthorizedException
      */
-    public function handLogin($request)
+    public function handleLogin($request)
     {
         $filterString = $this->generateFilter($request);
         $remoteUser = $this->getRemoteUser($filterString);
@@ -329,6 +331,9 @@ class AlternateAuth
      */
     public function setFilters($filters)
     {
+        if(is_null($filters)){
+            $filters = "";
+        }
         if (is_string($filters)) {
             $filters = $this->parseFilters($filters);
         }
@@ -346,7 +351,7 @@ class AlternateAuth
     protected function parseFilters($filters)
     {
         $parsed = [];
-        if (is_string($filters)) {
+        if (!empty($filters) && is_string($filters)) {
             $filters = trim($filters);
             if (!empty($filters)) {
                 $filterArray = array_filter(explode(',', $filters), function ($value){
