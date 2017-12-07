@@ -99,9 +99,8 @@ class AlternateAuth
     {
         $this->filters[$this->usernameField] = trim($request->input($this->usernameField));
         foreach ($this->otherFields as $of) {
-            if (!is_null($ov = $request->input($of))) {
-                $this->filters[$of] = $ov;
-            }
+            $of = trim($of);
+            $this->filters[$of] = $request->input($of);
         }
 
         $string = '';

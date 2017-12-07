@@ -59,7 +59,7 @@ class AlternateAuthTest extends \DreamFactory\Core\Testing\TestCase
         );
         $filterString = $this->invokeMethod($auth, 'generateFilter', [$request]);
         $this->assertEquals(
-            '((is_active=1) AND (is_smart=1) AND (is_big=0) AND (email=admin@test.com) AND (is_sys_admin=1))',
+            '((is_active=1) AND (is_smart=1) AND (is_big=0) AND (email=admin@test.com) AND (is_sys_admin=1) AND (last_name=))',
             $filterString
         );
     }
@@ -166,7 +166,7 @@ class AlternateAuthTest extends \DreamFactory\Core\Testing\TestCase
         \DreamFactory\Core\Utility\Session::put('app.id', 1);
         $this->expectException(\DreamFactory\Core\Exceptions\UnauthorizedException::class);
         $this->expectExceptionMessage('Invalid user information provided');
-        $auth->handleLogin($request);
+        print_r($auth->handleLogin($request));
     }
 
     public function testHandleLoginFailure4()
@@ -186,6 +186,27 @@ class AlternateAuthTest extends \DreamFactory\Core\Testing\TestCase
         );
         \DreamFactory\Core\Utility\Session::put('app.id', 1);
         $this->expectException(\DreamFactory\Core\Exceptions\RestException::class);
+        $auth->handleLogin($request);
+    }
+
+    public function testHandleLoginFailure5()
+    {
+        $table = 'user';
+        $usernameField = 'email';
+        $passwordField = ' password';
+        $emailField = 'email';
+        $otherFields = 'is_sys_admin';
+        $filters = 'is_active=true';
+
+        $auth = new AlternateAuth($this->serviceId, $table, $usernameField, $passwordField, $emailField);
+        $auth->setOtherFields($otherFields);
+        $auth->setFilters($filters);
+        $request = new TestServiceRequest(
+            'POST', [], [], ['email' => 'admin@test.com', 'password' => 'Dream123!']
+        );
+        \DreamFactory\Core\Utility\Session::put('app.id', 1);
+        $this->expectException(\DreamFactory\Core\Exceptions\UnauthorizedException::class);
+        $this->expectExceptionMessage('Invalid user information provided');
         $auth->handleLogin($request);
     }
 
