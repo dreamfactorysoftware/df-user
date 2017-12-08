@@ -4,14 +4,13 @@ namespace DreamFactory\Core\User\Components;
 
 use DreamFactory\Core\Enums\Verbs;
 use DreamFactory\Core\Exceptions\InternalServerErrorException;
-use DreamFactory\Core\Exceptions\UnauthorizedException;
-use DreamFactory\Core\Facades\ServiceManager;
-use DreamFactory\Core\Models\Service;
-use DreamFactory\Core\Utility\Session;
-use DreamFactory\Core\Models\User;
 use DreamFactory\Core\Exceptions\RestException;
+use DreamFactory\Core\Exceptions\UnauthorizedException;
+use DreamFactory\Core\Models\User;
 use DreamFactory\Core\Utility\ResourcesWrapper;
+use DreamFactory\Core\Utility\Session;
 use Illuminate\Support\Arr;
+use ServiceManager;
 
 class AlternateAuth
 {
@@ -240,12 +239,9 @@ class AlternateAuth
             throw new InternalServerErrorException('No service id provided.');
         }
 
-        $service = Service::whereId($id)->first();
-        if (empty($service)) {
+        if (empty($this->service = ServiceManager::getServiceNameById($id))) {
             throw new InternalServerErrorException('No alternate db service found with id ' . $id);
         }
-
-        $this->service = $service->name;
     }
 
     /**

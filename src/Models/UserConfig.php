@@ -4,12 +4,12 @@ namespace DreamFactory\Core\User\Models;
 
 use DreamFactory\Core\Components\AppRoleMapper;
 use DreamFactory\Core\Enums\ServiceTypeGroups;
-use DreamFactory\Core\Facades\ServiceManager;
 use DreamFactory\Core\Models\BaseServiceConfigModel;
 use DreamFactory\Core\Models\EmailTemplate;
 use DreamFactory\Core\Models\Service;
 use DreamFactory\Core\Models\SingleRecordModel;
 use DreamFactory\Core\Models\Role;
+use ServiceManager;
 
 class UserConfig extends BaseServiceConfigModel
 {
@@ -130,9 +130,7 @@ class UserConfig extends BaseServiceConfigModel
             case 'invite_email_service_id':
             case 'password_email_service_id':
                 $label = substr($schema['label'], 0, strlen($schema['label']) - 11);
-                $services = Service::whereIsActive(1)
-                    ->whereIn('type', ['aws_ses', 'smtp_email', 'mailgun_email', 'mandrill_email', 'local_email'])
-                    ->get();
+                $services = ServiceManager::getServiceListByGroup(ServiceTypeGroups::EMAIL, ['id', 'label'], true);
                 $emailSvcList = [
                     [
                         'label' => '',
@@ -140,10 +138,7 @@ class UserConfig extends BaseServiceConfigModel
                     ]
                 ];
                 foreach ($services as $service) {
-                    $emailSvcList[] = [
-                        'label' => $service->label,
-                        'name'  => $service->id
-                    ];
+                    $emailSvcList[] = ['label' => array_get($service, 'label'), 'name' => array_get($service, 'id')];
                 }
                 $schema['type'] = 'picklist';
                 $schema['values'] = $emailSvcList;
@@ -178,13 +173,10 @@ class UserConfig extends BaseServiceConfigModel
                     '.';
                 break;
             case 'alt_auth_db_service_id':
-                $dbServiceTypes = array_keys(ServiceManager::getServiceTypes(ServiceTypeGroups::DATABASE));
-                $services = Service::whereIsActive(1)
-                    ->whereIn('type', $dbServiceTypes)
-                    ->get();
+                $services = ServiceManager::getServiceListByGroup(ServiceTypeGroups::DATABASE, ['id', 'label'], true);
                 $dbServiceList = [['label' => '', 'name' => null]];
                 foreach ($services as $service) {
-                    $dbServiceList[] = ['label' => $service->label, 'name' => $service->id];
+                    $dbServiceList[] = ['label' => array_get($service, 'label'), 'name' => array_get($service, 'id')];
                 }
                 $schema['type'] = 'picklist';
                 $schema['values'] = $dbServiceList;
