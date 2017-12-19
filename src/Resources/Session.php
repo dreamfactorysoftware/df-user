@@ -14,7 +14,7 @@ class Session extends UserSessionResource
     {
         /** @var \DreamFactory\Core\User\Services\User $userService */
         $userService = $this->getService();
-        if ($userService->handlesAlternateAuth()) {
+        if (!$this->isOAuthCallback() && $userService->handlesAlternateAuth()) {
             try {
                 $authenticator = $userService->getAltAuthenticator();
 
@@ -28,5 +28,15 @@ class Session extends UserSessionResource
         }
 
         return parent::handlePOST();
+    }
+
+    /**
+     * Checks to see if this is an OAuth callback request
+     *
+     * @return bool
+     */
+    protected function isOAuthCallback()
+    {
+        return $this->request->input('oauth_callback', false);
     }
 }
