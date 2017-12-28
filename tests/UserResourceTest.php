@@ -5,7 +5,7 @@ use DreamFactory\Core\Enums\ApiOptions;
 use DreamFactory\Core\Utility\Session;
 use Illuminate\Support\Arr;
 
-class UserResourceTest extends \DreamFactory\Core\Testing\UserResourceTestCase
+class UserResourceTest extends \DreamFactory\Core\System\Testing\UserResourceTestCase
 {
     const RESOURCE = 'user';
 

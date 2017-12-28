@@ -3,8 +3,16 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
+
+## [0.14.0] - 2017-12-28
 ### Added
-- DF-1251 Added alternative means (external db) of authentication.
+- DF-1251 Added alternative means (external db) of authentication
+- Added package discovery
+### Changed
+- DF-1150 Update copyright and support email
+- Use the new df-system repo
+- Separated resources from resource handlers
+- Use beefed up ServiceManager methods
 
 ## [0.13.0] - 2017-11-03
 ### Changed
@@ -83,7 +91,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 - Fixed user search filter on 'Users' tab in admin app
 
-[Unreleased]: https://github.com/dreamfactorysoftware/df-user/compare/0.13.0...HEAD
+[Unreleased]: https://github.com/dreamfactorysoftware/df-user/compare/0.14.0...HEAD
+[0.14.0]: https://github.com/dreamfactorysoftware/df-user/compare/0.13.0...0.14.0
 [0.13.0]: https://github.com/dreamfactorysoftware/df-user/compare/0.12.0...0.13.0
 [0.12.0]: https://github.com/dreamfactorysoftware/df-user/compare/0.11.0...0.12.0
 [0.11.0]: https://github.com/dreamfactorysoftware/df-user/compare/0.10.0...0.11.0
