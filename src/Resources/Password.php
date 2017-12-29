@@ -4,7 +4,7 @@ namespace DreamFactory\Core\User\Resources;
 use DreamFactory\Core\Exceptions\NotFoundException;
 use DreamFactory\Core\Exceptions\UnauthorizedException;
 use DreamFactory\Core\Models\User;
-use DreamFactory\Core\Resources\UserPasswordResource;
+use DreamFactory\Core\System\Resources\UserPasswordResource;
 
 class Password extends UserPasswordResource
 {

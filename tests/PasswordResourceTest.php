@@ -92,14 +92,14 @@ class PasswordResourceTest extends \DreamFactory\Core\Testing\TestCase
 
     public function testGET()
     {
-        $this->setExpectedException('\DreamFactory\Core\Exceptions\BadRequestException');
-        $this->makeRequest(Verbs::GET, static::RESOURCE);
+        $rs = $this->makeRequest(Verbs::GET, static::RESOURCE);
+        $this->assertEquals(400, $rs->getStatusCode());
     }
 
     public function testDELETE()
     {
-        $this->setExpectedException('\DreamFactory\Core\Exceptions\BadRequestException');
-        $this->makeRequest(Verbs::DELETE, static::RESOURCE);
+        $rs = $this->makeRequest(Verbs::DELETE, static::RESOURCE);
+        $this->assertEquals(400, $rs->getStatusCode());
     }
 
     public function testPasswordChange()
