@@ -172,7 +172,7 @@ class Register extends BaseRestResource
                         'type'        => 'string',
                         'description' => 'Last name of the new user.',
                     ],
-                    'display_name' => [
+                    'name'         => [
                         'type'        => 'string',
                         'description' => 'Full display name of the new user.',
                     ],
