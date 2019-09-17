@@ -22,8 +22,8 @@
     "wiki":   "https://wiki.dreamfactory.com"
   },
   "require":     {
-    "dreamfactory/df-core":   "~0.15.1",
-    "dreamfactory/df-system": "~0.2.1"
+    "dreamfactory/df-core":   "dev-laravel-upgrade",
+    "dreamfactory/df-system": "dev-laravel-upgrade"
   },
   "autoload":    {
     "psr-4": {
