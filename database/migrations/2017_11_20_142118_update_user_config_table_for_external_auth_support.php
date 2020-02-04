@@ -41,16 +41,23 @@ class UpdateUserConfigTableForExternalAuthSupport extends Migration
      */
     public function down()
     {
+        if (DB::getDriverName() !== 'sqlite' && Schema::hasColumn('user_config', 'alt_auth_db_service_id')) {
+            Schema::table('user_config', function (Blueprint $t) {
+                $t->dropForeign(['alt_auth_db_service_id']);
+
+            });
+        }
         if (Schema::hasColumn('user_config', 'alt_auth_db_service_id')) {
-            Schema::table('user_config', function (Blueprint $t){
-                $t->dropForeign('user_config_alt_auth_db_service_id_foreign');
-                $t->dropColumn('alt_auth_db_service_id');
-                $t->dropColumn('alt_auth_table');
-                $t->dropColumn('alt_auth_username_field');
-                $t->dropColumn('alt_auth_password_field');
-                $t->dropColumn('alt_auth_email_field');
-                $t->dropColumn('alt_auth_other_fields');
-                $t->dropColumn('alt_auth_filter');
+            Schema::table('user_config', function (Blueprint $t) {
+                $t->dropColumn([
+                    'alt_auth_db_service_id',
+                    'alt_auth_table',
+                    'alt_auth_username_field',
+                    'alt_auth_password_field',
+                    'alt_auth_email_field',
+                    'alt_auth_other_fields',
+                    'alt_auth_filter',
+                ]);
             });
         }
     }
