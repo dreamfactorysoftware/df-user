@@ -24,7 +24,7 @@
   "minimum-stability": "dev",
   "prefer-stable":     true,
   "require":     {
-    "dreamfactory/df-core":   "~0.18.0",
+    "dreamfactory/df-core":   "~0.19.0",
     "dreamfactory/df-system": "~0.3.2"
   },
   "autoload":    {
