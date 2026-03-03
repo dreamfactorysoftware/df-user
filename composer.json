@@ -25,7 +25,7 @@
   "prefer-stable":     true,
   "require":     {
     "dreamfactory/df-core":   "~1.0",
-    "dreamfactory/df-system": "~0.5"
+    "dreamfactory/df-system": "~0.6"
   },
   "autoload":    {
     "psr-4": {
