@@ -16,13 +16,13 @@ class ProfileResourceTest extends \DreamFactory\Core\Testing\TestCase
         'first_name'        => 'John',
         'last_name'         => 'Doe',
         'email'             => 'jdoe@dreamfactory.com',
-        'password'          => 'test1234',
+        'password'          => 'Test1234!@#$5678',
         'security_question' => 'Make of your first car?',
         'security_answer'   => 'mazda',
         'is_active'         => true
     ];
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->deleteUser(1);
 

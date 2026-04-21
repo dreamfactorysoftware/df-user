@@ -16,7 +16,7 @@ class PasswordResourceTest extends \DreamFactory\Core\Testing\TestCase
         'first_name'        => 'John',
         'last_name'         => 'Doe',
         'email'             => 'jdoe@dreamfactory.com',
-        'password'          => 'test1234',
+        'password'          => 'Test1234!@#$5678',
         'security_question' => 'Make of your first car?',
         'security_answer'   => 'mazda',
         'is_active'         => true
@@ -27,7 +27,7 @@ class PasswordResourceTest extends \DreamFactory\Core\Testing\TestCase
         'first_name'             => 'Jane',
         'last_name'              => 'Doe',
         'email'                  => 'jadoe@dreamfactory.com',
-        'password'               => 'test1234',
+        'password'               => 'Test1234!@#$5678',
         'is_active'              => true,
         'lookup_by_user_id' => [
             [
@@ -48,7 +48,7 @@ class PasswordResourceTest extends \DreamFactory\Core\Testing\TestCase
         'first_name'             => 'Dan',
         'last_name'              => 'Doe',
         'email'                  => 'ddoe@dreamfactory.com',
-        'password'               => 'test1234',
+        'password'               => 'Test1234!@#$5678',
         'is_active'              => true,
         'lookup_by_user_id' => [
             [
@@ -69,7 +69,7 @@ class PasswordResourceTest extends \DreamFactory\Core\Testing\TestCase
         ]
     ];
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->deleteUser(1);
         $this->deleteUser(2);
@@ -78,7 +78,7 @@ class PasswordResourceTest extends \DreamFactory\Core\Testing\TestCase
         parent::tearDown();
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -117,7 +117,7 @@ class PasswordResourceTest extends \DreamFactory\Core\Testing\TestCase
             Verbs::POST,
             static::RESOURCE,
             [],
-            ['old_password' => $this->user1['password'], 'new_password' => '123456']
+            ['old_password' => $this->user1['password'], 'new_password' => 'NewPass1234!@#$5']
         );
         $content = $rs->getContent();
         $this->assertTrue($content['success']);
@@ -125,7 +125,7 @@ class PasswordResourceTest extends \DreamFactory\Core\Testing\TestCase
         $this->service = ServiceManager::getService($this->serviceId);
         $this->makeRequest(Verbs::DELETE, 'session');
 
-        $rs = $this->makeRequest(Verbs::POST, 'session', [], ['email' => $user['email'], 'password' => '123456']);
+        $rs = $this->makeRequest(Verbs::POST, 'session', [], ['email' => $user['email'], 'password' => 'NewPass1234!@#$5']);
         $content = $rs->getContent();
         $this->assertTrue(!empty($content['session_id']));
     }
@@ -145,14 +145,14 @@ class PasswordResourceTest extends \DreamFactory\Core\Testing\TestCase
             [],
             ['email'           => $user['email'],
              'security_answer' => $this->user1['security_answer'],
-             'new_password'    => '778877'
+             'new_password'    => 'ResetPass1234!@#'
             ]
         );
         $content = $rs->getContent();
         $this->assertTrue($content['success']);
 
         $this->service = ServiceManager::getService($this->serviceId);
-        $rs = $this->makeRequest(Verbs::POST, 'session', [], ['email' => $user['email'], 'password' => '778877']);
+        $rs = $this->makeRequest(Verbs::POST, 'session', [], ['email' => $user['email'], 'password' => 'ResetPass1234!@#']);
         $content = $rs->getContent();
         $this->assertTrue(!empty($content['session_id']));
     }
@@ -214,7 +214,7 @@ class PasswordResourceTest extends \DreamFactory\Core\Testing\TestCase
             Verbs::POST,
             static::RESOURCE,
             ['login' => 'true'],
-            ['email' => $user['email'], 'code' => $code, 'new_password' => '778877']
+            ['email' => $user['email'], 'code' => $code, 'new_password' => 'ResetPass1234!@#']
         );
         $content = $rs->getContent();
         $this->assertTrue($content['success']);
@@ -224,7 +224,7 @@ class PasswordResourceTest extends \DreamFactory\Core\Testing\TestCase
         $this->assertEquals('y', $userModel->confirm_code);
 
         $this->service = ServiceManager::getService($this->serviceId);
-        $rs = $this->makeRequest(Verbs::POST, 'session', [], ['email' => $user['email'], 'password' => '778877']);
+        $rs = $this->makeRequest(Verbs::POST, 'session', [], ['email' => $user['email'], 'password' => 'ResetPass1234!@#']);
         $content = $rs->getContent();
         $this->assertTrue(!empty($content['session_id']));
     }

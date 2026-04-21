@@ -15,7 +15,7 @@ class SessionResourceTest extends \DreamFactory\Core\Testing\TestCase
         'first_name'        => 'John',
         'last_name'         => 'Doe',
         'email'             => 'jdoe@dreamfactory.com',
-        'password'          => 'test1234',
+        'password'          => 'Test1234!@#$5678',
         'security_question' => 'Make of your first car?',
         'security_answer'   => 'mazda',
         'is_active'         => true
@@ -26,7 +26,7 @@ class SessionResourceTest extends \DreamFactory\Core\Testing\TestCase
         'first_name'             => 'Jane',
         'last_name'              => 'Doe',
         'email'                  => 'jadoe@dreamfactory.com',
-        'password'               => 'test1234',
+        'password'               => 'Test1234!@#$5678',
         'is_active'              => true,
         'lookup_by_user_id' => [
             [
@@ -47,7 +47,7 @@ class SessionResourceTest extends \DreamFactory\Core\Testing\TestCase
         'first_name'             => 'Dan',
         'last_name'              => 'Doe',
         'email'                  => 'ddoe@dreamfactory.com',
-        'password'               => 'test1234',
+        'password'               => 'Test1234!@#$5678',
         'is_active'              => true,
         'lookup_by_user_id' => [
             [
@@ -68,7 +68,7 @@ class SessionResourceTest extends \DreamFactory\Core\Testing\TestCase
         ]
     ];
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->deleteUser(1);
         $this->deleteUser(2);

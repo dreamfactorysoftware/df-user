@@ -3,14 +3,17 @@
 use DreamFactory\Core\User\Components\AlternateAuth;
 use DreamFactory\Core\Models\Service;
 use DreamFactory\Core\Testing\TestServiceRequest;
+use DreamFactory\Core\Utility\Session;
 
 class AlternateAuthTest extends \DreamFactory\Core\Testing\TestCase
 {
     public $serviceId = null;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
+        // Authenticate as sys admin so RBAC doesn't block service access
+        Session::authenticate(['email' => 'admin@test.com', 'password' => 'Dream123!']);
 
         $data = [
             'name'        => 'mysql',
@@ -19,10 +22,10 @@ class AlternateAuthTest extends \DreamFactory\Core\Testing\TestCase
             'description' => 'Mysql test db service',
             'is_active'   => 1,
             'config'      => [
-                'host'          => 'localhost',
-                'database'      => 'df_unit_test',
-                'username'      => 'homestead',
-                'password'      => 'secret',
+                'host'          => env('ALT_AUTH_DB_HOST', 'localhost'),
+                'database'      => env('ALT_AUTH_DB_DATABASE', 'df_unit_test'),
+                'username'      => env('ALT_AUTH_DB_USERNAME', 'homestead'),
+                'password'      => env('ALT_AUTH_DB_PASSWORD', 'secret'),
                 'cache_enabled' => false
             ]
         ];
@@ -31,7 +34,7 @@ class AlternateAuthTest extends \DreamFactory\Core\Testing\TestCase
         $this->serviceId = $service->id;
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         Service::whereId($this->serviceId)->delete();
 
