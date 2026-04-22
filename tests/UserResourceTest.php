@@ -66,13 +66,13 @@ class UserResourceTest extends \DreamFactory\Core\System\Testing\UserResourceTes
     {
         $user = $this->createUser(1);
 
-        Arr::set($user, 'password', '123456');
+        Arr::set($user, 'password', 'NewPass1234!@#$5');
 
         $payload = json_encode($user, JSON_UNESCAPED_SLASHES);
         $rs = $this->makeRequest(Verbs::PATCH, static::RESOURCE . '/' . $user['id'], [], $payload);
         $content = $rs->getContent();
 
-        $this->assertTrue(Session::authenticate(['email' => $user['email'], 'password' => '123456']));
+        $this->assertTrue(Session::authenticate(['email' => $user['email'], 'password' => 'NewPass1234!@#$5']));
         $this->assertTrue($this->adminCheck([$content]));
     }
 

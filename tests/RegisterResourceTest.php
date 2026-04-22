@@ -15,13 +15,13 @@ class RegisterResourceTest extends \DreamFactory\Core\Testing\TestCase
         'first_name'        => 'John',
         'last_name'         => 'Doe',
         'email'             => 'jdoe@dreamfactory.com',
-        'password'          => 'test12345678',
+        'password'          => 'Test12345678!@#$',
         'security_question' => 'Make of your first car?',
         'security_answer'   => 'mazda',
         'is_active'         => true
     ];
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $email = Arr::get($this->user1, 'email');
         User::whereEmail($email)->delete();
@@ -40,7 +40,7 @@ class RegisterResourceTest extends \DreamFactory\Core\Testing\TestCase
         parent::tearDown();
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         \Illuminate\Database\Eloquent\Model::unguard(false);
