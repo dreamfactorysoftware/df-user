@@ -116,6 +116,12 @@ class AlternateAuth
                     $v = 0;
                 }
             }
+            // Reject filter-syntax metacharacters in the user-supplied value.
+            // A username like `admin) OR (1=1` would otherwise become
+            // `(username=admin) OR (1=1)` and match every row.
+            if (is_string($v) && preg_match('/[()\'\"]|\b(AND|OR|NOT)\b/i', $v) === 1) {
+                throw new UnauthorizedException('Invalid characters in authentication credentials.');
+            }
             $string .= "($f=$v)";
         }
 
@@ -181,15 +187,14 @@ class AlternateAuth
      */
     protected function verifyPassword($password, $hash)
     {
-        // Check plain password.
-        if($password === $hash){
-            return true;
+        // Only password_verify (bcrypt/argon2) is honored. Plaintext-equality
+        // and MD5 acceptance were removed: plaintext acceptance silently
+        // authenticated DB rows whose `password` column was stored as text;
+        // MD5 is obsolete (GPU-crackable, collision-prone) and unsafe for
+        // password storage. Customers using either format must rehash.
+        if (!is_string($password) || !is_string($hash)) {
+            return false;
         }
-        // Check md5 hash
-        if (md5($password) === $hash) {
-            return true;
-        }
-        // Check bcrypt hash
         return password_verify($password, $hash);
     }
 
