@@ -1,7 +1,9 @@
 <?php
 use DreamFactory\Core\Enums\Verbs;
 use DreamFactory\Core\Utility\Session;
+use DreamFactory\Core\Models\Service;
 use DreamFactory\Core\Models\User;
+use DreamFactory\Core\User\Models\UserConfig;
 use Illuminate\Support\Arr;
 
 class RegisterResourceTest extends \DreamFactory\Core\Testing\TestCase
@@ -45,6 +47,8 @@ class RegisterResourceTest extends \DreamFactory\Core\Testing\TestCase
         parent::setUp();
         \Illuminate\Database\Eloquent\Model::unguard(false);
 
+        $userServiceId = Service::whereName('user')->value('id');
+
         // Enable open registration
         $data = [
             'allow_open_registration' => 1,
@@ -54,7 +58,7 @@ class RegisterResourceTest extends \DreamFactory\Core\Testing\TestCase
             'invite_email_service_id' => null,
             'invite_email_template_id' => null
         ];
-        \DreamFactory\Core\User\Models\UserConfig::whereServiceId(7)->update($data);
+        UserConfig::whereServiceId($userServiceId)->update($data);
     }
 
     public function testPOSTRegister()
