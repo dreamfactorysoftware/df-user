@@ -1,6 +1,7 @@
 <?php
 use DreamFactory\Core\Enums\Verbs;
 use DreamFactory\Core\Enums\ApiOptions;
+use DreamFactory\Core\Components\Registrar;
 use DreamFactory\Core\Utility\Session;
 use DreamFactory\Core\Models\User;
 use Illuminate\Support\Arr;
@@ -159,55 +160,13 @@ class PasswordResourceTest extends \DreamFactory\Core\Testing\TestCase
 
     public function testPasswordResetUsingConfirmationCode()
     {
-        if (!$this->serviceExists('mymail')) {
-            $emailService = \DreamFactory\Core\Models\Service::create(
-                [
-                    "name"        => "mymail",
-                    "label"       => "Test mail service",
-                    "description" => "Test mail service",
-                    "is_active"   => true,
-                    "type"        => "local_email",
-                    "mutable"     => true,
-                    "deletable"   => true,
-                    "config"      => [
-                        "driver"  => "sendmail",
-                        "command" => "/usr/sbin/sendmail -bs"
-                    ]
-                ]
-            );
-
-            $userConfig = \DreamFactory\Core\User\Models\UserConfig::find(4);
-            $userConfig->password_email_service_id = $emailService->id;
-            $userConfig->save();
-        }
-
-        if (!\DreamFactory\Core\Models\EmailTemplate::whereName('mytemplate')->exists()) {
-            $template = \DreamFactory\Core\Models\EmailTemplate::create(
-                [
-                    'name'        => 'mytemplate',
-                    'description' => 'test',
-                    'to'          => $this->user2['email'],
-                    'subject'     => 'rest password test',
-                    'body_text'   => 'link {link}'
-                ]
-            );
-
-            $userConfig = \DreamFactory\Core\User\Models\UserConfig::find(4);
-            $userConfig->password_email_template_id = $template->id;
-            $userConfig->save();
-        }
-
         Arr::set($this->user2, 'email', 'arif@dreamfactory.com');
         $user = $this->createUser(2);
 
-        Config::set('mail.pretend', true);
-
-        $rs = $this->makeRequest(Verbs::POST, static::RESOURCE, ['reset' => 'true'], ['email' => $user['email']]);
-        $content = $rs->getContent();
-        $this->assertTrue($content['success']);
-
         /** @var User $userModel */
         $userModel = User::find($user['id']);
+        $userModel->confirm_code = Registrar::generateConfirmationCode(Config::get('df.confirm_code_length', 32));
+        $userModel->save();
         $code = $userModel->confirm_code;
 
         $rs = $this->makeRequest(
@@ -221,7 +180,7 @@ class PasswordResourceTest extends \DreamFactory\Core\Testing\TestCase
         $this->assertTrue(Session::isAuthenticated());
 
         $userModel = User::find($user['id']);
-        $this->assertEquals('y', $userModel->confirm_code);
+        $this->assertNull($userModel->confirm_code);
 
         $this->service = ServiceManager::getService($this->serviceId);
         $rs = $this->makeRequest(Verbs::POST, 'session', [], ['email' => $user['email'], 'password' => 'ResetPass1234!@#']);

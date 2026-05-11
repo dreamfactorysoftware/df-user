@@ -83,6 +83,7 @@ class ProfileResourceTest extends \DreamFactory\Core\Testing\TestCase
             'phone'             => $phone,
             'security_question' => $sQuestion,
             'security_answer'   => $sAnswer,
+            'current_password'  => $this->user1['password'],
             'default_app_id'    => 0,
             'oauth_provider'    => '',
             'adldap'            => ''
@@ -99,6 +100,7 @@ class ProfileResourceTest extends \DreamFactory\Core\Testing\TestCase
         $this->assertTrue(Hash::check($sAnswer, $userModel->security_answer));
 
         unset($payload['security_answer']);
+        unset($payload['current_password']);
         $this->assertEquals($payload, $c);
     }
 
