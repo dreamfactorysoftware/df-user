@@ -2,8 +2,10 @@
 
 use DreamFactory\Core\User\Components\AlternateAuth;
 use DreamFactory\Core\Models\Service;
+use DreamFactory\Core\Models\User;
 use DreamFactory\Core\Testing\TestServiceRequest;
 use DreamFactory\Core\Utility\Session;
+use Illuminate\Support\Facades\DB;
 
 class AlternateAuthTest extends \DreamFactory\Core\Testing\TestCase
 {
@@ -12,6 +14,33 @@ class AlternateAuthTest extends \DreamFactory\Core\Testing\TestCase
     public function setUp(): void
     {
         parent::setUp();
+
+        User::updateOrCreate(
+            ['email' => 'admin@test.com'],
+            [
+                'name'         => 'DF Admin',
+                'first_name'   => 'DF',
+                'last_name'    => 'Admin',
+                'password'     => 'Dream123!',
+                'is_sys_admin' => true,
+                'is_active'    => true
+            ]
+        );
+        DB::statement(
+            'CREATE TABLE IF NOT EXISTS df_unit_test.alt_auth_user (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                email VARCHAR(255) NOT NULL UNIQUE,
+                password VARCHAR(255) NOT NULL,
+                is_sys_admin TINYINT(1) NOT NULL DEFAULT 0,
+                is_active TINYINT(1) NOT NULL DEFAULT 1
+            )'
+        );
+        DB::statement('DELETE FROM df_unit_test.alt_auth_user WHERE email = ?', ['admin@test.com']);
+        DB::statement(
+            'INSERT INTO df_unit_test.alt_auth_user (email, password, is_sys_admin, is_active) VALUES (?, ?, ?, ?)',
+            ['admin@test.com', password_hash('Dream123!', PASSWORD_BCRYPT), 1, 1]
+        );
+
         // Authenticate as sys admin so RBAC doesn't block service access
         Session::authenticate(['email' => 'admin@test.com', 'password' => 'Dream123!']);
 
@@ -23,7 +52,7 @@ class AlternateAuthTest extends \DreamFactory\Core\Testing\TestCase
             'is_active'   => 1,
             'config'      => [
                 'host'          => env('ALT_AUTH_DB_HOST', 'localhost'),
-                'database'      => env('ALT_AUTH_DB_DATABASE', 'df_unit_test'),
+                'database'      => env('SQLDB_DATABASE', 'df_unit_test'),
                 'username'      => env('ALT_AUTH_DB_USERNAME', 'homestead'),
                 'password'      => env('ALT_AUTH_DB_PASSWORD', 'secret'),
                 'cache_enabled' => false
@@ -37,6 +66,8 @@ class AlternateAuthTest extends \DreamFactory\Core\Testing\TestCase
     public function tearDown(): void
     {
         Service::whereId($this->serviceId)->delete();
+        DB::statement('DELETE FROM df_unit_test.alt_auth_user WHERE email = ?', ['admin@test.com']);
+        User::whereEmail('admin@test.com')->delete();
 
         parent::tearDown();
     }
@@ -69,7 +100,7 @@ class AlternateAuthTest extends \DreamFactory\Core\Testing\TestCase
 
     public function testHandleLoginSuccess()
     {
-        $table = 'user';
+        $table = 'alt_auth_user';
         $usernameField = 'email';
         $passwordField = ' password';
         $emailField = 'email';
@@ -90,7 +121,7 @@ class AlternateAuthTest extends \DreamFactory\Core\Testing\TestCase
 
     public function testHandleLoginSuccess2()
     {
-        $table = 'user';
+        $table = 'alt_auth_user';
         $usernameField = 'email';
         $passwordField = ' password';
         $emailField = 'email';
@@ -111,7 +142,7 @@ class AlternateAuthTest extends \DreamFactory\Core\Testing\TestCase
 
     public function testHandleLoginFailure1()
     {
-        $table = 'user';
+        $table = 'alt_auth_user';
         $usernameField = 'email';
         $passwordField = ' password';
         $emailField = 'email';
@@ -132,7 +163,7 @@ class AlternateAuthTest extends \DreamFactory\Core\Testing\TestCase
 
     public function testHandleLoginFailure2()
     {
-        $table = 'user';
+        $table = 'alt_auth_user';
         $usernameField = 'email';
         $passwordField = ' password';
         $emailField = 'email_address';
@@ -153,7 +184,7 @@ class AlternateAuthTest extends \DreamFactory\Core\Testing\TestCase
 
     public function testHandleLoginFailure3()
     {
-        $table = 'user';
+        $table = 'alt_auth_user';
         $usernameField = 'email';
         $passwordField = ' password';
         $emailField = 'email';
@@ -194,7 +225,7 @@ class AlternateAuthTest extends \DreamFactory\Core\Testing\TestCase
 
     public function testHandleLoginFailure5()
     {
-        $table = 'user';
+        $table = 'alt_auth_user';
         $usernameField = 'email';
         $passwordField = ' password';
         $emailField = 'email';
