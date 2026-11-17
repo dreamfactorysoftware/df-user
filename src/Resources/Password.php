@@ -25,11 +25,12 @@ class Password extends UserPasswordResource
             $user = User::whereEmail($email)->first();
 
             if (null !== $user && $user->is_sys_admin) {
-                // Must stay byte-identical to the success return of
-                // UserPasswordResource::passwordReset(). df-system PR #62
-                // unifies that envelope to ['success' => true,
-                // 'security_question' => null]; this line changes with it.
-                return ['success' => true];
+                // Must stay byte-identical to what
+                // UserPasswordResource::passwordReset() returns for unknown
+                // and ordinary addresses (unified by df-system #62, merged).
+                // A body missing the security_question key would still mark
+                // the address as an admin.
+                return ['success' => true, 'security_question' => null];
             }
         }
 
