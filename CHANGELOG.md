@@ -4,6 +4,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [0.17.3] - 2026-11-18
+- Stability and reliability improvements.
+
 ## [0.14.0] - 2017-12-28
 ### Added
 - DF-1251 Added alternative means (external db) of authentication
