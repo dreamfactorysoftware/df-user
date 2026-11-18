@@ -188,6 +188,38 @@ class PasswordResourceTest extends \DreamFactory\Core\Testing\TestCase
         $this->assertTrue(!empty($content['session_id']));
     }
 
+    public function testPasswordResetDoesNotRevealAdmins()
+    {
+        $adminEmail = 'pwreset-admin-oracle@dreamfactory.com';
+        User::whereEmail($adminEmail)->delete();
+        $admin = new User([
+            'name'      => 'Oracle Admin',
+            'email'     => $adminEmail,
+            'is_active' => true,
+        ]);
+        $admin->setAttribute('password', 'Test1234!@#$5678');
+        $admin->is_sys_admin = true;
+        $admin->save();
+
+        try {
+            $rsAdmin = $this->makeRequest(Verbs::POST, static::RESOURCE, ['reset' => 'true'], ['email' => $adminEmail]);
+            $rsUnknown = $this->makeRequest(
+                Verbs::POST,
+                static::RESOURCE,
+                ['reset' => 'true'],
+                ['email' => 'pwreset-nobody@dreamfactory.com']
+            );
+
+            $this->assertEquals($rsUnknown->getStatusCode(), $rsAdmin->getStatusCode());
+            $this->assertSame($rsUnknown->getContent(), $rsAdmin->getContent());
+            $this->assertSame(['success' => true, 'security_question' => null], $rsAdmin->getContent());
+            // No reset was started for the admin.
+            $this->assertEmpty(User::whereEmail($adminEmail)->value('confirm_code'));
+        } finally {
+            User::whereEmail($adminEmail)->delete();
+        }
+    }
+
     /************************************************
      * Helper methods
      ************************************************/
